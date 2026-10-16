@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="description" content="Turn a teaching idea into a narrated, animated lesson with Fair Video Studio.">
+  <title>Fair Video Studio</title>
+  <link rel="stylesheet" href="./fair-studio.css">
+  <script type="module" src="./fair-studio.mjs"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to lesson studio</a>
+  <aside class="sidebar" aria-label="Lesson library">
+    <a class="brand" href="./index.html" aria-label="Fair Video Studio home"><span class="brand-mark" aria-hidden="true">f<span>•</span></span><span>fair<span class="brand-sub">VIDEO STUDIO</span></span></a>
+    <button class="new-lesson" id="new-lesson" type="button"><span aria-hidden="true">＋</span> New lesson</button>
+    <div class="library-heading"><h2>Your lessons</h2><button class="icon-button" id="refresh" aria-label="Refresh lesson library" type="button">↻</button></div>
+    <div id="library" class="library"><p class="library-empty">Your first lesson starts here.<br>Give an idea a little room to grow.</p></div>
+    <div class="sidebar-footer"><span class="local-dot" aria-hidden="true"></span><span>Local creative workspace</span><p>From a small idea<br>to a moment of understanding.</p></div>
+  </aside>
+  <main id="main">
+    <header class="topbar"><span>THE LESSON STUDIO</span><a class="workspace-tag" href="./curriculum.html" style="text-decoration:none;color:inherit">Curriculum coverage ↗</a></header>
+    <div class="workspace">
+      <section id="compose-view" aria-labelledby="compose-title">
+        <div class="intro"><p class="eyebrow">A LITTLE CURIOSITY. A BIG BEGINNING.</p><h1 id="compose-title">What will you<br> help someone <em>understand?</em></h1><p class="intro-copy">Start with a teaching idea. Shape it into a clear story,<br class="desktop-break"> thoughtful examples, and a video ready for your review.</p></div>
+        <div id="connection-notice" class="notice" role="status" hidden></div>
+        <form id="lesson-form">
+          <div class="composer"><label for="brief">Your lesson idea</label><textarea id="brief" name="text" required minlength="10" maxlength="5000" rows="4" placeholder="Teach place value to Grade 5 learners. Use a playful number detective story, clear examples, and a quick challenge."></textarea><div class="composer-foot"><span>Subject, learner level, and what should click.</span><span id="brief-count">0 / 5,000</span></div></div>
+          <div id="curriculum-hint" class="notice" role="status" hidden></div>
+          <div class="examples"><span>Try an idea</span><button type="button" data-example="Teach place value to Grade 5 learners. Show how a digit changes value in different positions, use everyday examples, and finish with a short challenge.">Place value <span aria-hidden="true">↗</span></button><button type="button" data-example="Explain the water cycle to 9-year-olds through the journey of a single raindrop. Include evaporation, condensation, precipitation, and a quick check for understanding.">The water cycle <span aria-hidden="true">↗</span></button></div>
+          <div class="form-divider"></div>
+          <div class="field generation-field"><label for="generation-version">Content generation version</label><select id="generation-version" name="generationVersion" aria-describedby="generation-description generation-blockers"><option value="classic">Classic · illustrated lessons</option></select><p id="generation-description" class="field-note"></p><div id="generation-blockers" class="notice" role="status" hidden></div></div>
+          <fieldset id="instructor-field" class="instructor-field"><legend>Guide character <span>Optional — the clean canvas is recommended for curriculum lessons.</span></legend><div id="avatars" class="avatar-grid"><p class="muted">Loading guide presets…</p></div><p id="lesson-treatment" class="field-note" hidden></p></fieldset>
+          <div class="lesson-settings"><div class="field"><label for="audience">Learners <span>Optional</span></label><input id="audience" name="audience" maxlength="240" placeholder="e.g. Grade 5 · ages 10–11"></div><div class="field duration-field"><label for="duration">Target length <output id="duration-label" for="duration">3 minutes</output></label><input id="duration" name="targetSeconds" type="range" min="60" max="600" value="180" step="30"><div class="range-labels"><span>1 min</span><span>10 min</span></div></div></div>
+          <fieldset id="provider-field" class="provider-field"><legend>Lesson planner</legend><div id="providers" class="provider-grid"><p class="muted">Loading generation options…</p></div><p id="provider-status" class="field-note" role="status"></p></fieldset>
+          <div id="voice-field" class="field voice-field" hidden><label for="voice-provider">Narrator voice</label><select id="voice-provider" name="voiceProvider" aria-describedby="voice-status"></select><p id="voice-status" class="field-note" role="status"></p><audio id="voice-sample" controls preload="none" aria-label="Selected narrator voice sample" hidden></audio></div>
+          <details id="pricing-section" class="pricing-section"><summary>Generation costs <span id="cost-summary">Compare local and paid options</span></summary><div id="pricing-detail"></div></details>
+          <details class="advanced"><summary>Fine-tune the lesson <span>Curriculum & generation</span></summary><div class="advanced-fields"><div class="field"><label for="curriculum">Curriculum reference <span>Optional</span></label><textarea id="curriculum" name="curriculumSource" rows="3" maxlength="10000" placeholder="Paste the relevant learning objectives or source excerpt. Include its title and URL if available."></textarea><p class="field-note">Without a supplied source, curriculum alignment remains unverified.</p></div><div class="field"><label id="model-label" for="model">Local language model</label><input id="model" name="model" value="gemma3:12b" list="model-options" maxlength="100"><datalist id="model-options"></datalist><p id="model-hint" class="field-note">Use a model installed in your local generation service.</p></div></div></details>
+          <div id="form-error" class="error-message" role="alert" tabindex="-1" hidden></div>
+          <div class="submit-row"><p>Every lesson is a draft.<br><span>Review accuracy and suitability before teaching.</span></p><button id="generate" type="submit" class="button primary" disabled>Create my lesson <span aria-hidden="true">↗</span></button></div>
+        </form>
+        <div class="process-strip" aria-label="Lesson creation process"><span>01 <b>Plan</b></span><i aria-hidden="true">→</i><span>02 <b>Narrate</b></span><i aria-hidden="true">→</i><span>03 <b>Animate</b></span><i aria-hidden="true">→</i><span>04 <b>Review</b></span></div>
+      </section>
+      <section id="job-view" hidden aria-labelledby="job-title">
+        <button id="back-compose" type="button" class="text-button">← Back to your idea</button><p class="eyebrow">YOUR LESSON, TAKING SHAPE</p><h1 id="job-title" class="job-title" tabindex="-1">Creating your lesson</h1><p id="job-brief" class="intro-copy"></p><p id="job-generation" class="field-note"></p>
+        <div id="benchmark-note" class="review-note" hidden><span class="review-label">AUTHORED ANIMATION BENCHMARK</span><p>Script authored and reviewed separately; this demonstrates rendering and narration, not automatic planning success.</p></div>
+        <div id="job-status" class="job-status" role="status" aria-live="polite"></div>
+        <div class="progress-heading"><span id="stage-label">Preparing</span><span id="progress-label">0%</span></div><progress id="progress" max="100" value="0">0%</progress><ol id="stage-list" class="stages" aria-label="Generation stages"></ol>
+        <div id="job-error" class="error-message" role="alert" hidden></div><div class="job-actions"><button id="retry" class="button secondary" type="button" hidden>Try again</button><button id="cancel" class="text-button" type="button" hidden>Stop generation</button></div>
+        <div id="result" hidden><div class="review-note"><span class="review-label">EDUCATOR REVIEW</span><p>Your video is ready to review. Check the explanations, examples, pacing, and curriculum fit before sharing it with learners.</p></div><video id="video" controls playsinline preload="metadata" aria-label="Generated lesson preview"></video><div class="narration-controls"><button id="play-narration" class="button secondary" type="button" aria-controls="video" aria-describedby="playback-status">Play with narration</button><p id="playback-status" class="field-note" role="status" aria-live="polite" aria-atomic="true">Enables player sound at full volume. Your browser tab and device control the final audio output.</p></div><div id="downloads" class="downloads" aria-label="Download lesson materials"></div></div>
+        <section id="lesson-detail" class="lesson-detail" hidden><div class="section-heading"><h2>The teaching plan</h2><span id="scene-count"></span></div><p id="lesson-concept"></p><div id="curriculum-warnings"></div><ul id="objectives" class="objectives"></ul><div id="storyboard" class="storyboard"></div></section>
+        <details id="quality-section" class="quality-section" hidden><summary>Quality report</summary><div id="quality-report"></div></details>
+        <details class="activity"><summary>Generation activity</summary><ol id="events"></ol></details>
+      </section>
+    </div>
+  </main>
+</body>
+</html>

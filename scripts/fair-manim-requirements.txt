@@ -1,0 +1,2 @@
+# Manim Community: MIT. Install into an isolated Python 3.12 environment.
+manim==0.22.0

@@ -1,0 +1,331 @@
+{
+  "title": "Twenty Three: Build It, Trade It, Grow It",
+  "audience": "Grade 5",
+  "curriculum": {
+    "requested": "Grade 5 place value",
+    "resolved": "A focused primary whole-number place-value demonstration; no syllabus certification",
+    "warnings": [],
+    "sources": []
+  },
+  "objectives": [
+    {
+      "id": "digit-value",
+      "text": "Identify a digit’s value from its hundreds, tens or ones position."
+    }
+  ],
+  "prerequisites": [
+    "Count to ten and read three-digit whole numbers.",
+    "Recognize multiplication by ten as ten equal copies."
+  ],
+  "concept": {
+    "hook": "Can the same cubes tell us what a digit means?",
+    "analogy": "Physical base-ten cubes, rods and flats represent their actual quantities.",
+    "arc": "Build twenty three, regroup without changing its total, connect blocks to digits, then contrast multiplication by ten and practise."
+  },
+  "scenes": [
+    {
+      "id": "build-twenty-three",
+      "beat": "hook",
+      "title": "Can you see twenty three?",
+      "narration": "Look at these twenty three cubes. Gather them into groups of ten, with three left over. Read the number: two tens and three ones make twenty three.",
+      "objectiveIds": [
+        "digit-value"
+      ],
+      "visual": {
+        "kind": "base-ten",
+        "mode": "group",
+        "number": 23,
+        "place": "ones",
+        "label": "Ten ones make one ten",
+        "cues": [
+          {
+            "phrase": "Look at these twenty three cubes",
+            "action": "show-objects"
+          },
+          {
+            "phrase": "Gather them into groups of ten",
+            "action": "transform"
+          },
+          {
+            "phrase": "Read the number",
+            "action": "show-notation"
+          }
+        ]
+      },
+      "pauseSeconds": 0,
+      "mathClaims": [
+        {
+          "left": "2*10+3",
+          "right": "23"
+        }
+      ]
+    },
+    {
+      "id": "trade-ten-ones",
+      "beat": "example",
+      "title": "Trade, without changing the total",
+      "narration": "Start with one ten and thirteen ones. Trade ten of those ones for another ten. Count the result: two tens and three ones. We still have twenty three!",
+      "objectiveIds": [
+        "digit-value"
+      ],
+      "visual": {
+        "kind": "base-ten",
+        "mode": "trade",
+        "number": 23,
+        "place": "ones",
+        "label": "A trade keeps the same quantity",
+        "cues": [
+          {
+            "phrase": "Start with one ten",
+            "action": "show-objects"
+          },
+          {
+            "phrase": "Trade ten of those ones",
+            "action": "transform"
+          },
+          {
+            "phrase": "Count the result",
+            "action": "show-notation"
+          }
+        ]
+      },
+      "pauseSeconds": 0,
+      "mathClaims": [
+        {
+          "left": "10+13",
+          "right": "23"
+        },
+        {
+          "left": "2*10+3",
+          "right": "23"
+        }
+      ]
+    },
+    {
+      "id": "connect-digits",
+      "beat": "concept",
+      "title": "The place gives the value",
+      "narration": "See our two tens and three ones. Separate their values: the tens are worth twenty, and the ones are worth three. Write twenty plus three: twenty three.",
+      "objectiveIds": [
+        "digit-value"
+      ],
+      "visual": {
+        "kind": "base-ten",
+        "mode": "expanded",
+        "number": 23,
+        "place": "tens",
+        "label": "Two tens are worth twenty",
+        "cues": [
+          {
+            "phrase": "See our two tens",
+            "action": "show-objects"
+          },
+          {
+            "phrase": "Separate their values",
+            "action": "transform"
+          },
+          {
+            "phrase": "Write twenty plus three",
+            "action": "show-notation"
+          }
+        ]
+      },
+      "pauseSeconds": 0,
+      "mathClaims": [
+        {
+          "left": "2*10",
+          "right": "20"
+        },
+        {
+          "left": "20+3",
+          "right": "23"
+        }
+      ]
+    },
+    {
+      "id": "grow-tenfold",
+      "beat": "concept",
+      "title": "Now make it ten times as much",
+      "narration": "Begin with twenty three again. Multiply the whole quantity by ten: each digit moves one place left. Read two hundred and thirty. Our three ones have become three tens, worth thirty.",
+      "objectiveIds": [
+        "digit-value"
+      ],
+      "visual": {
+        "kind": "base-ten",
+        "mode": "digit-shift",
+        "number": 23,
+        "place": "ones",
+        "label": "Multiplying by ten changes the quantity",
+        "cues": [
+          {
+            "phrase": "Begin with twenty three again",
+            "action": "show-objects"
+          },
+          {
+            "phrase": "Multiply the whole quantity by ten",
+            "action": "transform"
+          },
+          {
+            "phrase": "Read two hundred and thirty",
+            "action": "show-notation"
+          }
+        ]
+      },
+      "pauseSeconds": 0,
+      "mathClaims": [
+        {
+          "left": "23*10",
+          "right": "230"
+        },
+        {
+          "left": "3*10",
+          "right": "30"
+        }
+      ]
+    },
+    {
+      "id": "zero-holds-ones",
+      "beat": "misconception",
+      "title": "Same total, or a bigger total?",
+      "narration": "Here are two hundreds and three tens. Notice the empty ones column. Write zero there: our model has no loose ones. Trading kept twenty three unchanged; multiplying made it ten times as much.",
+      "objectiveIds": [
+        "digit-value"
+      ],
+      "visual": {
+        "kind": "base-ten",
+        "mode": "zero",
+        "number": 230,
+        "place": "ones",
+        "label": "Zero records no ones",
+        "cues": [
+          {
+            "phrase": "Here are two hundreds",
+            "action": "show-objects"
+          },
+          {
+            "phrase": "Notice the empty ones column",
+            "action": "transform"
+          },
+          {
+            "phrase": "Write zero there",
+            "action": "show-notation"
+          }
+        ]
+      },
+      "pauseSeconds": 0,
+      "mathClaims": [
+        {
+          "left": "2*100+3*10+0",
+          "right": "230"
+        }
+      ]
+    },
+    {
+      "id": "your-turn",
+      "beat": "question",
+      "title": "Your turn",
+      "narration": "In three hundred and forty, what is the value of the digit four? Think about its place.",
+      "objectiveIds": [
+        "digit-value"
+      ],
+      "visual": {
+        "kind": "steps",
+        "items": [
+          "Find the value of four in 340."
+        ],
+        "label": "Think before the answer"
+      },
+      "pauseSeconds": 5,
+      "questionId": "value-of-four",
+      "mathClaims": []
+    },
+    {
+      "id": "four-tens",
+      "beat": "answer",
+      "title": "Four tens are forty",
+      "narration": "Build three hundred and forty with three hundreds and four tens. Separate the tens: four groups of ten. Write their value, forty. The digit four is worth forty because it is in the tens place.",
+      "objectiveIds": [
+        "digit-value"
+      ],
+      "visual": {
+        "kind": "base-ten",
+        "mode": "expanded",
+        "number": 340,
+        "place": "tens",
+        "label": "Four tens are worth forty",
+        "cues": [
+          {
+            "phrase": "Build three hundred and forty",
+            "action": "show-objects"
+          },
+          {
+            "phrase": "Separate the tens",
+            "action": "transform"
+          },
+          {
+            "phrase": "Write their value",
+            "action": "show-notation"
+          }
+        ]
+      },
+      "pauseSeconds": 0,
+      "questionId": "value-of-four",
+      "mathClaims": [
+        {
+          "left": "4*10",
+          "right": "40"
+        },
+        {
+          "left": "300+40",
+          "right": "340"
+        }
+      ]
+    },
+    {
+      "id": "remember-place",
+      "beat": "recap",
+      "title": "Find the place. Find the value.",
+      "narration": "Return to our model of twenty three. Separate the tens from the ones. Read the values: two means twenty here, and three means three. Find the place to find the value!",
+      "objectiveIds": [
+        "digit-value"
+      ],
+      "visual": {
+        "kind": "base-ten",
+        "mode": "expanded",
+        "number": 23,
+        "place": "tens",
+        "label": "Place tells us the digit’s value",
+        "cues": [
+          {
+            "phrase": "Return to our model of twenty three",
+            "action": "show-objects"
+          },
+          {
+            "phrase": "Separate the tens from the ones",
+            "action": "transform"
+          },
+          {
+            "phrase": "Read the values",
+            "action": "show-notation"
+          }
+        ]
+      },
+      "pauseSeconds": 0,
+      "mathClaims": [
+        {
+          "left": "20+3",
+          "right": "23"
+        }
+      ]
+    }
+  ],
+  "quality": {
+    "reviewed": false,
+    "warnings": [
+      "Authored quality benchmark, not generated by a local or paid model. Independent content and audiovisual review pending.",
+      "Generated teaching content needs educator review. Engagement and complete mastery are not guaranteed.",
+      "Only explicit numeric equations are checked deterministically; spoken claims and curriculum coverage also require review.",
+      "Curriculum scope is inferred from the brief; no authoritative syllabus source was supplied."
+    ]
+  }
+}

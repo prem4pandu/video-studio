@@ -1,0 +1,641 @@
+{
+  "board": "cambridge-primary",
+  "framework": "0096",
+  "frameworkVersion": "1.1 (September 2020)",
+  "stage": "5",
+  "subject": "mathematics",
+  "title": "Cambridge Primary Mathematics Stage 5",
+  "audience": "Cambridge Primary Stage 5 learners, about ages 9 to 10",
+  "language": "en",
+  "sources": [
+    {
+      "title": "Cambridge Primary Mathematics 0096 Curriculum Framework",
+      "url": "https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-primary/cambridge-primary-mathematics-0096/",
+      "note": "Objective codes and wording follow framework version 1.1 (September 2020). Verify against a licensed centre copy of the framework before publishing."
+    }
+  ],
+  "units": [
+    {
+      "id": "s5-place-value",
+      "strand": "Number — place value, ordering and rounding",
+      "title": "Place value, ordering and rounding",
+      "topics": [
+        {
+          "id": "s5-pv-decimal-digits",
+          "title": "Digit value in decimals",
+          "summary": "Extend place value beyond whole numbers into tenths and hundredths so learners can say what each decimal digit is worth.",
+          "objectives": [{ "code": "5Np.01", "text": "Understand and explain the value of each digit in decimals (tenths and hundredths)." }],
+          "prerequisites": [],
+          "scope": "Decimals with tenths and hundredths only. Connect the place-value chart to the hundred-square grid. Use one worked decimal such as 3.47 and a different practice number.",
+          "restrictions": ["No thousandths or further decimal places.", "No decimal addition or subtraction algorithms."],
+          "targetSeconds": 280,
+          "suggestedVisuals": ["place-value", "area-grid", "comparison", "equation"]
+        },
+        {
+          "id": "s5-pv-powers-whole",
+          "title": "Multiplying and dividing whole numbers by 10, 100 and 1000",
+          "summary": "Show how digits shift places when whole numbers are multiplied or divided by powers of ten — the digits move, a decimal point never does.",
+          "objectives": [{ "code": "5Np.02", "text": "Use knowledge of place value to multiply and divide whole numbers by 10, 100 and 1000." }],
+          "prerequisites": ["s5-pv-decimal-digits"],
+          "scope": "Whole numbers times or divided by 10, 100 and 1000 only. Correct the 'add a zero' misconception explicitly by showing digits shifting columns on the place-value chart.",
+          "restrictions": ["No decimals in this topic — that is the next lesson.", "Answers must remain whole numbers."],
+          "targetSeconds": 300,
+          "suggestedVisuals": ["place-value", "equation", "steps", "comparison"]
+        },
+        {
+          "id": "s5-pv-powers-decimal",
+          "title": "Multiplying and dividing decimals by 10 and 100",
+          "summary": "Apply the same digit-shift rule to decimals so learners see tenths become ones and hundredths become tenths.",
+          "objectives": [{ "code": "5Np.03", "text": "Use knowledge of place value to multiply and divide decimals by 10 and 100." }],
+          "prerequisites": ["s5-pv-decimal-digits", "s5-pv-powers-whole"],
+          "scope": "Decimals with up to two decimal places multiplied or divided by 10 and 100. Explicitly link back to whole-number shifts.",
+          "restrictions": ["No division by 1000 for decimals.", "No recurring decimals."],
+          "targetSeconds": 280,
+          "suggestedVisuals": ["place-value", "equation", "steps"]
+        },
+        {
+          "id": "s5-pv-compose-decompose",
+          "title": "Composing, decomposing and regrouping numbers",
+          "summary": "Build numbers from their place-value parts and break them apart again, including decimals, to prepare for flexible calculation.",
+          "objectives": [{ "code": "5Np.04", "text": "Compose, decompose and regroup numbers, including decimals (tenths and hundredths)." }],
+          "prerequisites": ["s5-pv-decimal-digits"],
+          "scope": "Whole numbers to 999 999 and decimals to hundredths. Show regrouping such as 4.7 = 4 + 0.7 = 3 + 1.7 and non-standard partitions.",
+          "restrictions": ["Do not teach column addition with carrying — regrouping concept only."],
+          "targetSeconds": 300,
+          "suggestedVisuals": ["place-value", "equation", "base-ten", "bar-model"]
+        },
+        {
+          "id": "s5-pv-rounding",
+          "title": "Rounding to the nearest whole number",
+          "summary": "Use a number line to decide which whole number a one-decimal-place number is closest to, including the halfway case.",
+          "objectives": [{ "code": "5Np.05", "text": "Round numbers with one decimal place to the nearest whole number." }],
+          "prerequisites": ["s5-pv-decimal-digits"],
+          "scope": "One decimal place to nearest whole number only. Cover the 5-tenths rounds-up convention on the number line.",
+          "restrictions": ["No rounding to tenths or hundredths.", "No significant figures."],
+          "targetSeconds": 260,
+          "suggestedVisuals": ["number-line", "steps", "comparison"]
+        }
+      ]
+    },
+    {
+      "id": "s5-counting-sequences",
+      "strand": "Number — counting and sequences",
+      "title": "Counting and sequences",
+      "topics": [
+        {
+          "id": "s5-seq-counting-back",
+          "title": "Counting in steps, including past zero",
+          "summary": "Count on and back in equal steps along a number line, extending beyond zero into negative numbers.",
+          "objectives": [{ "code": "5Nc.01", "text": "Count on and count back in steps of constant size, and extend beyond zero to include negative numbers." }],
+          "prerequisites": [],
+          "scope": "Constant whole-number steps crossing zero. Use a number line with a marked step size; introduce negative numbers as positions, not as a new arithmetic.",
+          "restrictions": ["No fraction or decimal step sizes.", "No multiplication of negative numbers."],
+          "targetSeconds": 260,
+          "suggestedVisuals": ["number-line", "steps", "comparison"]
+        },
+        {
+          "id": "s5-seq-two-unknowns",
+          "title": "Symbols for two unknown quantities",
+          "summary": "Use shapes or symbols to stand for two unknowns in addition and subtraction puzzles, and reason about what they could be.",
+          "objectives": [{ "code": "5Nc.02", "text": "Recognise the use of objects, shapes or symbols to represent two unknown quantities in addition and subtraction calculations." }],
+          "prerequisites": ["s5-seq-counting-back"],
+          "scope": "Puzzles like triangle + square = 12 where the same symbol always means the same number. Bar models make the unknowns visible. Keep solutions to whole numbers.",
+          "restrictions": ["No algebraic letters or formal solving.", "No simultaneous-equation methods."],
+          "targetSeconds": 280,
+          "suggestedVisuals": ["bar-model", "equation", "comparison"]
+        },
+        {
+          "id": "s5-seq-linear-terms",
+          "title": "Finding any term of a linear sequence",
+          "summary": "Turn repeated addition of a constant into multiplication so any term can be found without counting every step.",
+          "objectives": [{ "code": "5Nc.03", "text": "Use the relationship between repeated addition of a constant and multiplication to find any term of a linear sequence." }],
+          "prerequisites": ["s5-seq-counting-back"],
+          "scope": "Linear sequences with a constant whole-number difference. Link term number times step plus start to the term value; keep first-term and step visible.",
+          "restrictions": ["No n-th term algebra notation like 3n + 2.", "No quadratic sequences."],
+          "targetSeconds": 300,
+          "suggestedVisuals": ["steps", "equation", "number-line"]
+        },
+        {
+          "id": "s5-seq-square-triangular",
+          "title": "Square and triangular number patterns",
+          "summary": "See square numbers as square arrays and triangular numbers as growing rows, and extend both patterns spatially.",
+          "objectives": [{ "code": "5Nc.04", "text": "Recognise and extend the spatial pattern of square and triangular numbers." }],
+          "prerequisites": ["s5-seq-linear-terms"],
+          "scope": "Squares to 10 by 10 and triangular numbers to 55 as spatial dot patterns. Emphasize the shape of each pattern, not formula memorisation.",
+          "restrictions": ["No formula n(n+1)/2.", "No cube numbers."],
+          "targetSeconds": 280,
+          "suggestedVisuals": ["area-grid", "steps", "equation"]
+        }
+      ]
+    },
+    {
+      "id": "s5-integers-powers",
+      "strand": "Number — integers and powers",
+      "title": "Integers and powers",
+      "topics": [
+        {
+          "id": "s5-int-add-subtract",
+          "title": "Adding and subtracting integers",
+          "summary": "Estimate then add and subtract integers including a negative, using the number line to make direction visible.",
+          "objectives": [{ "code": "5Ni.01", "text": "Estimate, add and subtract integers, including where one integer is negative." }],
+          "prerequisites": ["s5-seq-counting-back"],
+          "scope": "Two-term additions and subtractions with one negative integer, e.g. 25 + (-10) and -15 + 30. Estimate first, then calculate.",
+          "restrictions": ["No subtracting a negative (no double negatives).", "No multiplication or division of negatives."],
+          "targetSeconds": 300,
+          "suggestedVisuals": ["number-line", "equation", "steps"]
+        },
+        {
+          "id": "s5-int-laws",
+          "title": "Laws of arithmetic that simplify calculations",
+          "summary": "Choose when reordering or regrouping makes a calculation easier — commutativity, associativity and friendly pairs.",
+          "objectives": [{ "code": "5Ni.02", "text": "Understand which law of arithmetic to apply to simplify calculations." }],
+          "prerequisites": ["s5-int-add-subtract"],
+          "scope": "Choosing an easier order or grouping, e.g. 17 + 28 + 13 by pairing 17 and 13, or 5 times 14 times 2. Name the idea in words, not formal law names only.",
+          "restrictions": ["No algebraic proof of the laws.", "No distributive law over subtraction."],
+          "targetSeconds": 280,
+          "suggestedVisuals": ["equation", "comparison", "steps"]
+        },
+        {
+          "id": "s5-int-order",
+          "title": "The order of operations",
+          "summary": "Discover why multiplication and division are done before addition and subtraction, using one clear worked example.",
+          "objectives": [{ "code": "5Ni.03", "text": "Understand that the four operations follow a particular order." }],
+          "prerequisites": ["s5-int-laws"],
+          "scope": "Expressions with two operations, e.g. 3 + 4 times 2. Show the wrong left-to-right answer as a misconception and correct it.",
+          "restrictions": ["No brackets in this topic.", "No acronym drill without meaning — anchor in a story context."],
+          "targetSeconds": 260,
+          "suggestedVisuals": ["equation", "steps", "comparison"]
+        },
+        {
+          "id": "s5-int-multiply",
+          "title": "Multiplying numbers up to 1000",
+          "summary": "Estimate first, then multiply whole numbers up to 1000 by a one- or two-digit number using a written or area strategy.",
+          "objectives": [{ "code": "5Ni.04", "text": "Estimate and multiply whole numbers up to 1000 by 1-digit or 2-digit whole numbers." }],
+          "prerequisites": ["s5-pv-powers-whole", "s5-int-laws"],
+          "scope": "Grid/area or short-multiplication layout for numbers like 243 times 6 or 45 times 23. Always estimate with a rounded value first.",
+          "restrictions": ["No long multiplication beyond 2-digit multipliers.", "No decimals."],
+          "targetSeconds": 320,
+          "suggestedVisuals": ["equation", "area-grid", "steps"]
+        },
+        {
+          "id": "s5-int-divide",
+          "title": "Dividing numbers up to 1000",
+          "summary": "Estimate then divide whole numbers up to 1000 by a one-digit number, interpreting any remainder sensibly.",
+          "objectives": [{ "code": "5Ni.05", "text": "Estimate and divide whole numbers up to 1000 by 1-digit whole numbers." }],
+          "prerequisites": ["s5-int-multiply"],
+          "scope": "Short division with and without a remainder, e.g. 456 divided by 4 and 457 divided by 4. Discuss what the remainder means in a sharing context.",
+          "restrictions": ["No decimal remainders.", "No two-digit divisors."],
+          "targetSeconds": 320,
+          "suggestedVisuals": ["equation", "steps", "bar-model"]
+        },
+        {
+          "id": "s5-int-prime-composite",
+          "title": "Prime and composite numbers",
+          "summary": "Distinguish primes from composites by testing whether a number makes only one rectangle or several.",
+          "objectives": [{ "code": "5Ni.06", "text": "Understand and explain the difference between prime and composite numbers." }],
+          "prerequisites": ["s5-int-multiply"],
+          "scope": "Numbers to 30. Use dot/area arrays: primes form only a single row, composites form other rectangles. 1 is neither.",
+          "restrictions": ["No prime factorisation trees.", "No numbers above 30."],
+          "targetSeconds": 280,
+          "suggestedVisuals": ["area-grid", "steps", "comparison"]
+        },
+        {
+          "id": "s5-int-divisibility",
+          "title": "Divisibility tests for 4 and 8",
+          "summary": "Use factors and multiples to test whether numbers divide by 4 or 8 without doing the full division.",
+          "objectives": [{ "code": "5Ni.07", "text": "Use knowledge of factors and multiples to understand tests of divisibility by 4 and 8." }],
+          "prerequisites": ["s5-int-divide"],
+          "scope": "Last-two-digits test for 4 and halving-twice reasoning for 8 on numbers to 9999. Explain WHY the test works using place value.",
+          "restrictions": ["No tests for 3, 6, 9 or other numbers.", "Keep it to understanding, not speed drills."],
+          "targetSeconds": 280,
+          "suggestedVisuals": ["place-value", "steps", "equation"]
+        },
+        {
+          "id": "s5-int-square-numbers",
+          "title": "Square numbers to 100",
+          "summary": "Recognise square numbers up to 100 as equal-sided arrays and connect them to multiplication.",
+          "objectives": [{ "code": "5Ni.08", "text": "Use knowledge of multiplication to recognise square numbers (from 1 to 100)." }],
+          "prerequisites": ["s5-seq-square-triangular"],
+          "scope": "Squares 1, 4, 9 ... 100 as arrays and as n times n. Quick recognition, not memorised chanting.",
+          "restrictions": ["No square roots notation.", "No squares above 100."],
+          "targetSeconds": 240,
+          "suggestedVisuals": ["area-grid", "equation", "steps"]
+        }
+      ]
+    },
+    {
+      "id": "s5-fractions",
+      "strand": "Number — fractions, decimals, percentages, ratio and proportion",
+      "title": "Fractions and operators",
+      "topics": [
+        {
+          "id": "s5-fr-division",
+          "title": "A fraction is a division",
+          "summary": "Understand three-quarters as three divided by four — the numerator shares into denominator parts.",
+          "objectives": [{ "code": "5Nf.01", "text": "Understand that a fraction can be represented as a division of the numerator by the denominator (unit fractions, three-quarters, tenths and hundredths)." }],
+          "prerequisites": ["s5-pv-decimal-digits"],
+          "scope": "Unit fractions, three-quarters, tenths and hundredths written as numerator divided by denominator. Use bar shading to show the sharing.",
+          "restrictions": ["No converting fractions to decimals by division yet.", "No improper fractions here."],
+          "targetSeconds": 280,
+          "suggestedVisuals": ["fraction-bars", "equation", "bar-model"]
+        },
+        {
+          "id": "s5-fr-operators",
+          "title": "Fractions as operators",
+          "summary": "Apply a proper fraction to a quantity, like three-quarters of twenty, by dividing then multiplying the parts.",
+          "objectives": [{ "code": "5Nf.02", "text": "Understand that proper fractions can act as operators." }],
+          "prerequisites": ["s5-fr-division"],
+          "scope": "Proper fractions of whole-number quantities that divide evenly, e.g. three-quarters of 20. Bar model first: split the whole, then take parts.",
+          "restrictions": ["No fractions of fractions.", "No answers that are fractions themselves."],
+          "targetSeconds": 300,
+          "suggestedVisuals": ["bar-model", "fraction-bars", "equation"]
+        },
+        {
+          "id": "s5-fr-improper-mixed",
+          "title": "Improper fractions and mixed numbers",
+          "summary": "See that five-quarters and one-and-a-quarter name the same amount, and convert between the two forms.",
+          "objectives": [{ "code": "5Nf.03", "text": "Recognise that improper fractions and mixed numbers can have an equivalent value." }],
+          "prerequisites": ["s5-fr-division"],
+          "scope": "Convert between improper fractions and mixed numbers using bar pictures: count whole bars plus the leftover part.",
+          "restrictions": ["No simplifying fractions in this topic.", "Keep denominators to 2..10."],
+          "targetSeconds": 300,
+          "suggestedVisuals": ["fraction-bars", "number-line", "equation"]
+        },
+        {
+          "id": "s5-fr-fdp-equivalence",
+          "title": "Fractions, decimals and percentages that match",
+          "summary": "Recognise the same value wearing three costumes: a proper fraction, a one-decimal-place decimal and a percentage.",
+          "objectives": [{ "code": "5Nf.04", "text": "Recognise that proper fractions, decimals (one decimal place) and percentages can have equivalent values." }],
+          "prerequisites": ["s5-fr-division", "s5-pc-shapes"],
+          "scope": "Tenths-family equivalents only: 1/2 = 0.5 = 50%, 1/4 = 0.25 = 25% (via fifty-hundredths), tenths such as 7/10 = 0.7 = 70%. Use the hundred square to prove equivalence.",
+          "restrictions": ["One decimal place only.", "No recurring-decimal fractions like thirds."],
+          "targetSeconds": 300,
+          "suggestedVisuals": ["area-grid", "fraction-bars", "comparison"]
+        },
+        {
+          "id": "s5-fr-add-subtract",
+          "title": "Adding and subtracting fractions",
+          "summary": "Estimate then add and subtract fractions whose denominators are equal or multiples of each other, converting with equivalent fractions.",
+          "objectives": [{ "code": "5Nf.05", "text": "Estimate, add and subtract fractions with the same denominator and denominators that are multiples of each other." }],
+          "prerequisites": ["s5-fr-division"],
+          "scope": "Same denominator first, then denominators that are multiples such as halves and quarters. Show the equivalent-fraction conversion on bars before the written step.",
+          "restrictions": ["No unrelated denominators like thirds plus fifths.", "Keep answers proper or simple mixed numbers."],
+          "targetSeconds": 320,
+          "suggestedVisuals": ["fraction-bars", "equation", "steps"]
+        },
+        {
+          "id": "s5-fr-unit-times",
+          "title": "Unit fractions times and divided by whole numbers",
+          "summary": "Estimate and compute a unit fraction multiplied by or divided by a whole number, anchored in bar pictures.",
+          "objectives": [{ "code": "5Nf.06", "text": "Estimate, multiply and divide unit fractions by a whole number." }],
+          "prerequisites": ["s5-fr-operators"],
+          "scope": "Unit fractions only: 1/3 times 6 as 'three thirds', and 1/4 divided by 2 as sharing a quarter bar into two. Keep visuals exact.",
+          "restrictions": ["No non-unit fractions times whole numbers.", "No dividing a whole by a fraction."],
+          "targetSeconds": 300,
+          "suggestedVisuals": ["fraction-bars", "bar-model", "equation"]
+        }
+      ]
+    },
+    {
+      "id": "s5-decimals-percent-ratio",
+      "strand": "Number — fractions, decimals, percentages, ratio and proportion",
+      "title": "Decimals, percentages and ratio",
+      "topics": [
+        {
+          "id": "s5-pc-shapes",
+          "title": "Percentages of shapes",
+          "summary": "Recognise percentages of shaded shapes and write a percentage as a fraction with denominator one hundred.",
+          "objectives": [{ "code": "5Nf.07", "text": "Recognise percentages of shapes, and write percentages as a fraction with denominator 100." }],
+          "prerequisites": ["s5-pv-decimal-digits"],
+          "scope": "Hundred-square grids: shade cells, name the percent, write it as n over 100. Connect 50% to half a grid.",
+          "restrictions": ["No percentages above 100.", "No decimals here — equivalence is a later topic."],
+          "targetSeconds": 260,
+          "suggestedVisuals": ["area-grid", "equation", "comparison"]
+        },
+        {
+          "id": "s5-pc-ordering",
+          "title": "Ordering decimals, fractions and percentages",
+          "summary": "Compare and order one-decimal-place numbers, same-denominator fractions and percentages using equals, greater and less symbols.",
+          "objectives": [{ "code": "5Nf.08", "text": "Understand the relative size of quantities to compare and order numbers with one decimal place, proper fractions with the same denominator and percentages, using the symbols =, > and <." }],
+          "prerequisites": ["s5-fr-fdp-equivalence"],
+          "scope": "Mixed-format comparisons resolved by converting to one form, shown on a shared number line. Include deliberate equals cases like 0.5 and 50%.",
+          "restrictions": ["One decimal place; same-denominator fractions only.", "No ordering of mixed numbers."],
+          "targetSeconds": 300,
+          "suggestedVisuals": ["number-line", "comparison", "area-grid"]
+        },
+        {
+          "id": "s5-dec-add-subtract",
+          "title": "Adding and subtracting decimals",
+          "summary": "Estimate then add and subtract decimals with the same number of decimal places, keeping the decimal point columns aligned.",
+          "objectives": [{ "code": "5Nf.09", "text": "Estimate, add and subtract numbers with the same number of decimal places." }],
+          "prerequisites": ["s5-pv-powers-decimal"],
+          "scope": "Tenths and hundredths with matching decimal places, e.g. 3.45 + 2.3 is NOT allowed (different places) — use 3.45 + 2.30 style pairs. Show place-value alignment, not just 'line up the dot'.",
+          "restrictions": ["Same number of decimal places only.", "No carrying across more than two columns."],
+          "targetSeconds": 300,
+          "suggestedVisuals": ["place-value", "equation", "steps"]
+        },
+        {
+          "id": "s5-dec-multiply",
+          "title": "Multiplying decimals by whole numbers",
+          "summary": "Estimate then multiply a one-decimal-place number by a one-digit whole number, using repeated addition or the shift-and-divide trick.",
+          "objectives": [{ "code": "5Nf.10", "text": "Estimate and multiply numbers with one decimal place by 1-digit whole numbers." }],
+          "prerequisites": ["s5-dec-add-subtract", "s5-int-multiply"],
+          "scope": "One decimal place times one digit, e.g. 2.4 times 3. Show both the repeated-addition view and the 'times ten, multiply, divide by ten' strategy.",
+          "restrictions": ["One decimal place only.", "No decimal times decimal."],
+          "targetSeconds": 300,
+          "suggestedVisuals": ["equation", "area-grid", "steps"]
+        },
+        {
+          "id": "s5-ratio-proportion",
+          "title": "Ratio compares parts; proportion compares part to whole",
+          "summary": "Tell apart a ratio (part to part) from a proportion (part to whole) using one concrete shared context.",
+          "objectives": [{ "code": "5Nf.11", "text": "Understand that: a proportion compares part to whole; a ratio compares part to part of two or more quantities." }],
+          "prerequisites": ["s5-fr-fdp-equivalence"],
+          "scope": "One context (e.g. coloured beads) described both ways: 3 red out of 8 total is a proportion; 3 red to 5 blue is a ratio. Bar model makes the parts visible.",
+          "restrictions": ["No ratio notation arithmetic or simplifying ratios.", "No percentage calculations."],
+          "targetSeconds": 280,
+          "suggestedVisuals": ["bar-model", "comparison", "fraction-bars"]
+        }
+      ]
+    },
+    {
+      "id": "s5-time",
+      "strand": "Geometry and Measure — time",
+      "title": "Time",
+      "topics": [
+        {
+          "id": "s5-time-subsecond",
+          "title": "Time intervals smaller than one second",
+          "summary": "Meet tenths and hundredths of a second as real measurements in sport and timers.",
+          "objectives": [{ "code": "5Gt.01", "text": "Understand time intervals less than one second." }],
+          "prerequisites": ["s5-pv-decimal-digits"],
+          "scope": "Tenths and hundredths of a second on stopwatch displays, e.g. sprint times. Connect to decimal place value; no physics units needed.",
+          "restrictions": ["No milliseconds conversion beyond display reading.", "No speed calculations."],
+          "targetSeconds": 240,
+          "suggestedVisuals": ["number-line", "comparison", "clock"]
+        },
+        {
+          "id": "s5-time-zones",
+          "title": "Comparing times across time zones",
+          "summary": "Read analogue and digital 12- and 24-hour times and find what time it is in another place.",
+          "objectives": [{ "code": "5Gt.02", "text": "Compare times between time zones in digital notation (12- and 24-hour) and on analogue clocks." }],
+          "prerequisites": ["s5-time-subsecond"],
+          "scope": "Whole-hour time-zone offsets only, with analogue and digital reading side by side. e.g. London 14:00 while it is 19:30 somewhere is out — keep offsets to whole hours.",
+          "restrictions": ["Whole-hour offsets only.", "No daylight-saving complications."],
+          "targetSeconds": 300,
+          "suggestedVisuals": ["clock", "comparison", "steps"]
+        },
+        {
+          "id": "s5-time-intervals",
+          "title": "Time intervals that bridge through 60",
+          "summary": "Find elapsed times in seconds, minutes and hours when the interval crosses an hour or minute boundary.",
+          "objectives": [{ "code": "5Gt.03", "text": "Find time intervals in seconds, minutes and hours that bridge through 60." }],
+          "prerequisites": ["s5-time-zones"],
+          "scope": "Counting on across a 60 boundary, e.g. 10:45 to 11:20. Use a number-line bridge strategy: to the next hour, then onward.",
+          "restrictions": ["No crossing more than one hour boundary.", "No negative intervals."],
+          "targetSeconds": 300,
+          "suggestedVisuals": ["number-line", "clock", "steps"]
+        },
+        {
+          "id": "s5-time-decimal",
+          "title": "Time intervals as decimals and mixed units",
+          "summary": "Express the same interval as a decimal and in mixed units, like 1.5 hours and 1 hour 30 minutes.",
+          "objectives": [{ "code": "5Gt.04", "text": "Recognise that a time interval can be expressed as a decimal, or in mixed units." }],
+          "prerequisites": ["s5-time-intervals", "s5-pv-decimal-digits"],
+          "scope": "Quarters and halves as decimals (0.25, 0.5, 0.75 hours) and mixed units. The key misconception: 1.5 hours is NOT 1 hour 50 minutes.",
+          "restrictions": ["Quarters and halves only.", "No seconds-to-decimal conversions."],
+          "targetSeconds": 280,
+          "suggestedVisuals": ["equation", "clock", "comparison", "number-line"]
+        }
+      ]
+    },
+    {
+      "id": "s5-angles-shapes",
+      "strand": "Geometry and Measure — geometrical reasoning, shapes and measurements",
+      "title": "Angles, shapes and symmetry",
+      "topics": [
+        {
+          "id": "s5-gg-triangles",
+          "title": "Classifying triangles",
+          "summary": "Identify, describe, classify and sketch isosceles, equilateral and scalene triangles using angles and symmetry.",
+          "objectives": [{ "code": "5Gg.01", "text": "Identify, describe, classify and sketch isosceles, equilateral or scalene triangles, including reference to angles and symmetrical properties." }],
+          "prerequisites": [],
+          "scope": "The three triangle types by side length, plus what that means for their angles and mirror symmetry.",
+          "restrictions": ["No angle-sum calculations (that is a separate topic).", "No right-angled naming conventions beyond recognition."],
+          "targetSeconds": 300,
+          "suggestedVisuals": ["angle", "steps", "comparison"]
+        },
+        {
+          "id": "s5-gg-3d-nets",
+          "title": "3D shapes and cube nets",
+          "summary": "Describe and sketch 3D shapes in different orientations and test which arrangements of six squares fold into a cube.",
+          "objectives": [
+            { "code": "5Gg.04", "text": "Identify, describe and sketch 3D shapes in different orientations." },
+            { "code": "5Gg.05", "text": "Identify and sketch different nets for a cube." }
+          ],
+          "prerequisites": ["s5-gg-triangles"],
+          "scope": "Cube, cuboid, prism and pyramid recognition in rotated orientations; cube nets checked by imagining the fold. Keep to faces/edges/vertices vocabulary.",
+          "restrictions": ["No surface-area calculations.", "No nets for shapes other than the cube."],
+          "targetSeconds": 300,
+          "suggestedVisuals": ["steps", "comparison", "area-grid"]
+        },
+        {
+          "id": "s5-gg-symmetry",
+          "title": "Reflective symmetry",
+          "summary": "Use mirror lines to identify and complete symmetrical patterns on grids.",
+          "objectives": [{ "code": "5Gg.06", "text": "Use knowledge of reflective symmetry to identify and complete symmetrical patterns." }],
+          "prerequisites": ["s5-gg-triangles"],
+          "scope": "Vertical and horizontal mirror lines on square grids; complete the reflected half of a pattern. On a coordinate grid, reflected points keep the same distance from the mirror.",
+          "restrictions": ["No diagonal mirror lines.", "No rotational symmetry."],
+          "targetSeconds": 280,
+          "suggestedVisuals": ["coordinate-grid", "area-grid", "steps"]
+        },
+        {
+          "id": "s5-gg-angle-types",
+          "title": "Acute, right, obtuse and reflex angles",
+          "summary": "Estimate, compare and classify angles using the four geometric names.",
+          "objectives": [{ "code": "5Gg.07", "text": "Estimate, compare and classify angles, using geometric vocabulary including acute, right, obtuse and reflex." }],
+          "prerequisites": [],
+          "scope": "The four angle types with a right angle as the benchmark. Estimate then classify drawn angles; reflex means more than a straight line.",
+          "restrictions": ["No protractor measurement to the degree — classification ranges are enough.", "No angle sums."],
+          "targetSeconds": 280,
+          "suggestedVisuals": ["angle", "comparison", "steps"]
+        },
+        {
+          "id": "s5-gg-straight-line",
+          "title": "Angles on a straight line sum to 180 degrees",
+          "summary": "Use the straight-line angle sum to calculate a missing angle.",
+          "objectives": [{ "code": "5Gg.08", "text": "Know that the sum of the angles on a straight line is 180°, and use this to calculate missing angles on a straight line." }],
+          "prerequisites": ["s5-gg-angle-types"],
+          "scope": "Two or three angles sharing a straight line; missing angle by subtraction from 180.",
+          "restrictions": ["No angles around a point (360) in this topic.", "No vertically opposite angles."],
+          "targetSeconds": 280,
+          "suggestedVisuals": ["angle", "equation", "steps"]
+        }
+      ]
+    },
+    {
+      "id": "s5-perimeter-area",
+      "strand": "Geometry and Measure — geometrical reasoning, shapes and measurements",
+      "title": "Perimeter and area",
+      "topics": [
+        {
+          "id": "s5-pa-perimeter-area",
+          "title": "Same perimeter, different area",
+          "summary": "Estimate and measure perimeter and area of 2D shapes and discover that fixing one does not fix the other.",
+          "objectives": [{ "code": "5Gg.02", "text": "Estimate and measure perimeter and area of 2D shapes, understanding that shapes with the same perimeter can have different areas and vice versa." }],
+          "prerequisites": [],
+          "scope": "Rectangles on grid paper: 16-perimeter shapes with different areas, and same-area shapes with different perimeters. Count squares and boundary lengths.",
+          "restrictions": ["Rectangles and rectilinear shapes only.", "No formulas presented as rules to memorise — derive by counting."],
+          "targetSeconds": 300,
+          "suggestedVisuals": ["area-grid", "comparison", "steps"]
+        },
+        {
+          "id": "s5-pa-compound",
+          "title": "Compound shapes from rectangles",
+          "summary": "Draw compound shapes, split them into rectangles and squares, and calculate their perimeter and area.",
+          "objectives": [{ "code": "5Gg.03", "text": "Draw compound shapes that can be divided into rectangles and squares. Estimate, measure and calculate their perimeter and area." }],
+          "prerequisites": ["s5-pa-perimeter-area"],
+          "scope": "L-shaped and T-shaped compound shapes on grids; split two different ways and check the total area agrees. Perimeter by tracing the outside.",
+          "restrictions": ["Whole-number side lengths only.", "No slanted edges."],
+          "targetSeconds": 320,
+          "suggestedVisuals": ["area-grid", "steps", "equation"]
+        }
+      ]
+    },
+    {
+      "id": "s5-position-transform",
+      "strand": "Geometry and Measure — position and transformation",
+      "title": "Position and transformation",
+      "topics": [
+        {
+          "id": "s5-pt-coordinates",
+          "title": "Coordinates and plotting shapes",
+          "summary": "Compare the relative position of coordinates and plot points that join into lines and shapes in the first quadrant.",
+          "objectives": [
+            { "code": "5Gp.01", "text": "Compare the relative position of coordinates (with or without the aid of a grid)." },
+            { "code": "5Gp.02", "text": "Use knowledge of 2D shapes and coordinates to plot points to form lines and shapes in the first quadrant (with the aid of a grid)." }
+          ],
+          "prerequisites": [],
+          "scope": "First quadrant only, x then y. Plot three or four points and join them into a triangle or rectangle; describe relative position like 'two right and one up'.",
+          "restrictions": ["No negative coordinates.", "No coordinate rules or equations."],
+          "targetSeconds": 300,
+          "suggestedVisuals": ["coordinate-grid", "steps"]
+        },
+        {
+          "id": "s5-pt-translate",
+          "title": "Translating shapes on a grid",
+          "summary": "Slide a 2D shape without turning it and name the corresponding points before and after.",
+          "objectives": [{ "code": "5Gp.03", "text": "Translate 2D shapes, identifying the corresponding points between the original and the translated image, on square grids." }],
+          "prerequisites": ["s5-pt-coordinates"],
+          "scope": "Translations described as 'n right/left and m up/down'; every vertex moves the same way. Match original to image points.",
+          "restrictions": ["No rotations or reflections here.", "Keep the grid to 10 by 10."],
+          "targetSeconds": 280,
+          "suggestedVisuals": ["coordinate-grid", "steps", "comparison"]
+        },
+        {
+          "id": "s5-pt-reflect",
+          "title": "Reflecting shapes in mirror lines",
+          "summary": "Reflect a shape in a horizontal or vertical mirror line and use the pattern to build designs on square grids.",
+          "objectives": [{ "code": "5Gp.04", "text": "Reflect 2D shapes in both horizontal and vertical mirror lines to create patterns on square grids." }],
+          "prerequisites": ["s5-pt-translate", "s5-gg-symmetry"],
+          "scope": "Vertical and horizontal mirror lines between grid lines or through a line of squares; the image is the same distance behind the mirror.",
+          "restrictions": ["No diagonal mirror lines.", "No combined transformations."],
+          "targetSeconds": 280,
+          "suggestedVisuals": ["coordinate-grid", "steps", "comparison"]
+        }
+      ]
+    },
+    {
+      "id": "s5-statistics",
+      "strand": "Statistics and Probability — statistics",
+      "title": "Statistics",
+      "topics": [
+        {
+          "id": "s5-ss-investigate",
+          "title": "Planning a statistics investigation",
+          "summary": "Plan and conduct an investigation that answers related questions, choosing what categorical, discrete or continuous data to collect.",
+          "objectives": [{ "code": "5Ss.01", "text": "Plan and conduct an investigation to answer a set of related statistical questions, considering what data to collect (categorical, discrete and continuous data)." }],
+          "prerequisites": [],
+          "scope": "One classroom-scale investigation walked end to end: question, data type decision, collection plan. Distinguish categorical, discrete and continuous with examples.",
+          "restrictions": ["No sampling theory.", "Keep data sets to at most twenty items on screen."],
+          "targetSeconds": 300,
+          "suggestedVisuals": ["steps", "comparison", "chart"]
+        },
+        {
+          "id": "s5-ss-represent",
+          "title": "Choosing how to represent data",
+          "summary": "Record, organise and represent data, and explain why one representation fits a situation better than another.",
+          "objectives": [{ "code": "5Ss.02", "text": "Record, organise and represent categorical, discrete and continuous data. Choose and explain which representation to use in a given situation: Venn and Carroll diagrams, tally charts and frequency tables, bar charts, waffle diagrams, frequency diagrams for continuous data, line graphs, dot plots (one dot per data point)." }],
+          "prerequisites": ["s5-ss-investigate"],
+          "scope": "Build one bar chart and one line graph from a small data set, then discuss when each representation is the right tool. Name the alternatives as options.",
+          "restrictions": ["Demonstrate bar and line charts on screen; other representations are discussed not drawn.", "No pie charts."],
+          "targetSeconds": 320,
+          "suggestedVisuals": ["chart", "steps", "comparison"]
+        },
+        {
+          "id": "s5-ss-mode-median",
+          "title": "Mode and median",
+          "summary": "Find and interpret the mode and median of a data set and judge whether each suits the context.",
+          "objectives": [{ "code": "5Ss.03", "text": "Understand that the mode and median are ways to describe and summarise data sets. Find and interpret the mode and the median, and consider their appropriateness for the context." }],
+          "prerequisites": ["s5-ss-represent"],
+          "scope": "Small ordered lists: mode as most frequent, median as middle value (odd count) and the two-middle average (even count). Discuss a case where the mode is misleading.",
+          "restrictions": ["No mean or range — they are Stage 6.", "Whole-number data only."],
+          "targetSeconds": 300,
+          "suggestedVisuals": ["chart", "steps", "number-line"]
+        },
+        {
+          "id": "s5-ss-interpret",
+          "title": "Interpreting patterns in data",
+          "summary": "Read patterns within and between data sets, answer statistical questions and discuss where variation comes from.",
+          "objectives": [{ "code": "5Ss.04", "text": "Interpret data, identifying patterns, within and between data sets, to answer statistical questions. Discuss conclusions, considering the sources of variation." }],
+          "prerequisites": ["s5-ss-mode-median"],
+          "scope": "Compare two simple bar charts, e.g. class survey results across two weeks. Draw careful conclusions and say what might have caused differences.",
+          "restrictions": ["Two data sets at most.", "No correlation language."],
+          "targetSeconds": 300,
+          "suggestedVisuals": ["chart", "comparison", "steps"]
+        }
+      ]
+    },
+    {
+      "id": "s5-probability",
+      "strand": "Statistics and Probability — probability",
+      "title": "Probability",
+      "topics": [
+        {
+          "id": "s5-sp-likelihood",
+          "title": "The language of likelihood",
+          "summary": "Describe and compare the likelihood and risk of familiar events, including ones with equally likely outcomes.",
+          "objectives": [{ "code": "5Sp.01", "text": "Use the language associated with likelihood to describe and compare likelihood and risk of familiar events, including those with equally likely outcomes." }],
+          "prerequisites": [],
+          "scope": "A likelihood scale from impossible to certain with equally likely in the middle; everyday events placed on it, then fair-spinner outcomes.",
+          "restrictions": ["No fractions or numbers for probability yet.", "No risk statistics."],
+          "targetSeconds": 260,
+          "suggestedVisuals": ["number-line", "comparison", "steps"]
+        },
+        {
+          "id": "s5-sp-equally-likely",
+          "title": "Equally likely and more-or-less likely outcomes",
+          "summary": "Recognise when outcomes are equally likely and when some are more or less likely during practical activities.",
+          "objectives": [{ "code": "5Sp.02", "text": "Recognise that some outcomes are equally likely to happen and some outcomes are more (or less) likely to happen, when doing practical activities." }],
+          "prerequisites": ["s5-sp-likelihood"],
+          "scope": "Spinners and bags of counters: equal sections versus more sections of one colour. Reason about why landing on the bigger share is more likely.",
+          "restrictions": ["No probability fractions or percents.", "Physical reasoning, not formulas."],
+          "targetSeconds": 280,
+          "suggestedVisuals": ["bar-model", "comparison", "area-grid"]
+        },
+        {
+          "id": "s5-sp-experiments",
+          "title": "Chance experiments and trials",
+          "summary": "Run chance experiments with small and large numbers of trials and describe the results in probability language.",
+          "objectives": [{ "code": "5Sp.03", "text": "Conduct chance experiments or simulations, using small and large numbers of trials, and present and describe the results using the language of probability." }],
+          "prerequisites": ["s5-sp-equally-likely"],
+          "scope": "A coin or spinner experiment: a few trials look lumpy, many trials settle toward the expected share. Show results on a bar chart.",
+          "restrictions": ["No theoretical-vs-experimental probability notation.", "No computing probabilities as numbers."],
+          "targetSeconds": 300,
+          "suggestedVisuals": ["chart", "steps", "comparison"]
+        }
+      ]
+    }
+  ]
+}

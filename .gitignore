@@ -1,0 +1,12 @@
+node_modules/
+.fair-video/
+.env
+*.log
+.DS_Store
+# Model data directories are symlinked or downloaded, never committed.
+.fair-neural/
+.fair-open/
+.fair-neural
+.fair-open
+__pycache__/
+*.pyc

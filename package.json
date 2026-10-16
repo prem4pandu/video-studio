@@ -1,0 +1,34 @@
+{
+  "name": "video-studio",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Standalone concept-to-video teaching studio: curriculum-tree batch generation, local planning, narration and isolated rendering. Zero paid APIs.",
+  "engines": {
+    "node": ">=22.9"
+  },
+  "scripts": {
+    "start": "node --env-file-if-exists=.env src/fair-server.mjs",
+    "dev": "node --env-file-if-exists=.env --watch src/fair-server.mjs",
+    "test": "node --test test/*.test.mjs",
+    "generate": "node --env-file-if-exists=.env src/fair-cli.mjs",
+    "topic": "node --env-file-if-exists=.env src/fair-cli.mjs --topic",
+    "batch": "node --env-file-if-exists=.env src/fair-batch.mjs",
+    "coverage": "node --env-file-if-exists=.env src/fair-batch.mjs --coverage",
+    "check": "node --check src/fair-server.mjs && node --check src/fair-pipeline.mjs && node --check src/fair-composition.mjs && node --check src/fair-plan.mjs && node --check public/fair-studio.mjs && node --check src/fair-film.mjs && node --check src/fair-animation.mjs && node --check src/fair-base-ten.mjs && node --check src/fair-neural-voice.mjs && node --check src/fair-qwen-voice.mjs && node --check scripts/fair-setup-voice.mjs && node --check src/fair-discovery.mjs && node --check src/fair-question-card.mjs && node --check scripts/fair-render-discovery.mjs && node --check src/fair-open-config.mjs && node --check src/fair-open-render.mjs && node --check src/fair-wan.mjs && node --check scripts/fair-check-open.mjs && node --check scripts/fair-setup-comfy.mjs && node --check scripts/fair-start-comfy.mjs && node --check src/fair-curriculum.mjs && node --check src/fair-batch.mjs && node --check public/fair-curriculum.mjs",
+    "render:discovery": "node --env-file-if-exists=.env scripts/fair-render-discovery.mjs",
+    "check:open": "node --env-file-if-exists=.env scripts/fair-check-open.mjs",
+    "check:env": "node --env-file-if-exists=.env tools/fair-check-env.mjs",
+    "setup:comfy": "node scripts/fair-setup-comfy.mjs",
+    "start:comfy": "node scripts/fair-start-comfy.mjs"
+  },
+  "dependencies": {
+    "gsap": "3.14.2",
+    "hyperframes": "0.8.161",
+    "ws": "8.22.0",
+    "zod": "3.25.76"
+  },
+  "allowScripts": {
+    "esbuild@0.25.12": true
+  }
+}

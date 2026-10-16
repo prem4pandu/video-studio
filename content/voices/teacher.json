@@ -1,0 +1,10 @@
+{
+  "id": "teacher",
+  "name": "Teacher (designed Indian English)",
+  "instruct": "A warm adult female Indian English teacher with a natural educated Indian English accent. Speak conversationally to a curious child, with a friendly smile in the voice, gentle curiosity and clear, connected phrasing. Use a relaxed medium pace and natural small pauses. Emphasize numbers and mathematical relationships so their connections are clear. Sound like a caring person explaining an exciting discovery, not an announcer, not a sing-song chant, and not exaggerated or robotic. Read only the supplied text.",
+  "seed": 42,
+  "model": "mlx-community/Qwen3-TTS-12Hz-1.7B-VoiceDesign-8bit",
+  "revision": "f90d617701d9f7f4ca499291e0b57f2b3c2fd2ee",
+  "modelLicense": "Apache-2.0",
+  "notes": "Designed synthetic voice; not a clone of a real person. A fixed seed improves consistency but does not guarantee a stable speaker across scripts — the audition harness and human review remain authoritative. Create a sibling profile (e.g. teacher-bm.json) for other locales."
+}

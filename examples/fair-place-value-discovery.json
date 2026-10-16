@@ -1,0 +1,298 @@
+{
+  "title": "Why Does Two Mean Twenty?",
+  "audience": "Grade 5: foundational place-value refresher",
+  "curriculum": {
+    "requested": "Grade 5 place value",
+    "resolved": "Foundational two-digit place-value refresher; no syllabus certification or full-grade coverage",
+    "warnings": [],
+    "sources": []
+  },
+  "objectives": [
+    {
+      "id": "digit-value",
+      "text": "Explain a digit’s value in a two-digit number by counting its tens or ones."
+    }
+  ],
+  "prerequisites": [
+    "Count individual objects to ten.",
+    "Read two-digit whole numbers."
+  ],
+  "concept": {
+    "hook": "How can a single digit tell us about a whole group of cubes?",
+    "analogy": "Actual cube quantities become rods of ten; each rod keeps ten visible parts.",
+    "arc": "Count ten ones, bundle a ten, build twenty three, connect each digit to its units, then reason about four in forty two."
+  },
+  "scenes": [
+    {
+      "id": "count-and-bundle-ten",
+      "beat": "hook",
+      "title": "Can ten cubes become one group?",
+      "narration": "Let's count these cubes. One, two, three, four, five, six, seven, eight, nine, ten. Join all ten cubes into one rod. Every cube is still here. We have only grouped them. This is one ten, worth ten ones.",
+      "objectiveIds": [
+        "digit-value"
+      ],
+      "visual": {
+        "kind": "base-ten",
+        "mode": "group",
+        "number": 10,
+        "place": "ones",
+        "label": "Ten individual cubes make one group of ten",
+        "cues": [
+          {
+            "phrase": "Let's count these cubes",
+            "action": "show-objects"
+          },
+          {
+            "phrase": "Join all ten cubes",
+            "action": "transform"
+          },
+          {
+            "phrase": "This is one ten",
+            "action": "show-notation"
+          }
+        ]
+      },
+      "pauseSeconds": 0,
+      "mathClaims": [
+        {
+          "left": "10*1",
+          "right": "10"
+        },
+        {
+          "left": "1*10",
+          "right": "10"
+        }
+      ]
+    },
+    {
+      "id": "build-twenty-three",
+      "beat": "example",
+      "title": "Build twenty three",
+      "narration": "Here are twenty three single cubes. Bundle them into groups of ten. Our first group makes one ten. Our second group makes another ten. Three cubes are left over. Two tens and three ones: we write twenty three.",
+      "objectiveIds": [
+        "digit-value"
+      ],
+      "visual": {
+        "kind": "base-ten",
+        "mode": "group",
+        "number": 23,
+        "place": "ones",
+        "label": "Two groups of ten and three leftover ones",
+        "cues": [
+          {
+            "phrase": "Here are twenty three single cubes",
+            "action": "show-objects"
+          },
+          {
+            "phrase": "Bundle them into groups of ten",
+            "action": "transform"
+          },
+          {
+            "phrase": "Two tens and three ones",
+            "action": "show-notation"
+          }
+        ]
+      },
+      "pauseSeconds": 0,
+      "mathClaims": [
+        {
+          "left": "10+10+3",
+          "right": "23"
+        },
+        {
+          "left": "2*10+3",
+          "right": "23"
+        }
+      ]
+    },
+    {
+      "id": "two-counts-tens",
+      "beat": "concept",
+      "title": "What does the two tell us?",
+      "narration": "Look at our twenty three: two tens and three ones. Focus on the tens. One rod is ten. Two rods are twenty. The digit two counts the rods, not single cubes. Read the value: two tens are worth twenty.",
+      "objectiveIds": [
+        "digit-value"
+      ],
+      "visual": {
+        "kind": "base-ten",
+        "mode": "expanded",
+        "number": 23,
+        "place": "tens",
+        "label": "The digit two counts two tens, worth twenty",
+        "cues": [
+          {
+            "phrase": "Look at our twenty three",
+            "action": "show-objects"
+          },
+          {
+            "phrase": "Focus on the tens",
+            "action": "transform"
+          },
+          {
+            "phrase": "Read the value",
+            "action": "show-notation"
+          }
+        ]
+      },
+      "pauseSeconds": 0,
+      "mathClaims": [
+        {
+          "left": "2*10",
+          "right": "20"
+        }
+      ]
+    },
+    {
+      "id": "three-counts-ones",
+      "beat": "misconception",
+      "title": "Same number, different units",
+      "narration": "Our number is still twenty three. Focus on the three ones. Each loose cube is worth one. Count them: one, two, three. Read the value: three ones are worth three. Two counts tens here; three counts ones. The place tells us which units to count.",
+      "objectiveIds": [
+        "digit-value"
+      ],
+      "visual": {
+        "kind": "base-ten",
+        "mode": "expanded",
+        "number": 23,
+        "place": "ones",
+        "label": "The digit three counts three ones, worth three",
+        "cues": [
+          {
+            "phrase": "Our number is still twenty three",
+            "action": "show-objects"
+          },
+          {
+            "phrase": "Focus on the three ones",
+            "action": "transform"
+          },
+          {
+            "phrase": "Read the value",
+            "action": "show-notation"
+          }
+        ]
+      },
+      "pauseSeconds": 0,
+      "mathClaims": [
+        {
+          "left": "3*1",
+          "right": "3"
+        },
+        {
+          "left": "20+3",
+          "right": "23"
+        }
+      ]
+    },
+    {
+      "id": "think-about-forty-two",
+      "beat": "question",
+      "title": "Your turn: look at the place",
+      "narration": "In forty two, what is the value of the digit four? Think about which place it is in, and what each group is worth.",
+      "objectiveIds": [
+        "digit-value"
+      ],
+      "visual": {
+        "kind": "steps",
+        "items": [
+          "In 42, what is the value of the digit 4?"
+        ],
+        "label": "Find the value of the selected digit"
+      },
+      "pauseSeconds": 6,
+      "questionId": "four-in-forty-two",
+      "mathClaims": []
+    },
+    {
+      "id": "four-tens-are-forty",
+      "beat": "answer",
+      "title": "Let’s check with blocks",
+      "narration": "Here is forty two: four tens and two ones. Focus on the four tens. Count their value: ten, twenty, thirty, forty. Each rod holds ten cubes. Read the answer: four tens are forty. So the digit four is worth forty, not four ones.",
+      "objectiveIds": [
+        "digit-value"
+      ],
+      "visual": {
+        "kind": "base-ten",
+        "mode": "expanded",
+        "number": 42,
+        "place": "tens",
+        "label": "Four tens are worth forty",
+        "cues": [
+          {
+            "phrase": "Here is forty two",
+            "action": "show-objects"
+          },
+          {
+            "phrase": "Focus on the four tens",
+            "action": "transform"
+          },
+          {
+            "phrase": "Read the answer",
+            "action": "show-notation"
+          }
+        ]
+      },
+      "pauseSeconds": 0,
+      "questionId": "four-in-forty-two",
+      "mathClaims": [
+        {
+          "left": "4*10",
+          "right": "40"
+        },
+        {
+          "left": "40+2",
+          "right": "42"
+        }
+      ]
+    },
+    {
+      "id": "place-groups-value",
+      "beat": "recap",
+      "title": "Find the place. Count its value.",
+      "narration": "Come back to twenty three. Focus on the tens again. The two counts two groups of ten, worth twenty. Read the whole number: twenty and three make twenty three. To find a digit's value, find its place and count what those groups are worth.",
+      "objectiveIds": [
+        "digit-value"
+      ],
+      "visual": {
+        "kind": "base-ten",
+        "mode": "expanded",
+        "number": 23,
+        "place": "tens",
+        "label": "Place tells us the units; the digit counts those units",
+        "cues": [
+          {
+            "phrase": "Come back to twenty three",
+            "action": "show-objects"
+          },
+          {
+            "phrase": "Focus on the tens again",
+            "action": "transform"
+          },
+          {
+            "phrase": "Read the whole number",
+            "action": "show-notation"
+          }
+        ]
+      },
+      "pauseSeconds": 0,
+      "mathClaims": [
+        {
+          "left": "2*10",
+          "right": "20"
+        },
+        {
+          "left": "20+3",
+          "right": "23"
+        }
+      ]
+    }
+  ],
+  "quality": {
+    "reviewed": false,
+    "warnings": [
+      "Authored discovery sample, not generated by a planning model. Independent pedagogical and audiovisual review pending.",
+      "Generated teaching content needs educator review. Engagement and complete mastery are not guaranteed.",
+      "Only explicit numeric equations are checked deterministically; spoken claims and curriculum coverage also require review.",
+      "Curriculum scope is inferred from the brief; no authoritative syllabus source was supplied."
+    ]
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "purpose": "Same-passage voice comparison; user listening required before adopting a voice",
+  "text": "Look at these two rods. Each rod holds ten cubes. So two tens are worth twenty. Now add three loose cubes. Twenty and three make twenty three! The two tells us how many tens we have. It does not mean just two cubes.",
+  "direction": "A warm adult female Indian English teacher with a natural educated Indian English accent. Speak conversationally to a curious child, with a friendly smile in the voice, gentle curiosity and clear, connected phrasing. Use a relaxed medium pace and natural small pauses. Emphasize two tens and twenty to make their connection clear. Sound like a caring person explaining an exciting discovery, not an announcer, not a sing-song chant, and not exaggerated or robotic. Read only the supplied text.",
+  "qwen": {
+    "model": "mlx-community/Qwen3-TTS-12Hz-1.7B-VoiceDesign-8bit",
+    "revision": "f90d617701d9f7f4ca499291e0b57f2b3c2fd2ee",
+    "seed": 42,
+    "originalSha256": "cba228b208bae1e5a7916c47b850742ef878db43ae15967ee481587891f3fb3f",
+    "modelLicense": "Apache-2.0",
+    "runtime": "mlx-audio0.5.9 MIT"
+  },
+  "processing": "FFmpeg loudnorm I=-18 TP=-1.5 LRA=11;24000Hz mono PCM16, no edits to spoken content",
+  "files": [
+    {
+      "file": "fair-voice-qwen-audition.wav",
+      "sha256": "a08c2048778e2583d91d020ecbf6606b39f418a5a27f3e7c100eec969d0f3cb1",
+      "durationSeconds": 18.16
+    },
+    {
+      "file": "fair-voice-piper-comparison.wav",
+      "sha256": "9a7189e0e3c7b524c3e5f43b8dac795d10865c4a075ba8b9c538c43786b0da98",
+      "durationSeconds": 16.509416666666667
+    }
+  ],
+  "limitations": [
+    "Accent and naturalness require human listening.",
+    "Transcript has not been independently recognized or verified.",
+    "A fixed seed does not guarantee a stable speaker across different scripts.",
+    "This audition is not integrated into the lesson pipeline."
+  ]
+}

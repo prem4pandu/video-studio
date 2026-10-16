@@ -1,0 +1,13 @@
+{
+  "type": "authored-quality-benchmark",
+  "modelGenerated": false,
+  "localModelGenerated": false,
+  "contentReviewStatus": "pending-independent-review",
+  "safeToPublish": false,
+  "purpose": "Evaluate concrete base-ten animation and voice quality; not evidence of unattended generation reliability.",
+  "validation": {
+    "schemaAndArithmetic": "passed",
+    "modelCritique": "not-run",
+    "render": "not-run"
+  }
+}
