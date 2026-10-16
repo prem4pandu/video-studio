@@ -167,6 +167,12 @@ export function fairCreateServer(store, { env = process.env } = {}) {
         if (input.all === true) topicIds = index.map(item => item.topicId);
         else if (typeof input.unitId === 'string') topicIds = index.filter(item => item.unitId === input.unitId).map(item => item.topicId);
         else if (Array.isArray(input.topicIds)) topicIds = [...new Set(input.topicIds.filter(value => typeof value === 'string'))].slice(0, 200);
+        if (input.onlyPending === true) {
+          const done = new Set(fairCurriculumCoverage(index, store.list())
+            .filter(entry => entry.jobs.some(job => job.status === 'completed'))
+            .map(entry => entry.topicId));
+          topicIds = topicIds.filter(id => !done.has(id));
+        }
         if (!topicIds.length) throw Object.assign(new Error('Choose topics, a unit, or all to generate.'), { statusCode: 400 });
         const overrides = {};
         for (const key of ['provider', 'model', 'voiceProvider', 'generationVersion', 'avatar']) if (typeof input[key] === 'string') overrides[key] = input[key];
