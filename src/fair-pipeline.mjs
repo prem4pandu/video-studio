@@ -92,7 +92,7 @@ export async function fairRenderLesson(lesson, brief, directory, { signal, env =
   ];
   const warnings = [...lesson.quality.warnings, ...lesson.curriculum.warnings,
     'Caption and visual reveal timings are estimated within measured narration scenes. Listen to the result to review synchronization.',
-    'Presenter mouth motion follows audio energy; it is not phoneme-accurate lip sync.'];
+    ...(brief.avatar === 'none' ? [] : ['Presenter mouth motion follows audio energy; it is not phoneme-accurate lip sync.'])];
   if (durationSeconds > brief.targetSeconds * 1.15) warnings.push(`The lesson runs ${Math.round(durationSeconds)}s versus the ${brief.targetSeconds}s target; it was not sped up or cut to fit.`);
   const coverage = lesson.objectives.map(objective => ({ ...objective,
     explained: lesson.scenes.some(scene => ['concept', 'example', 'misconception'].includes(scene.beat) && scene.objectiveIds.includes(objective.id)),
