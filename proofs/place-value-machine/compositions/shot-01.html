@@ -1,0 +1,47 @@
+<template>
+  <style>
+    #root { position:absolute; inset:0; overflow:hidden; background:#2b1b16; font-family:Outfit, sans-serif; color:#f6e9cf; }
+    #shot01-world { position:absolute; inset:0; overflow:hidden; background:radial-gradient(circle at 68% 42%,#28575a 0,#123d43 22%,#2b1b16 61%,#1b110e 100%); }
+    #shot01-world::before { content:""; position:absolute; inset:0; opacity:.23; background:repeating-linear-gradient(89deg,transparent 0 72px,rgba(246,233,207,.08) 73px,transparent 75px),repeating-linear-gradient(0deg,rgba(33,25,20,.08) 0 3px,transparent 3px 12px); }
+    .shot01-pipe { position:absolute; width:74px; height:1280px; top:-100px; border-radius:40px; background:linear-gradient(90deg,#5b341d,#b77a32 42%,#f2c879 52%,#70421f); box-shadow:0 20px 50px rgba(0,0,0,.45); }
+    #shot01-pipe-a { left:92px; } #shot01-pipe-b { right:112px; width:52px; }
+    #shot01-machine { position:absolute; width:1040px; height:720px; left:620px; top:154px; border:22px solid #b77a32; border-radius:62px; background:linear-gradient(145deg,rgba(18,61,67,.95),rgba(9,29,32,.98)); box-shadow:inset 0 0 0 8px #5b341d,0 38px 65px rgba(0,0,0,.55); }
+    #shot01-rail { position:absolute; left:120px; right:100px; top:310px; height:28px; border-radius:20px; background:linear-gradient(#f2c879,#8c5528 45%,#5b341d); box-shadow:0 0 24px rgba(242,200,121,.28); }
+    #shot01-token { position:absolute; left:710px; top:210px; width:190px; height:190px; border-radius:42px; display:grid; place-items:center; color:#211914; font-size:142px; font-weight:800; letter-spacing:-.05em; background:radial-gradient(circle at 32% 24%,#ffe3a5,#ffb534 42%,#b76b18 100%); border:12px solid #f2c879; box-shadow:0 0 38px rgba(255,181,52,.72),0 20px 30px rgba(0,0,0,.4); }
+    #shot01-lever { position:absolute; left:1118px; top:568px; width:430px; height:110px; transform-origin:52px 55px; }
+    #shot01-lever-bar { position:absolute; left:42px; top:35px; width:310px; height:42px; border-radius:30px; background:linear-gradient(#f2c879,#b77a32 55%,#5b341d); box-shadow:0 14px 24px rgba(0,0,0,.35); }
+    #shot01-lever-knob { position:absolute; right:0; top:0; width:112px; height:112px; border-radius:50%; background:radial-gradient(circle at 35% 28%,#ffca67,#ffb534 45%,#8e5014); border:8px solid #f2c879; }
+    #shot01-mark { position:absolute; left:964px; top:700px; font-size:78px; font-weight:800; color:#ffb534; letter-spacing:-.04em; }
+    #shot01-hand { position:absolute; left:1420px; top:470px; width:310px; height:230px; transform-origin:80% 45%; }
+    #shot01-hand .palm { position:absolute; width:156px; height:104px; left:34px; top:55px; border-radius:58% 48% 46% 52%; background:#a9653e; border:7px solid #6e3f29; box-shadow:0 16px 26px rgba(0,0,0,.35); }
+    #shot01-hand .finger { position:absolute; width:154px; height:42px; left:126px; top:68px; border-radius:26px; background:#a9653e; border:7px solid #6e3f29; }
+    #shot01-hand .sleeve { position:absolute; width:150px; height:126px; left:-74px; top:46px; border-radius:28px; background:#b6532d; border:8px solid #71321e; }
+    #shot01-caption { position:absolute; left:188px; bottom:116px; width:720px; font-size:54px; line-height:1.12; font-weight:700; text-shadow:0 4px 18px rgba(0,0,0,.8); }
+    #shot01-wipe { position:absolute; width:260px; height:1300px; left:1950px; top:-100px; background:radial-gradient(ellipse,#ffdd95 0,#ffb534 30%,rgba(255,181,52,0) 72%); }
+  </style>
+  <div data-hf-id="hf-j2bp" id="root" data-composition-id="shot-01" data-width="1920" data-height="1080" data-duration="5" data-motion-blur="on">
+    <div data-hf-id="hf-3mdi" id="shot01-scene" class="clip" data-start="0" data-duration="5" data-track-index="1">
+      <div data-hf-id="hf-mgfn" id="shot01-world">
+        <div data-hf-id="hf-o6jk" id="shot01-pipe-a" class="shot01-pipe"></div><div data-hf-id="hf-wuff" id="shot01-pipe-b" class="shot01-pipe"></div>
+        <div data-hf-id="hf-lr9s" id="shot01-machine"><div data-hf-id="hf-76zl" id="shot01-rail"></div><div data-hf-id="hf-ommp" id="shot01-token">3</div></div>
+        <div data-hf-id="hf-3y8u" id="shot01-mark">×10</div>
+        <div data-hf-id="hf-l8x3" id="shot01-lever"><div data-hf-id="hf-nsxz" id="shot01-lever-bar"></div><div data-hf-id="hf-um6c" id="shot01-lever-knob"></div></div>
+        <div data-hf-id="hf-s64e" id="shot01-hand"><div data-hf-id="hf-gweg" class="sleeve"></div><div data-hf-id="hf-hwbk" class="palm"></div><div data-hf-id="hf-p3jv" class="finger"></div></div>
+        <div data-hf-id="hf-mvbu" id="shot01-caption">A machine that moves numbers</div>
+        <div data-hf-id="hf-63ns" id="shot01-wipe"></div>
+      </div>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo('#shot01-world',{scale:1.34,x:-340,y:-40},{scale:1,x:0,y:0,duration:2.1,ease:'power2.inOut'},0)
+      .fromTo('#shot01-lever',{rotation:-8},{rotation:28,duration:.48,ease:'back.out(1.35)'},.08)
+      .fromTo('#shot01-hand',{rotation:-5,x:80},{rotation:15,x:-35,duration:.54,ease:'power3.out'},.02)
+      .fromTo('#shot01-token',{x:0,rotation:0},{x:-540,rotation:-16,duration:1.65,ease:'power2.inOut'},.42)
+      .fromTo('#shot01-caption',{opacity:0},{opacity:1,duration:.14,ease:'power2.out'},2.18)
+      .to('#shot01-caption',{opacity:0,duration:.18,ease:'power2.in'},4.26)
+      .fromTo('#shot01-token',{scale:1},{scale:5.4,duration:.72,ease:'power3.in'},4.12)
+      .fromTo('#shot01-wipe',{x:0},{x:-2200,duration:.76,ease:'power3.in'},4.18);
+    window.__timelines['shot-01'] = tl;
+  </script>
+</template>

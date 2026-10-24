@@ -1,0 +1,368 @@
+<template>
+  <div data-hf-id="hf-zt7b"
+    id="root"
+    data-composition-id="shot-08"
+    data-duration="5"
+    data-width="1920"
+    data-height="1080"
+  >
+    <style>
+      #root {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: linear-gradient(155deg, #234b50, #102b30 48%, #2b1b16);
+        font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+        color: #f6e9cf;
+      }
+      #root * {
+        box-sizing: border-box;
+      }
+      .clip {
+        position: absolute;
+        inset: 0;
+      }
+      .halo {
+        position: absolute;
+        left: 280px;
+        right: 210px;
+        top: 60px;
+        height: 820px;
+        background: radial-gradient(
+          ellipse at 64% 36%,
+          rgba(255, 181, 52, 0.16),
+          transparent 45%
+        );
+      }
+      .floor {
+        position: absolute;
+        inset: auto 0 0;
+        height: 24%;
+        background: linear-gradient(#3a241c, #211511);
+        border-top: 8px solid #b77a32;
+      }
+      .machine {
+        position: absolute;
+        left: 650px;
+        top: 120px;
+        width: 920px;
+        height: 620px;
+        border: 18px solid #b77a32;
+        border-radius: 48px;
+        background: linear-gradient(145deg, #28575d, #102d31);
+        box-shadow:
+          0 35px 80px rgba(0, 0, 0, 0.5),
+          inset 0 0 0 5px #f2c879;
+      }
+      .chambers {
+        position: absolute;
+        left: 54px;
+        right: 54px;
+        top: 72px;
+        height: 310px;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 22px;
+      }
+      .chamber {
+        position: relative;
+        border: 9px solid #62d6cf;
+        border-radius: 28px;
+        background: rgba(5, 25, 28, 0.75);
+        display: grid;
+        place-items: center;
+      }
+      .chamber label {
+        position: absolute;
+        top: 22px;
+        font-size: 30px;
+        font-weight: 850;
+        letter-spacing: 0.1em;
+      }
+      .token {
+        margin-top: 36px;
+        width: 112px;
+        height: 134px;
+        border-radius: 26px;
+        border: 7px solid #f2c879;
+        background: #482d1a;
+        color: #ffb534;
+        font-size: 88px;
+        font-weight: 900;
+        display: grid;
+        place-items: center;
+      }
+      .rail {
+        position: absolute;
+        left: 92px;
+        right: 92px;
+        bottom: 130px;
+        height: 16px;
+        border-radius: 10px;
+        background: #5b341d;
+      }
+      .light {
+        position: absolute;
+        left: 112px;
+        bottom: 128px;
+        width: 660px;
+        height: 20px;
+        border-radius: 10px;
+        background: #ffb534;
+        box-shadow: 0 0 24px rgba(255, 181, 52, 0.72);
+        transform-origin: right center;
+      }
+      .rule {
+        position: absolute;
+        left: 440px;
+        right: 190px;
+        bottom: 95px;
+        padding: 24px 34px;
+        border: 5px solid #f2c879;
+        border-radius: 24px;
+        background: rgba(33, 25, 20, 0.92);
+        font-size: 55px;
+        font-weight: 900;
+        letter-spacing: -0.025em;
+        text-align: center;
+        box-shadow: 0 22px 48px rgba(0, 0, 0, 0.4);
+      }
+      .rule strong {
+        color: #ffb534;
+      }
+      .ari,
+      .mira {
+        position: absolute;
+        bottom: 118px;
+        width: 270px;
+        height: 560px;
+      }
+      .ari {
+        left: 120px;
+      }
+      .mira {
+        left: 395px;
+      }
+      .shadow {
+        position: absolute;
+        bottom: -15px;
+        left: 30px;
+        width: 210px;
+        height: 38px;
+        border-radius: 50%;
+        background: rgba(0, 0, 0, 0.42);
+      }
+      .body {
+        position: absolute;
+        left: 65px;
+        top: 238px;
+        width: 145px;
+        height: 255px;
+        border-radius: 68px 68px 40px 40px;
+      }
+      .ari .body {
+        background: #b85032;
+      }
+      .mira .body {
+        background: #17606a;
+      }
+      .head {
+        position: absolute;
+        left: 70px;
+        top: 72px;
+        width: 140px;
+        height: 166px;
+        border-radius: 48%;
+        background: #8f5b3d;
+      }
+      .hair {
+        position: absolute;
+        left: 59px;
+        top: 42px;
+        width: 162px;
+        height: 96px;
+        border-radius: 70px 70px 35px 35px;
+        background: #211914;
+      }
+      .eye {
+        position: absolute;
+        top: 139px;
+        width: 14px;
+        height: 17px;
+        border-radius: 50%;
+        background: #211914;
+      }
+      .eye.l {
+        left: 104px;
+      }
+      .eye.r {
+        left: 165px;
+      }
+      .mouth {
+        position: absolute;
+        left: 126px;
+        top: 192px;
+        width: 34px;
+        height: 12px;
+        border-bottom: 6px solid #48291f;
+        border-radius: 0 0 28px 28px;
+      }
+      .arm {
+        position: absolute;
+        top: 260px;
+        width: 48px;
+        height: 215px;
+        border-radius: 25px;
+        background: #8f5b3d;
+        transform-origin: 24px 18px;
+      }
+      .ari .arm {
+        left: 188px;
+        transform: rotate(-28deg);
+      }
+      .mira .arm {
+        left: 38px;
+        transform: rotate(28deg);
+      }
+      .pipe {
+        position: absolute;
+        border: 10px solid #79502b;
+        border-radius: 28px;
+        opacity: 0.65;
+      }
+      .pipe.a {
+        width: 350px;
+        height: 150px;
+        left: -80px;
+        top: 90px;
+      }
+      .pipe.b {
+        width: 270px;
+        height: 360px;
+        right: -60px;
+        top: 100px;
+      }
+    </style>
+    <div data-hf-id="hf-7tee"
+      id="s8-stage"
+      class="clip"
+      data-start="0"
+      data-duration="5"
+      data-track-index="8"
+      data-track-kind="graphics"
+    >
+      <div data-hf-id="hf-d1uq" class="halo"></div>
+      <div data-hf-id="hf-uu3x" class="pipe a"></div>
+      <div data-hf-id="hf-ys7y" class="pipe b"></div>
+      <div data-hf-id="hf-kk9u" class="floor"></div>
+      <div data-hf-id="hf-y3wa" class="ari">
+        <div data-hf-id="hf-iufw" class="shadow"></div>
+        <div data-hf-id="hf-2t3w" class="body"></div>
+        <div data-hf-id="hf-lhwe" class="arm"></div>
+        <div data-hf-id="hf-z992" class="head"></div>
+        <div data-hf-id="hf-hx7w" class="hair"></div>
+        <div data-hf-id="hf-an3v" class="eye l"></div>
+        <div data-hf-id="hf-y82t" class="eye r"></div>
+        <div data-hf-id="hf-8lyp" class="mouth"></div>
+      </div>
+      <div data-hf-id="hf-uujt" class="mira">
+        <div data-hf-id="hf-g784" class="shadow"></div>
+        <div data-hf-id="hf-6g9g" class="body"></div>
+        <div data-hf-id="hf-t1aa" class="arm"></div>
+        <div data-hf-id="hf-gwvu" class="head"></div>
+        <div data-hf-id="hf-k3d0" class="hair"></div>
+        <div data-hf-id="hf-cj7f" class="eye l"></div>
+        <div data-hf-id="hf-2md5" class="eye r"></div>
+        <div data-hf-id="hf-yj39" class="mouth"></div>
+      </div>
+      <div data-hf-id="hf-oj3b" class="machine">
+        <div data-hf-id="hf-iwwp" class="chambers">
+          <div data-hf-id="hf-pf0e" class="chamber">
+            <label data-hf-id="hf-b98o">HUNDREDS</label>
+            <div data-hf-id="hf-0dmp" class="token">4</div>
+          </div>
+          <div data-hf-id="hf-sv8i" class="chamber">
+            <label data-hf-id="hf-adql">TENS</label>
+            <div data-hf-id="hf-1kjs" class="token">7</div>
+          </div>
+          <div data-hf-id="hf-t9jj" class="chamber">
+            <label data-hf-id="hf-pyq4">ONES</label>
+            <div data-hf-id="hf-ysel" class="token">0</div>
+          </div>
+        </div>
+        <div data-hf-id="hf-qzq8" class="rail"></div>
+        <div data-hf-id="hf-k6as" class="light"></div>
+      </div>
+      <div data-hf-id="hf-rld9" class="rule">
+        <strong data-hf-id="hf-ozva">×10</strong>: EVERY DIGIT SHIFTS ONE PLACE LEFT
+      </div>
+    </div>
+    <script>
+      const tl = gsap.timeline({ paused: true });
+      tl.fromTo(
+        "#s8-stage",
+        { scale: 1.1, x: 45 },
+        {
+          scale: 1,
+          x: 0,
+          duration: 2.2,
+          ease: "power2.inOut",
+          transformOrigin: "56% 46%",
+        },
+        0,
+      )
+        .fromTo(
+          "#s8-stage .light",
+          { scaleX: 0.03 },
+          { scaleX: 1, duration: 1.05, ease: "power3.out" },
+          0.4,
+        )
+        .fromTo(
+          "#s8-stage .rule",
+          { clipPath: "inset(0 100% 0 0)" },
+          { clipPath: "inset(0 0% 0 0)", duration: 0.72, ease: "power2.out" },
+          1.0,
+        )
+        .to(
+          "#s8-stage .mira .head",
+          {
+            rotation: -5,
+            duration: 0.24,
+            ease: "power2.inOut",
+            transformOrigin: "50% 85%",
+          },
+          1.55,
+        )
+        .to(
+          "#s8-stage .mira .head",
+          { rotation: 0, duration: 0.34, ease: "back.out(1.4)" },
+          1.8,
+        )
+        .to(
+          "#s8-stage .ari .eye",
+          { scaleY: 0.18, duration: 0.1, yoyo: true, repeat: 1 },
+          2.45,
+        )
+        .to(
+          "#s8-stage .light",
+          {
+            boxShadow: "0 0 42px rgba(255,181,52,.9)",
+            duration: 0.5,
+            ease: "power1.inOut",
+          },
+          3.05,
+        )
+        .to(
+          "#s8-stage .light",
+          {
+            boxShadow: "0 0 24px rgba(255,181,52,.72)",
+            duration: 0.6,
+            ease: "power1.inOut",
+          },
+          3.55,
+        );
+      window.__timelines["shot-08"] = tl;
+    </script>
+  </div>
+</template>

@@ -1,0 +1,54 @@
+<template>
+  <style>
+    #root { position:absolute; inset:0; overflow:hidden; background:#2b1b16; font-family:Outfit,sans-serif; color:#f6e9cf; }
+    #shot03-scene { position:absolute; inset:0; overflow:hidden; background:radial-gradient(circle at 64% 42%,#17474c,#102d31 42%,#241511 90%); }
+    #shot03-machine { position:absolute; left:760px; top:84px; width:1060px; height:750px; border:18px solid #b77a32; border-radius:52px; background:#0b3035; display:flex; gap:28px; padding:92px 54px 52px; box-shadow:inset 0 0 0 7px #5b341d,0 40px 60px rgba(0,0,0,.5); }
+    .shot03-column { position:relative; flex:1; border:8px solid #b77a32; border-radius:30px; background:rgba(98,214,207,.09); }
+    .shot03-label { position:absolute; left:0; right:0; top:-58px; text-align:center; color:#f2c879; font-weight:750; font-size:35px; letter-spacing:.08em; }
+    .shot03-token { position:absolute; width:158px; height:158px; border-radius:34px; display:grid; place-items:center; font-size:114px; font-weight:800; color:#211914; background:radial-gradient(circle at 30% 24%,#ffe1a0,#ffb534 44%,#a85f16); border:10px solid #f2c879; box-shadow:0 0 28px rgba(255,181,52,.5),0 18px 25px rgba(0,0,0,.38); }
+    #shot03-two { left:1155px; top:568px; } #shot03-three { left:1468px; top:568px; }
+    #shot03-tray { position:absolute; left:984px; top:830px; width:650px; height:76px; border-radius:50%; background:linear-gradient(#b77a32,#5b341d); box-shadow:0 26px 35px rgba(0,0,0,.5); }
+    #shot03-ari { position:absolute; left:130px; top:246px; width:430px; height:650px; }
+    #shot03-ari .body { position:absolute; left:105px; top:250px; width:245px; height:330px; border-radius:100px 100px 42px 42px; background:#b6532d; border:9px solid #71321e; }
+    #shot03-ari .head { position:absolute; left:116px; top:63px; width:210px; height:220px; border-radius:48%; background:#a9653e; border:9px solid #6e3f29; }
+    #shot03-ari .hair { position:absolute; left:92px; top:26px; width:258px; height:110px; border-radius:62% 58% 38% 44%; background:#211914; }
+    #shot03-arm { position:absolute; left:438px; top:510px; width:720px; height:80px; transform-origin:18px 40px; }
+    #shot03-arm .sleeve { position:absolute; left:0; width:330px; height:80px; border-radius:40px; background:#b6532d; border:9px solid #71321e; }
+    #shot03-arm .hand { position:absolute; left:306px; width:170px; height:68px; border-radius:36px 16px 16px 36px; background:#a9653e; border:8px solid #6e3f29; }
+    #shot03-equation { position:absolute; left:160px; top:116px; font-size:68px; font-weight:750; color:#f6e9cf; }
+    #shot03-eq-a,#shot03-eq-b,#shot03-eq-c { display:inline-block; margin-right:16px; }
+    #shot03-caption { position:absolute; left:154px; bottom:78px; width:850px; padding:24px 30px; border-radius:18px; background:rgba(33,25,20,.86); font-size:50px; line-height:1.15; font-weight:650; }
+  </style>
+  <div data-hf-id="hf-l3a5" id="root" data-composition-id="shot-03" data-width="1920" data-height="1080" data-duration="8">
+    <div data-hf-id="hf-si7l" id="shot03-clip" class="clip" data-start="0" data-duration="8" data-track-index="1">
+      <div data-hf-id="hf-lech" id="shot03-scene">
+        <div data-hf-id="hf-00i2" id="shot03-machine">
+          <div data-hf-id="hf-0xqy" class="shot03-column"><div data-hf-id="hf-dddb" class="shot03-label">HUNDREDS</div></div>
+          <div data-hf-id="hf-lvcu" class="shot03-column"><div data-hf-id="hf-rxtm" class="shot03-label">TENS</div></div>
+          <div data-hf-id="hf-m9nv" class="shot03-column"><div data-hf-id="hf-ubvz" class="shot03-label">ONES</div></div>
+        </div>
+        <div data-hf-id="hf-8whr" id="shot03-tray"></div><div data-hf-id="hf-zt2j" id="shot03-two" class="shot03-token">2</div><div data-hf-id="hf-m0su" id="shot03-three" class="shot03-token">3</div>
+        <div data-hf-id="hf-rd7f" id="shot03-ari"><div data-hf-id="hf-hx7w" class="hair"></div><div data-hf-id="hf-z992" class="head"></div><div data-hf-id="hf-2t3w" class="body"></div></div>
+        <div data-hf-id="hf-cjlr" id="shot03-arm"><div data-hf-id="hf-gweg" class="sleeve"></div><div data-hf-id="hf-foeb" class="hand"></div></div>
+        <div data-hf-id="hf-yxe1" id="shot03-equation"><span data-hf-id="hf-lcw0" id="shot03-eq-a">2 tens</span><span data-hf-id="hf-bpl0" id="shot03-eq-b">+ 3 ones</span><span data-hf-id="hf-hzjq" id="shot03-eq-c">= 23</span></div>
+        <div data-hf-id="hf-s3ft" id="shot03-caption">Here is twenty-three: two tens and three ones.</div>
+      </div>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused:true });
+    tl.fromTo('#shot03-scene',{scale:1.08,x:-72},{scale:1,x:0,duration:1.05,ease:'power3.out'},0)
+      .fromTo('#shot03-equation',{opacity:0},{opacity:1,duration:.14,ease:'power2.out'},.42)
+      .fromTo('#shot03-eq-a',{opacity:0},{opacity:1,duration:.12,ease:'power2.out'},1.0)
+      .fromTo('#shot03-arm',{rotation:13},{rotation:-6,duration:.72,ease:'power4.out'},.96)
+      .fromTo('#shot03-two',{x:0,y:0,rotation:0},{x:-36,y:-406,rotation:-3,duration:1.05,ease:'power4.out'},1.28)
+      .fromTo('#shot03-eq-b',{opacity:0},{opacity:1,duration:.12,ease:'power2.out'},2.65)
+      .to('#shot03-arm',{rotation:8,duration:.44,ease:'power2.inOut'},2.7)
+      .fromTo('#shot03-three',{x:0,y:0,rotation:0},{x:18,y:-406,rotation:3,duration:1.05,ease:'power4.out'},3.0)
+      .fromTo('#shot03-eq-c',{opacity:0},{opacity:1,duration:.12,ease:'power2.out'},4.58)
+      .fromTo('#shot03-caption',{opacity:0},{opacity:1,duration:.14,ease:'power2.out'},.75)
+      .to('#shot03-caption',{opacity:0,duration:.16,ease:'power2.in'},6.25)
+      .to('#shot03-scene',{scale:1.16,x:-188,y:-22,duration:1.0,ease:'power2.inOut'},6.75);
+    window.__timelines['shot-03'] = tl;
+  </script>
+</template>

@@ -1,0 +1,386 @@
+<template>
+  <div data-hf-id="hf-qwbs"
+    id="root"
+    data-composition-id="shot-07"
+    data-duration="7"
+    data-width="1920"
+    data-height="1080"
+  >
+    <style>
+      #root {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: linear-gradient(155deg, #183d41, #102b30 50%, #2b1b16);
+        font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+        color: #f6e9cf;
+      }
+      #root * {
+        box-sizing: border-box;
+      }
+      .clip {
+        position: absolute;
+        inset: 0;
+      }
+      .floor {
+        position: absolute;
+        inset: auto 0 0;
+        height: 25%;
+        background: #2b1b16;
+        border-top: 8px solid #b77a32;
+      }
+      .machine {
+        position: absolute;
+        left: 510px;
+        top: 80px;
+        width: 1260px;
+        height: 780px;
+        border: 18px solid #b77a32;
+        border-radius: 52px;
+        background: linear-gradient(145deg, #28585e, #102d31);
+        box-shadow:
+          0 35px 80px rgba(0, 0, 0, 0.52),
+          inset 0 0 0 5px #f2c879;
+      }
+      .rail {
+        position: absolute;
+        left: 120px;
+        right: 110px;
+        top: 365px;
+        height: 22px;
+        border-radius: 12px;
+        background: linear-gradient(90deg, #5b341d, #f2c879, #5b341d);
+      }
+      .chamber {
+        position: absolute;
+        top: 90px;
+        width: 280px;
+        height: 250px;
+        border: 10px solid #62d6cf;
+        border-radius: 32px;
+        background: rgba(5, 25, 28, 0.76);
+        display: grid;
+        place-items: center;
+      }
+      .chamber.h {
+        left: 95px;
+      }
+      .chamber.t {
+        left: 485px;
+      }
+      .chamber.o {
+        left: 875px;
+      }
+      .chamber label {
+        position: absolute;
+        top: 25px;
+        font-size: 29px;
+        font-weight: 850;
+        letter-spacing: 0.11em;
+      }
+      .token {
+        width: 138px;
+        height: 160px;
+        margin-top: 45px;
+        border-radius: 30px;
+        border: 8px solid #f2c879;
+        background: #482d1a;
+        color: #ffb534;
+        font-size: 106px;
+        font-weight: 900;
+        display: grid;
+        place-items: center;
+        box-shadow: 0 0 38px rgba(255, 181, 52, 0.4);
+      }
+      .zero {
+        opacity: 0;
+      }
+      .equation {
+        position: absolute;
+        left: 238px;
+        right: 238px;
+        bottom: 70px;
+        text-align: center;
+        font-size: 94px;
+        font-weight: 950;
+        letter-spacing: -0.04em;
+        color: #f6e9cf;
+        opacity: 0;
+      }
+      .equation strong {
+        color: #ffb534;
+      }
+      .lever {
+        position: absolute;
+        left: 390px;
+        bottom: 100px;
+        width: 175px;
+        height: 360px;
+      }
+      .stick {
+        position: absolute;
+        left: 70px;
+        top: 52px;
+        width: 38px;
+        height: 250px;
+        border-radius: 25px;
+        background: linear-gradient(90deg, #5b341d, #f2c879, #79502b);
+        transform-origin: 50% 90%;
+      }
+      .knob {
+        position: absolute;
+        left: 110px;
+        top: 18px;
+        width: 92px;
+        height: 92px;
+        border-radius: 50%;
+        background: #ffb534;
+        border: 10px solid #b77a32;
+      }
+      .ari {
+        position: absolute;
+        left: 110px;
+        bottom: 120px;
+        width: 310px;
+        height: 620px;
+      }
+      .mira {
+        position: absolute;
+        right: 30px;
+        bottom: 145px;
+        width: 260px;
+        height: 560px;
+      }
+      .shadow {
+        position: absolute;
+        bottom: -18px;
+        left: 35px;
+        width: 230px;
+        height: 42px;
+        border-radius: 50%;
+        background: rgba(0, 0, 0, 0.42);
+      }
+      .body {
+        position: absolute;
+        left: 72px;
+        top: 260px;
+        width: 165px;
+        height: 285px;
+        border-radius: 75px 75px 42px 42px;
+      }
+      .ari .body {
+        background: #b85032;
+      }
+      .mira .body {
+        background: #17606a;
+      }
+      .head {
+        position: absolute;
+        left: 79px;
+        top: 82px;
+        width: 150px;
+        height: 178px;
+        border-radius: 48%;
+        background: #8f5b3d;
+      }
+      .hair {
+        position: absolute;
+        left: 68px;
+        top: 50px;
+        width: 173px;
+        height: 103px;
+        border-radius: 74px 74px 38px 38px;
+        background: #211914;
+      }
+      .eye {
+        position: absolute;
+        top: 155px;
+        width: 15px;
+        height: 18px;
+        border-radius: 50%;
+        background: #211914;
+      }
+      .eye.l {
+        left: 116px;
+      }
+      .eye.r {
+        left: 182px;
+      }
+      .mouth {
+        position: absolute;
+        left: 137px;
+        top: 212px;
+        width: 38px;
+        height: 13px;
+        border-bottom: 7px solid #48291f;
+        border-radius: 0 0 30px 30px;
+      }
+      .arm {
+        position: absolute;
+        left: 190px;
+        top: 286px;
+        width: 53px;
+        height: 236px;
+        border-radius: 28px;
+        background: #8f5b3d;
+        transform-origin: 26px 20px;
+      }
+      .mira .arm {
+        left: 45px;
+      }
+      .trace {
+        position: absolute;
+        left: 200px;
+        top: 418px;
+        width: 840px;
+        height: 12px;
+        border-radius: 8px;
+        background: #ffb534;
+        transform-origin: right center;
+        filter: drop-shadow(0 0 14px rgba(255, 181, 52, 0.7));
+        opacity: 0;
+      }
+    </style>
+    <div data-hf-id="hf-3i8i"
+      id="s7-stage"
+      class="clip"
+      data-start="0"
+      data-duration="7"
+      data-track-index="7"
+      data-track-kind="graphics"
+    >
+      <div data-hf-id="hf-kk9u" class="floor"></div>
+      <div data-hf-id="hf-oj3b" class="machine">
+        <div data-hf-id="hf-qzq8" class="rail"></div>
+        <div data-hf-id="hf-ka0z" class="trace"></div>
+        <div data-hf-id="hf-o6p2" class="chamber h">
+          <label data-hf-id="hf-b98o">HUNDREDS</label>
+          <div data-hf-id="hf-w91j" class="token four">4</div>
+        </div>
+        <div data-hf-id="hf-ufwa" class="chamber t">
+          <label data-hf-id="hf-adql">TENS</label>
+          <div data-hf-id="hf-61xp" class="token seven">7</div>
+        </div>
+        <div data-hf-id="hf-wukx" class="chamber o">
+          <label data-hf-id="hf-pyq4">ONES</label>
+          <div data-hf-id="hf-lwih" class="token zero">0</div>
+        </div>
+        <div data-hf-id="hf-jsyk" class="equation">47 × 10 = <strong data-hf-id="hf-5q1x">470</strong></div>
+      </div>
+      <div data-hf-id="hf-y3wa" class="ari">
+        <div data-hf-id="hf-iufw" class="shadow"></div>
+        <div data-hf-id="hf-2t3w" class="body"></div>
+        <div data-hf-id="hf-lhwe" class="arm"></div>
+        <div data-hf-id="hf-z992" class="head"></div>
+        <div data-hf-id="hf-hx7w" class="hair"></div>
+        <div data-hf-id="hf-an3v" class="eye l"></div>
+        <div data-hf-id="hf-y82t" class="eye r"></div>
+        <div data-hf-id="hf-8lyp" class="mouth"></div>
+      </div>
+      <div data-hf-id="hf-9198" class="lever">
+        <div data-hf-id="hf-4uk0" class="stick"></div>
+        <div data-hf-id="hf-0pvg" class="knob"></div>
+      </div>
+      <div data-hf-id="hf-uujt" class="mira">
+        <div data-hf-id="hf-g784" class="shadow"></div>
+        <div data-hf-id="hf-6g9g" class="body"></div>
+        <div data-hf-id="hf-t1aa" class="arm"></div>
+        <div data-hf-id="hf-gwvu" class="head"></div>
+        <div data-hf-id="hf-k3d0" class="hair"></div>
+        <div data-hf-id="hf-cj7f" class="eye l"></div>
+        <div data-hf-id="hf-2md5" class="eye r"></div>
+        <div data-hf-id="hf-yj39" class="mouth"></div>
+      </div>
+    </div>
+    <script>
+      const tl = gsap.timeline({ paused: true });
+      tl.set("#s7-stage .stick", { rotation: 24 }, 0)
+        .set("#s7-stage .ari .arm", { rotation: -52 }, 0)
+        .set("#s7-stage .mira .arm", { rotation: 30 }, 0)
+        .to(
+        "#s7-stage .stick",
+        { rotation: -35, duration: 0.45, ease: "power3.inOut" },
+        0.15,
+      )
+        .to(
+          "#s7-stage .ari",
+          {
+            y: 14,
+            scaleY: 0.97,
+            duration: 0.25,
+            ease: "power2.in",
+            transformOrigin: "50% 100%",
+          },
+          0.1,
+        )
+        .to(
+          "#s7-stage .ari",
+          { y: 0, scaleY: 1, duration: 0.32, ease: "back.out(1.5)" },
+          0.38,
+        )
+        .fromTo(
+          "#s7-stage .four",
+          { x: 390 },
+          { x: 0, duration: 1.1, ease: "power3.inOut" },
+          0.65,
+        )
+        .fromTo(
+          "#s7-stage .seven",
+          { x: 390 },
+          { x: 0, duration: 1.1, ease: "power3.inOut" },
+          0.78,
+        )
+        .to("#s7-stage .trace", { opacity: 1, duration: 0.08 }, 0.68)
+        .fromTo(
+          "#s7-stage .trace",
+          { scaleX: 0.08 },
+          { scaleX: 1, duration: 1.05, ease: "power3.out" },
+          0.68,
+        )
+        .to("#s7-stage .trace", { opacity: 0, duration: 0.25 }, 1.72)
+        .to(
+          "#s7-stage .zero",
+          { opacity: 1, duration: 0.35, ease: "power2.out" },
+          1.78,
+        )
+        .fromTo(
+          "#s7-stage .equation",
+          { opacity: 0, scale: 0.92 },
+          { opacity: 1, scale: 1, duration: 0.5, ease: "back.out(1.35)" },
+          2.55,
+        )
+        .to(
+          "#s7-stage .ari",
+          {
+            rotation: 3,
+            duration: 0.42,
+            ease: "power2.inOut",
+            transformOrigin: "50% 100%",
+          },
+          3.35,
+        )
+        .to(
+          "#s7-stage .mira .head",
+          {
+            rotation: -5,
+            duration: 0.25,
+            ease: "power2.inOut",
+            transformOrigin: "50% 85%",
+          },
+          4.45,
+        )
+        .to(
+          "#s7-stage .mira .head",
+          { rotation: 0, duration: 0.35, ease: "back.out(1.4)" },
+          4.72,
+        )
+        .to(
+          "#s7-stage .mira .arm",
+          { rotation: 12, duration: 0.45, ease: "power2.inOut" },
+          5.0,
+        );
+      window.__timelines["shot-07"] = tl;
+    </script>
+  </div>
+</template>

@@ -1,0 +1,430 @@
+<template>
+  <div data-hf-id="hf-0rcc"
+    id="root"
+    data-composition-id="shot-05"
+    data-duration="9"
+    data-width="1920"
+    data-height="1080"
+  >
+    <style>
+      #root {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: linear-gradient(
+          180deg,
+          #183d41 0%,
+          #102b30 42%,
+          #2b1b16 100%
+        );
+        font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+        color: #f6e9cf;
+      }
+      #root * {
+        box-sizing: border-box;
+      }
+      .clip {
+        position: absolute;
+        inset: 0;
+      }
+      .wall {
+        position: absolute;
+        inset: 0;
+        background:
+          radial-gradient(
+            ellipse at 60% 24%,
+            rgba(98, 214, 207, 0.16),
+            transparent 36%
+          ),
+          linear-gradient(
+            90deg,
+            transparent 0 11%,
+            rgba(246, 233, 207, 0.035) 11.2% 11.5%,
+            transparent 11.7% 88%,
+            rgba(246, 233, 207, 0.035) 88.2% 88.5%,
+            transparent 88.7%
+          );
+      }
+      .floor {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 27%;
+        background: linear-gradient(180deg, #3a241c, #211511);
+        border-top: 8px solid #b77a32;
+      }
+      .pipe {
+        position: absolute;
+        border: 12px solid #79502b;
+        border-radius: 30px;
+        opacity: 0.72;
+      }
+      .pipe.a {
+        width: 420px;
+        height: 170px;
+        left: -90px;
+        top: 90px;
+      }
+      .pipe.b {
+        width: 310px;
+        height: 410px;
+        right: -80px;
+        top: 120px;
+      }
+      .machine {
+        position: absolute;
+        right: 120px;
+        top: 120px;
+        width: 720px;
+        height: 680px;
+        border: 18px solid #b77a32;
+        border-radius: 46px;
+        background: linear-gradient(145deg, #234c50, #102e32);
+        box-shadow:
+          0 30px 70px rgba(0, 0, 0, 0.5),
+          inset 0 0 0 5px #f2c879;
+      }
+      .rails {
+        position: absolute;
+        left: 70px;
+        right: 70px;
+        top: 220px;
+        height: 240px;
+        border-top: 16px solid #b77a32;
+        border-bottom: 16px solid #5b341d;
+      }
+      .rail-arrow {
+        position: absolute;
+        left: 98px;
+        top: 305px;
+        width: 460px;
+        height: 18px;
+        background: #f2c879;
+        border-radius: 10px;
+        transform-origin: right center;
+      }
+      .rail-arrow:before {
+        content: "";
+        position: absolute;
+        left: -28px;
+        top: -17px;
+        border-top: 26px solid transparent;
+        border-bottom: 26px solid transparent;
+        border-right: 38px solid #f2c879;
+      }
+      .rail-caption {
+        position: absolute;
+        left: 95px;
+        top: 350px;
+        font-size: 34px;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        color: #f2c879;
+      }
+      .chamber {
+        position: absolute;
+        top: 44px;
+        width: 190px;
+        height: 150px;
+        border: 8px solid #62d6cf;
+        border-radius: 22px;
+        background: rgba(8, 28, 31, 0.72);
+        display: grid;
+        place-items: center;
+      }
+      .chamber.h {
+        left: 48px;
+      }
+      .chamber.t {
+        left: 263px;
+      }
+      .chamber.o {
+        left: 478px;
+      }
+      .chamber span {
+        font-size: 34px;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+      }
+      .chamber strong {
+        position: absolute;
+        top: 104px;
+        font-size: 29px;
+        letter-spacing: 0.04em;
+      }
+      .mira,
+      .ari {
+        position: absolute;
+        bottom: 140px;
+        width: 300px;
+        height: 620px;
+      }
+      .ari {
+        left: 120px;
+      }
+      .mira {
+        left: 470px;
+      }
+      .shadow {
+        position: absolute;
+        bottom: -18px;
+        left: 35px;
+        width: 230px;
+        height: 42px;
+        border-radius: 50%;
+        background: rgba(0, 0, 0, 0.42);
+      }
+      .body {
+        position: absolute;
+        left: 72px;
+        top: 250px;
+        width: 160px;
+        height: 290px;
+        border-radius: 74px 74px 44px 44px;
+        box-shadow: 0 18px 35px rgba(0, 0, 0, 0.34);
+      }
+      .ari .body {
+        background: #b85032;
+      }
+      .mira .body {
+        background: #17606a;
+      }
+      .head {
+        position: absolute;
+        left: 78px;
+        top: 80px;
+        width: 150px;
+        height: 170px;
+        border-radius: 48% 48% 44% 44%;
+        background: #8f5b3d;
+        box-shadow: inset -14px -12px rgba(67, 38, 28, 0.2);
+      }
+      .hair {
+        position: absolute;
+        left: 68px;
+        top: 52px;
+        width: 170px;
+        height: 96px;
+        border-radius: 70px 70px 38px 38px;
+        background: #211914;
+      }
+      .mira .hair {
+        height: 112px;
+        border-radius: 80px 80px 34px 34px;
+      }
+      .eye {
+        position: absolute;
+        top: 151px;
+        width: 15px;
+        height: 18px;
+        border-radius: 50%;
+        background: #211914;
+      }
+      .eye.l {
+        left: 116px;
+      }
+      .eye.r {
+        left: 181px;
+      }
+      .mouth {
+        position: absolute;
+        left: 139px;
+        top: 204px;
+        width: 34px;
+        height: 12px;
+        border-bottom: 6px solid #48291f;
+        border-radius: 0 0 30px 30px;
+      }
+      .arm {
+        position: absolute;
+        top: 280px;
+        width: 52px;
+        height: 230px;
+        border-radius: 28px;
+        background: #8f5b3d;
+        transform-origin: 26px 22px;
+      }
+      .arm.left {
+        left: 58px;
+      }
+      .arm.right {
+        left: 197px;
+      }
+      .plate {
+        position: absolute;
+        left: 310px;
+        top: 440px;
+        width: 180px;
+        height: 140px;
+        border: 12px solid #b77a32;
+        border-radius: 30px;
+        background: #f6e9cf;
+        color: #211914;
+        display: grid;
+        place-items: center;
+        box-shadow: 0 20px 30px rgba(0, 0, 0, 0.35);
+        transform-style: preserve-3d;
+      }
+      .plate .zero {
+        font-size: 104px;
+        font-weight: 900;
+      }
+      .plate .truth {
+        display: none;
+        text-align: center;
+        font-size: 30px;
+        font-weight: 900;
+        line-height: 1.05;
+        letter-spacing: 0.03em;
+      }
+      .tag {
+        position: absolute;
+        left: 160px;
+        top: 88px;
+        padding: 17px 28px;
+        border: 3px solid #f2c879;
+        border-radius: 999px;
+        background: #2b1b16;
+        color: #f2c879;
+        font-size: 30px;
+        font-weight: 850;
+        letter-spacing: 0.06em;
+        opacity: 0;
+      }
+      .tokens {
+        position: absolute;
+        left: 470px;
+        bottom: 115px;
+        display: flex;
+        gap: 20px;
+      }
+      .token {
+        width: 88px;
+        height: 110px;
+        border-radius: 24px;
+        border: 7px solid #f2c879;
+        background: #482d1a;
+        color: #ffb534;
+        font-size: 68px;
+        font-weight: 900;
+        display: grid;
+        place-items: center;
+        box-shadow: 0 0 28px rgba(255, 181, 52, 0.35);
+      }
+    </style>
+    <div data-hf-id="hf-91f4"
+      id="s5-stage"
+      class="clip"
+      data-start="0"
+      data-duration="9"
+      data-track-index="5"
+      data-track-kind="graphics"
+    >
+      <div data-hf-id="hf-a9vw" class="wall"></div>
+      <div data-hf-id="hf-uu3x" class="pipe a"></div>
+      <div data-hf-id="hf-ys7y" class="pipe b"></div>
+      <div data-hf-id="hf-kk9u" class="floor"></div>
+      <div data-hf-id="hf-oj3b" class="machine">
+        <div data-hf-id="hf-o6p2" class="chamber h"><span data-hf-id="hf-hdrd">2</span><strong data-hf-id="hf-k6c3">HUNDREDS</strong></div>
+        <div data-hf-id="hf-ufwa" class="chamber t"><span data-hf-id="hf-hs2e">3</span><strong data-hf-id="hf-qd32">TENS</strong></div>
+        <div data-hf-id="hf-wukx" class="chamber o"><span data-hf-id="hf-i6df">0</span><strong data-hf-id="hf-w7n7">ONES</strong></div>
+        <div data-hf-id="hf-rmz7" class="rails"></div>
+        <div data-hf-id="hf-jgz0" class="rail-arrow"></div>
+        <div data-hf-id="hf-g1pv" class="rail-caption">EVERY DIGIT MOVES</div>
+      </div>
+      <div data-hf-id="hf-y3wa" class="ari">
+        <div data-hf-id="hf-iufw" class="shadow"></div>
+        <div data-hf-id="hf-2t3w" class="body"></div>
+        <div data-hf-id="hf-p8ac" class="arm right"></div>
+        <div data-hf-id="hf-z992" class="head"></div>
+        <div data-hf-id="hf-hx7w" class="hair"></div>
+        <div data-hf-id="hf-an3v" class="eye l"></div>
+        <div data-hf-id="hf-y82t" class="eye r"></div>
+        <div data-hf-id="hf-8lyp" class="mouth"></div>
+      </div>
+      <div data-hf-id="hf-uujt" class="mira">
+        <div data-hf-id="hf-g784" class="shadow"></div>
+        <div data-hf-id="hf-6g9g" class="body"></div>
+        <div data-hf-id="hf-9tah" class="arm left"></div>
+        <div data-hf-id="hf-gwvu" class="head"></div>
+        <div data-hf-id="hf-k3d0" class="hair"></div>
+        <div data-hf-id="hf-cj7f" class="eye l"></div>
+        <div data-hf-id="hf-2md5" class="eye r"></div>
+        <div data-hf-id="hf-yj39" class="mouth"></div>
+      </div>
+      <div data-hf-id="hf-69d8" class="plate">
+        <span data-hf-id="hf-iim1" class="zero">0</span
+        ><span data-hf-id="hf-6idv" class="truth">EMPTY<br data-hf-id="hf-x5px" />ONES PLACE</span>
+      </div>
+      <div data-hf-id="hf-xbb9" class="tag">NOT DECORATION</div>
+      <div data-hf-id="hf-su7q" class="tokens">
+        <div data-hf-id="hf-0dmp" class="token">4</div>
+        <div data-hf-id="hf-1kjs" class="token">7</div>
+      </div>
+    </div>
+    <script>
+      const tl = gsap.timeline({ paused: true });
+      tl.set("#s5-stage .mira .arm.left", { rotation: -62 }, 0)
+        .set("#s5-stage .ari .arm.right", { rotation: -42 }, 0)
+        .fromTo(
+        "#s5-stage .ari",
+        { x: -55 },
+        { x: 0, duration: 0.7, ease: "power3.out" },
+        0,
+      )
+        .fromTo(
+          "#s5-stage .plate",
+          { rotationY: 0, scale: 0.88 },
+          { scale: 1, duration: 0.35, ease: "back.out(1.5)" },
+          0.45,
+        )
+        .to(
+          "#s5-stage .ari .arm.right",
+          { rotation: -18, duration: 0.45, ease: "power2.inOut" },
+          0.55,
+        )
+        .to(
+          "#s5-stage .plate",
+          { rotationY: 180, duration: 0.65, ease: "power3.inOut" },
+          2.55,
+        )
+        .set("#s5-stage .plate .zero", { display: "none" }, 2.87)
+        .set(
+          "#s5-stage .plate .truth",
+          { display: "block", rotationY: 180 },
+          2.87,
+        )
+        .fromTo(
+          "#s5-stage .rail-arrow",
+          { scaleX: 0.05 },
+          { scaleX: 1, duration: 0.85, ease: "power3.out" },
+          3.35,
+        )
+        .fromTo(
+          "#s5-stage .tag",
+          { opacity: 0, scale: 0.8 },
+          { opacity: 1, scale: 1, duration: 0.4, ease: "back.out(1.4)" },
+          4.2,
+        )
+        .to(
+          "#s5-stage .mira .arm.left",
+          { rotation: -88, duration: 0.5, ease: "power2.inOut" },
+          4.4,
+        )
+        .fromTo(
+          "#s5-stage .tokens",
+          { x: -80, opacity: 0 },
+          { x: 0, opacity: 1, duration: 0.85, ease: "power3.out" },
+          7.25,
+        )
+        .to(
+          "#s5-stage .mira .arm.left",
+          { rotation: -50, duration: 0.45, ease: "power2.inOut" },
+          7.35,
+        );
+      window.__timelines["shot-05"] = tl;
+    </script>
+  </div>
+</template>
