@@ -11,6 +11,7 @@ const toAt = (source, selector) => Number(source.match(new RegExp(`\\.to\\('${se
 const setAt = (source, selector) => Number(source.match(new RegExp(`\\.set\\('${selector.replace(/[.*+?^${}()|[\\]\\]/g, '\\$&')}'[\\s\\S]*?\\},\\s*([\\d.]+)\\)`))?.[1]);
 
 test('KooBits place-value lesson is a complete, offline 23 × 10 learning loop', async () => {
+  const narrationBuilder = await readFile(resolve('scripts/render-koobits-narration.mjs'), 'utf8');
   const files = {
     index: 'index.html',
     hook: 'compositions/hook.html',
@@ -78,6 +79,9 @@ test('KooBits place-value lesson is a complete, offline 23 × 10 learning loop',
   assert.match(source.guided, /Guided example/);
   assert.match(source.guided, /41 × 10 = \?/);
   assert.match(source.guided, /41 × 10 = 410/);
+  assert.match(narrationBuilder, /row\.end - row\.start - 0\.2/, 'narration must reserve silence before the next cue');
+  assert.match(narrationBuilder, /atrim=0:\$\{row\.budget\.toFixed\(3\)\}/, 'every generated line must be trimmed to its authored cue window');
+  assert.match(narrationBuilder, /rate > 1\.18/, 'copy that cannot fit naturally must fail instead of overlapping the next voice');
   assert.match(source.independent, /Independent example/);
   assert.match(source.independent, /47 × 10 = <span[^>]*class="answer-line"[^>]*><\/span>/);
   assert.match(source.independent, /id="independent-answer"[^>]*>47 × 10 = 470<\/div>/);

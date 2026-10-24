@@ -73,7 +73,7 @@ Runtime: **4:40 exactly**. Narration quoted below is final copy. Bracketed direc
 | 3:05–3:09 | “One ten, with a value of ten.” | One ten-rod settles in T. |
 | 3:09–3:12 | “What belongs in the empty ones place?” | O remains empty. |
 | 3:12–3:15 | **[Silence for three seconds.]** | Hold. |
-| 3:15–3:20 | “Zero ones. Four hundred plus ten is four hundred ten. Forty-one times ten equals four hundred ten.” | Zero seats in O; reveal `41 × 10 = 410`. Success outline appears only after H/T/O verification. |
+| 3:15–3:20 | “Zero ones. Forty-one times ten is four hundred ten.” | Zero seats in O; reveal `41 × 10 = 410`. Success outline appears only after H/T/O verification. |
 
 ## 3:20–4:10 — Independent example: 47 × 10
 
@@ -97,7 +97,7 @@ Runtime: **4:40 exactly**. Narration quoted below is final copy. Bracketed direc
 | 4:23–4:28 | “Then zero records the empty ones place.” | Empty O holds, then zero seats. |
 | 4:28–4:33 | “Twenty-three became two hundred thirty.” | `23 × 10 = 230` with H=2, T=3, O=0. |
 | 4:33–4:36 | “Forty-one became four hundred ten.” | `41 × 10 = 410` with H=4, T=1, O=0. |
-| 4:36–4:40 | “And forty-seven became four hundred seventy. Value changes because place changes.” | `47 × 10 = 470`. Final line: `Value changes because place changes`. Hold through final frame. |
+| 4:36–4:40 | “Forty-seven became four hundred seventy. Place changes value.” | `47 × 10 = 470`. Final line: `Value changes because place changes`. Hold through final frame. |
 
 ## Caption and pronunciation notes
 
