@@ -108,7 +108,7 @@ export async function fairServerConfig(env, { fetchImpl = fetch, command = fairC
   const openBlockers = [...openSource.blockers, ...(!piper && !openKokoro && !qwen ? ['Install Qwen3-TTS, Piper or Kokoro for open-source narration.'] : [])];
   return { avatars: FAIR_AVATARS, models, pricing: FAIR_PRICING, voiceOptions,
     generationVersions: [
-      { id: 'quality', name: 'Quality lesson', available: renderAvailable, recommended: true, description: 'Recommended HyperFrames lesson with enforced teaching structure, supported maths visuals, and learner response time.' },
+      { id: 'quality', name: 'Quality lesson', available: renderAvailable, recommended: true, description: 'Dedicated KooBits-inspired teaching film with staged attention, enforced learning structure, supported maths visuals, and protected learner response time.' },
       { id: 'classic', name: 'Classic lesson', available: renderAvailable, description: 'The existing illustrated lessons with HyperFrames animation and your chosen narrator.' },
       { id: 'open-source', name: 'Open-source video', available: openBlockers.length === 0, description: 'Wan2.2 footage with Manim teaching graphics, Qwen planning and local narration. No paid API fallback.', blockers: openBlockers },
     ],

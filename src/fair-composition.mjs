@@ -111,7 +111,7 @@ export function fairCaptionChunks(text, startSeconds, durationSeconds) {
 }
 
 export async function fairCompose(lesson, tracks, brief, directory) {
-  if (lesson.scenes.some(scene => scene.visual.kind === 'base-ten') || brief.avatar === 'none') return fairFilmCompose(lesson, tracks, brief, directory, { visualHtml, fairAvatarSvg, fairCaptionChunks });
+  if (brief.generationVersion === 'quality' || lesson.scenes.some(scene => scene.visual.kind === 'base-ten') || brief.avatar === 'none') return fairFilmCompose(lesson, tracks, brief, directory, { visualHtml, fairAvatarSvg, fairCaptionChunks });
   await mkdir(directory, { recursive: true });
   await copyFile(require.resolve('gsap/dist/gsap.min.js'), join(directory, 'gsap.min.js'));
   const avatar = FAIR_AVATARS.find(item => item.id === brief.avatar) || FAIR_AVATARS[0];

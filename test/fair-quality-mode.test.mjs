@@ -25,6 +25,8 @@ function fixture() {
       scene('mistake', 'misconception', 'The digit two does not mean two ones here. Its tens column makes its value twenty.'),
       scene('try', 'question', 'In forty two, what is the value of the digit four?', { questionId: 'q-one', pauseSeconds: 5 }),
       scene('answer', 'answer', 'Four is in the tens place, so its value is forty.', { questionId: 'q-one' }),
+      scene('transfer', 'question', 'In sixty seven, what is the value of the digit six?', { questionId: 'q-two', pauseSeconds: 5 }),
+      scene('transfer-answer', 'answer', 'Six is in the tens place, so its value is sixty.', { questionId: 'q-two' }),
       scene('recap', 'recap', 'Use the column and the blocks to explain each digit value. Then check your answer.'),
     ],
   };
@@ -37,6 +39,8 @@ test('quality is accepted and keeps the HyperFrames renderer route', () => {
   assert.equal(fairRendererKind({ generationVersion: 'open-source' }), 'open-source');
   assert.match(buildPlanningPrompt(brief), /Quality mode is strict/);
   assert.match(buildPlanningPrompt(brief), /at least five seconds of protected response time/);
+  assert.match(buildPlanningPrompt(brief), /KooBits-inspired teaching-film structure/);
+  assert.match(buildPlanningPrompt(brief), /independent transfer question/);
 });
 
 test('server advertises available quality mode as the recommended default', async () => {
@@ -67,6 +71,10 @@ test('quality gates require full pedagogy, supported base-ten visuals, and respo
   const rushed = fixture();
   rushed.scenes[4].pauseSeconds = 3;
   assert.throws(() => validateLesson(rushed, brief), /at least five seconds of response time in: try/);
+
+  const shallowPractice = fixture();
+  shallowPractice.scenes.splice(6, 2);
+  assert.throws(() => validateLesson(shallowPractice, brief), /guided question and a separate independent transfer question/);
 });
 
 test('classic mode retains its existing compatibility gates', () => {

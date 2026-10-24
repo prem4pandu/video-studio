@@ -107,3 +107,29 @@ test('film composition registers matching subscene timelines, isolates question 
     assert.ok(composition.captions.every(caption => caption.end > caption.start));
   } finally { await rm(directory, { recursive: true, force: true }); }
 });
+
+test('quality mode always uses the approved teaching-film treatment for non-base-ten scenes', async () => {
+  const directory = await mkdtemp(join(tmpdir(), 'fair-quality-film-'));
+  try {
+    const qualityScene = {
+      id: 'quality-step', title: 'Focus on the clue', beat: 'concept',
+      narration: 'Look at the clue and connect it to the main idea.', pauseSeconds: 0,
+      visual: { kind: 'steps', label: 'One visible teaching action', items: ['Connect the clue to the idea.'] },
+    };
+    const qualityTrack = { sceneId: qualityScene.id, file: 'audio/quality.wav', durationSeconds: 4, envelope: [] };
+    const composition = await fairCompose(
+      { title: 'Quality film', audience: 'Primary', scenes: [qualityScene] },
+      [qualityTrack],
+      { avatar: 'mira', generationVersion: 'quality' },
+      directory,
+    );
+
+    assert.equal(composition.animation.type, 'koobits-quality-v1');
+    assert.equal(composition.animation.attention, 'purposeful pointers and staged reveals');
+    const child = await readFile(join(directory, 'scenes', 'quality-step.html'), 'utf8');
+    assert.match(child, /class="film-frame quality-film/);
+    assert.match(child, /class="attention-pointer"/);
+    assert.match(child, /LEARNING GOAL/);
+    assert.match(child, /Focus here/);
+  } finally { await rm(directory, { recursive: true, force: true }); }
+});

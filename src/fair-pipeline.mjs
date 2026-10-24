@@ -95,7 +95,9 @@ export async function fairRenderLesson(lesson, brief, directory, { signal, env =
     const beats = new Set(lesson.scenes.map(scene => scene.beat));
     const requiredBeats = ['hook', 'concept', 'example', 'misconception', 'question', 'answer', 'recap'];
     checks.unshift(
+      { name: 'Approved visual treatment', passed: composition.animation?.type === 'koobits-quality-v1', detail: 'Quality mode rendered through the dedicated KooBits-inspired teaching-film treatment.' },
       { name: 'Complete teaching loop', passed: requiredBeats.every(beat => beats.has(beat)), detail: 'Hook, concept, example, misconception repair, learner question, explained answer and recap are present.' },
+      { name: 'Guided and independent practice', passed: lesson.scenes.filter(scene => scene.beat === 'question').length >= 2, detail: 'The lesson includes both a guided question and a separate transfer question.' },
       { name: 'Protected response time', passed: lesson.scenes.filter(scene => scene.beat === 'question').every(scene => scene.pauseSeconds >= 5), detail: 'Every learner question reserves at least five seconds before feedback.' },
     );
   }
