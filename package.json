@@ -19,6 +19,8 @@
     "render:discovery": "node --env-file-if-exists=.env scripts/fair-render-discovery.mjs",
     "check:open": "node --env-file-if-exists=.env scripts/fair-check-open.mjs",
     "check:proof": "node --env-file-if-exists=.env src/fair-proof-quality.mjs proofs/place-value-machine/out.mp4 60",
+    "render:cinematic-benchmark": "node --env-file-if-exists=.env scripts/fair-render-cinematic-benchmark.mjs",
+    "check:cinematic-benchmark": "node --env-file-if-exists=.env src/fair-cinematic-quality.mjs proofs/cinematic-benchmark/qa-spec.json proofs/cinematic-benchmark/candidate.mp4 proofs/cinematic-benchmark/automated-quality-report.json",
     "check:env": "node --env-file-if-exists=.env tools/fair-check-env.mjs",
     "setup:comfy": "node scripts/fair-setup-comfy.mjs",
     "start:comfy": "node scripts/fair-start-comfy.mjs"

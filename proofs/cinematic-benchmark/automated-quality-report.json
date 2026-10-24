@@ -1,0 +1,465 @@
+{
+  "revision": 1,
+  "candidate": "proofs/cinematic-benchmark/candidate.mp4",
+  "spec": "proofs/cinematic-benchmark/qa-spec.json",
+  "passed": true,
+  "checks": [
+    {
+      "id": "decode-integrity",
+      "passed": true,
+      "detail": "Every video frame decodes without an FFmpeg error."
+    },
+    {
+      "id": "video-stream",
+      "passed": true,
+      "detail": "h264 video stream present."
+    },
+    {
+      "id": "duration",
+      "passed": true,
+      "detail": "Expected 5s ± 0.1s; measured 5.083s."
+    },
+    {
+      "id": "resolution",
+      "passed": true,
+      "detail": "Required at least 1280x704; measured 1280x720."
+    },
+    {
+      "id": "frame-rate",
+      "passed": true,
+      "detail": "Allowed 24 or 30 fps; measured 24.000."
+    },
+    {
+      "id": "audio-stream",
+      "passed": true,
+      "detail": "Audio is optional for this candidate."
+    },
+    {
+      "id": "black-spans",
+      "passed": true,
+      "detail": "Maximum allowed 0.0834s; longest measured 0.000s."
+    },
+    {
+      "id": "freeze-spans",
+      "passed": true,
+      "detail": "Maximum allowed 0.125s; longest measured 0.083s."
+    }
+  ],
+  "measurements": {
+    "durationSeconds": 5.083008,
+    "width": 1280,
+    "height": 720,
+    "fps": 24,
+    "hasAudio": false,
+    "bytes": 4529484,
+    "sha256": "9d6feb25be848f49c0d17dc7c0356d153556da9c3bea4f752966c61c526d0ed7",
+    "blackSpans": [],
+    "freezeSpans": [
+      {
+        "startSeconds": 0,
+        "endSeconds": 0.0833333,
+        "durationSeconds": 0.083333
+      },
+      {
+        "startSeconds": 0.0833333,
+        "endSeconds": 0.125,
+        "durationSeconds": 0.041667
+      },
+      {
+        "startSeconds": 0.125,
+        "endSeconds": 0.208333,
+        "durationSeconds": 0.083333
+      },
+      {
+        "startSeconds": 0.208333,
+        "endSeconds": 0.25,
+        "durationSeconds": 0.041667
+      },
+      {
+        "startSeconds": 0.25,
+        "endSeconds": 0.333333,
+        "durationSeconds": 0.083333
+      },
+      {
+        "startSeconds": 0.333333,
+        "endSeconds": 0.375,
+        "durationSeconds": 0.041667
+      },
+      {
+        "startSeconds": 0.375,
+        "endSeconds": 0.458333,
+        "durationSeconds": 0.083333
+      },
+      {
+        "startSeconds": 0.458333,
+        "endSeconds": 0.5,
+        "durationSeconds": 0.041667
+      },
+      {
+        "startSeconds": 0.5,
+        "endSeconds": 0.583333,
+        "durationSeconds": 0.083333
+      },
+      {
+        "startSeconds": 0.583333,
+        "endSeconds": 0.625,
+        "durationSeconds": 0.041667
+      },
+      {
+        "startSeconds": 0.625,
+        "endSeconds": 0.708333,
+        "durationSeconds": 0.083333
+      },
+      {
+        "startSeconds": 0.708333,
+        "endSeconds": 0.75,
+        "durationSeconds": 0.041667
+      },
+      {
+        "startSeconds": 0.75,
+        "endSeconds": 0.833333,
+        "durationSeconds": 0.083333
+      },
+      {
+        "startSeconds": 0.833333,
+        "endSeconds": 0.875,
+        "durationSeconds": 0.041667
+      },
+      {
+        "startSeconds": 0.875,
+        "endSeconds": 0.958333,
+        "durationSeconds": 0.083333
+      },
+      {
+        "startSeconds": 0.958333,
+        "endSeconds": 1,
+        "durationSeconds": 0.041667
+      },
+      {
+        "startSeconds": 1,
+        "endSeconds": 1.083333,
+        "durationSeconds": 0.083333
+      },
+      {
+        "startSeconds": 1.083333,
+        "endSeconds": 1.125,
+        "durationSeconds": 0.041667
+      },
+      {
+        "startSeconds": 1.125,
+        "endSeconds": 1.208333,
+        "durationSeconds": 0.083333
+      },
+      {
+        "startSeconds": 1.208333,
+        "endSeconds": 1.25,
+        "durationSeconds": 0.041667
+      },
+      {
+        "startSeconds": 1.25,
+        "endSeconds": 1.333333,
+        "durationSeconds": 0.083333
+      },
+      {
+        "startSeconds": 1.333333,
+        "endSeconds": 1.375,
+        "durationSeconds": 0.041667
+      },
+      {
+        "startSeconds": 1.375,
+        "endSeconds": 1.458333,
+        "durationSeconds": 0.083333
+      },
+      {
+        "startSeconds": 1.458333,
+        "endSeconds": 1.5,
+        "durationSeconds": 0.041667
+      },
+      {
+        "startSeconds": 1.5,
+        "endSeconds": 1.583333,
+        "durationSeconds": 0.083333
+      },
+      {
+        "startSeconds": 1.583333,
+        "endSeconds": 1.625,
+        "durationSeconds": 0.041667
+      },
+      {
+        "startSeconds": 1.625,
+        "endSeconds": 1.708333,
+        "durationSeconds": 0.083333
+      },
+      {
+        "startSeconds": 1.708333,
+        "endSeconds": 1.75,
+        "durationSeconds": 0.041667
+      },
+      {
+        "startSeconds": 1.75,
+        "endSeconds": 1.833333,
+        "durationSeconds": 0.083333
+      },
+      {
+        "startSeconds": 1.833333,
+        "endSeconds": 1.875,
+        "durationSeconds": 0.041667
+      },
+      {
+        "startSeconds": 1.875,
+        "endSeconds": 1.958333,
+        "durationSeconds": 0.083333
+      },
+      {
+        "startSeconds": 1.958333,
+        "endSeconds": 2,
+        "durationSeconds": 0.041667
+      },
+      {
+        "startSeconds": 2,
+        "endSeconds": 2.083333,
+        "durationSeconds": 0.083333
+      },
+      {
+        "startSeconds": 2.083333,
+        "endSeconds": 2.125,
+        "durationSeconds": 0.041667
+      },
+      {
+        "startSeconds": 2.125,
+        "endSeconds": 2.208333,
+        "durationSeconds": 0.083333
+      },
+      {
+        "startSeconds": 2.208333,
+        "endSeconds": 2.25,
+        "durationSeconds": 0.041667
+      },
+      {
+        "startSeconds": 2.25,
+        "endSeconds": 2.333333,
+        "durationSeconds": 0.083333
+      },
+      {
+        "startSeconds": 2.333333,
+        "endSeconds": 2.375,
+        "durationSeconds": 0.041667
+      },
+      {
+        "startSeconds": 2.375,
+        "endSeconds": 2.458333,
+        "durationSeconds": 0.083333
+      },
+      {
+        "startSeconds": 2.458333,
+        "endSeconds": 2.5,
+        "durationSeconds": 0.041667
+      },
+      {
+        "startSeconds": 2.5,
+        "endSeconds": 2.583333,
+        "durationSeconds": 0.083333
+      },
+      {
+        "startSeconds": 2.583333,
+        "endSeconds": 2.625,
+        "durationSeconds": 0.041667
+      },
+      {
+        "startSeconds": 2.625,
+        "endSeconds": 2.708333,
+        "durationSeconds": 0.083333
+      },
+      {
+        "startSeconds": 2.708333,
+        "endSeconds": 2.75,
+        "durationSeconds": 0.041667
+      },
+      {
+        "startSeconds": 2.75,
+        "endSeconds": 2.833333,
+        "durationSeconds": 0.083333
+      },
+      {
+        "startSeconds": 2.833333,
+        "endSeconds": 2.875,
+        "durationSeconds": 0.041667
+      },
+      {
+        "startSeconds": 2.875,
+        "endSeconds": 2.958333,
+        "durationSeconds": 0.083333
+      },
+      {
+        "startSeconds": 2.958333,
+        "endSeconds": 3,
+        "durationSeconds": 0.041667
+      },
+      {
+        "startSeconds": 3,
+        "endSeconds": 3.083333,
+        "durationSeconds": 0.083333
+      },
+      {
+        "startSeconds": 3.083333,
+        "endSeconds": 3.125,
+        "durationSeconds": 0.041667
+      },
+      {
+        "startSeconds": 3.125,
+        "endSeconds": 3.208333,
+        "durationSeconds": 0.083333
+      },
+      {
+        "startSeconds": 3.208333,
+        "endSeconds": 3.25,
+        "durationSeconds": 0.041667
+      },
+      {
+        "startSeconds": 3.25,
+        "endSeconds": 3.333333,
+        "durationSeconds": 0.083333
+      },
+      {
+        "startSeconds": 3.333333,
+        "endSeconds": 3.375,
+        "durationSeconds": 0.041667
+      },
+      {
+        "startSeconds": 3.375,
+        "endSeconds": 3.458333,
+        "durationSeconds": 0.083333
+      },
+      {
+        "startSeconds": 3.458333,
+        "endSeconds": 3.5,
+        "durationSeconds": 0.041667
+      },
+      {
+        "startSeconds": 3.5,
+        "endSeconds": 3.583333,
+        "durationSeconds": 0.083333
+      },
+      {
+        "startSeconds": 3.583333,
+        "endSeconds": 3.625,
+        "durationSeconds": 0.041667
+      },
+      {
+        "startSeconds": 3.625,
+        "endSeconds": 3.708333,
+        "durationSeconds": 0.083333
+      },
+      {
+        "startSeconds": 3.708333,
+        "endSeconds": 3.75,
+        "durationSeconds": 0.041667
+      },
+      {
+        "startSeconds": 3.75,
+        "endSeconds": 3.833333,
+        "durationSeconds": 0.083333
+      },
+      {
+        "startSeconds": 3.833333,
+        "endSeconds": 3.875,
+        "durationSeconds": 0.041667
+      },
+      {
+        "startSeconds": 3.875,
+        "endSeconds": 3.958333,
+        "durationSeconds": 0.083333
+      },
+      {
+        "startSeconds": 3.958333,
+        "endSeconds": 4,
+        "durationSeconds": 0.041667
+      },
+      {
+        "startSeconds": 4,
+        "endSeconds": 4.083333,
+        "durationSeconds": 0.083333
+      },
+      {
+        "startSeconds": 4.083333,
+        "endSeconds": 4.125,
+        "durationSeconds": 0.041667
+      },
+      {
+        "startSeconds": 4.125,
+        "endSeconds": 4.208333,
+        "durationSeconds": 0.083333
+      },
+      {
+        "startSeconds": 4.208333,
+        "endSeconds": 4.25,
+        "durationSeconds": 0.041667
+      },
+      {
+        "startSeconds": 4.25,
+        "endSeconds": 4.333333,
+        "durationSeconds": 0.083333
+      },
+      {
+        "startSeconds": 4.333333,
+        "endSeconds": 4.375,
+        "durationSeconds": 0.041667
+      },
+      {
+        "startSeconds": 4.375,
+        "endSeconds": 4.458333,
+        "durationSeconds": 0.083333
+      },
+      {
+        "startSeconds": 4.458333,
+        "endSeconds": 4.5,
+        "durationSeconds": 0.041667
+      },
+      {
+        "startSeconds": 4.5,
+        "endSeconds": 4.583333,
+        "durationSeconds": 0.083333
+      },
+      {
+        "startSeconds": 4.583333,
+        "endSeconds": 4.625,
+        "durationSeconds": 0.041667
+      },
+      {
+        "startSeconds": 4.625,
+        "endSeconds": 4.708333,
+        "durationSeconds": 0.083333
+      },
+      {
+        "startSeconds": 4.708333,
+        "endSeconds": 4.75,
+        "durationSeconds": 0.041667
+      },
+      {
+        "startSeconds": 4.75,
+        "endSeconds": 4.833333,
+        "durationSeconds": 0.083333
+      },
+      {
+        "startSeconds": 4.833333,
+        "endSeconds": 4.875,
+        "durationSeconds": 0.041667
+      },
+      {
+        "startSeconds": 4.875,
+        "endSeconds": 4.958333,
+        "durationSeconds": 0.083333
+      },
+      {
+        "startSeconds": 4.958333,
+        "endSeconds": 5,
+        "durationSeconds": 0.041667
+      },
+      {
+        "startSeconds": 5,
+        "endSeconds": 5.083008,
+        "durationSeconds": 0.08300800000000041
+      }
+    ]
+  }
+}

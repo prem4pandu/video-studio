@@ -1,0 +1,7 @@
+{
+  "prompt": "Premium stylized 3D animated feature film, one continuous locked-camera shot. Preserve the exact girl, costume, face, hand, lever, machine, workshop and lighting from the reference. ACTION TIMING: during the first second Mira looks at the brass lever and firmly wraps her right hand around its round handle. During seconds one through three she visibly pulls the entire lever downward through a sixty-degree arc with believable resistance; her shoulder, elbow and torso follow the effort while her feet stay planted. The lever and her hand remain in physical contact. During seconds three through five the lever settles fully down, large brass gears turn, and warm amber light travels upward through the glass chambers; Mira watches the machine with a small satisfied expression. Natural anticipation, weight, follow-through, hair and jacket secondary motion. Stable face, correct five-finger hand, coherent rigid machinery, no camera movement. No text, no numerals, no logo, no extra character, no extra fingers, no fused hand and prop, no face drift, no costume drift, no sliding feet, no random camera shake, no warping background, no green light, no excessive bloom.",
+  "referenceImage": "assets/reference/mira-brass-workshop-v1.png",
+  "preview": { "width": 512, "height": 288, "frames": 17, "fps": 8, "steps": 8 },
+  "local": { "width": 832, "height": 480, "frames": 81, "fps": 16, "steps": 20 },
+  "delivery": { "width": 1280, "height": 704, "frames": 121, "fps": 24, "steps": 20 }
+}

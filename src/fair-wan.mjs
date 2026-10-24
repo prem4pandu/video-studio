@@ -1,5 +1,6 @@
 import { randomUUID } from 'node:crypto';
-import { mkdir, readFile, rename, rm, stat, writeFile } from 'node:fs/promises';
+import { constants } from 'node:fs';
+import { mkdir, open, readFile, rename, rm, stat, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { setTimeout as fairDelay } from 'node:timers/promises';
 import { fairHash, fairReadJson, fairWriteJson } from './fair-utils.mjs';
@@ -10,6 +11,7 @@ const fairWanModel = 'wan2.2_ti2v_5B_fp16.safetensors';
 const fairWanEncoder = 'umt5_xxl_fp16.safetensors';
 const fairWanVae = 'wan2.2_vae.safetensors';
 const fairWanMaxBytes = 256 * 1024 * 1024;
+const fairWanMaxReferenceBytes = 50 * 1024 * 1024;
 const fairWanJobs = new Map();
 
 function fairWanConfig(env) {
@@ -35,17 +37,17 @@ function fairWanConfig(env) {
   return { origin: url.origin, models, width, height, frames, steps, fps, textDevice };
 }
 
-export function fairWanWorkflow({ prompt = '', env = process.env, modernVideo = false } = {}) {
+export function fairWanWorkflow({ prompt = '', referenceName, env = process.env, modernVideo = false } = {}) {
   const { models: [model, encoder, vae], width, height, frames, steps, fps, textDevice } = fairWanConfig(env);
   const node = (class_type, inputs) => ({ class_type, inputs });
-  return {
+  const graph = {
     '1': node('UNETLoader', { unet_name: model, weight_dtype: 'default' }),
     '2': node('CLIPLoader', { clip_name: encoder, type: 'wan', device: textDevice }),
     '3': node('VAELoader', { vae_name: vae }),
     '4': node('CLIPTextEncode', { text: prompt, clip: ['2', 0] }),
     '5': node('CLIPTextEncode', { text: 'text, letters, numerals, captions, watermark, distorted anatomy, blurry, flashing lights', clip: ['2', 0] }),
     '6': node('ModelSamplingSD3', { model: ['1', 0], shift: 8 }),
-    '7': node('Wan22ImageToVideoLatent', { vae: ['3', 0], width, height, length: frames, batch_size: 1 }),
+    '7': node('Wan22ImageToVideoLatent', { vae: ['3', 0], width, height, length: frames, batch_size: 1, ...(referenceName ? { start_image: ['12', 0] } : {}) }),
     // uni_pc diverges on Apple Silicon MPS past ~5 latent frames (ComfyUI issue
     // #15921, reproduced on M5 Pro); euler is verified clean at every length.
     '8': node('KSampler', { model: ['6', 0], positive: ['4', 0], negative: ['5', 0], latent_image: ['7', 0], seed: Number.parseInt(fairHash(prompt).slice(0, 12), 16), steps, cfg: 5, sampler_name: 'euler', scheduler: 'simple', denoise: 1 }),
@@ -53,6 +55,8 @@ export function fairWanWorkflow({ prompt = '', env = process.env, modernVideo = 
     '10': node('CreateVideo', { images: ['9', 0], fps }),
     '11': node('SaveVideo', { video: ['10', 0], filename_prefix: `fair/wan-${fairHash(prompt).slice(0, 16)}`, ...(modernVideo ? { format: 'mp4', 'format.codec': 'h264' } : { format: 'mp4', codec: 'h264' }) }),
   };
+  if (referenceName) graph['12'] = node('LoadImage', { image: referenceName });
+  return graph;
 }
 
 async function fairWanBytes(response, limit) {
@@ -74,12 +78,42 @@ async function fairWanJson(origin, path, { fetchImpl, signal, body } = {}) {
   catch (error) { if (error instanceof SyntaxError) throw new Error('ComfyUI returned invalid JSON.'); throw error; }
 }
 
-async function fairWanInspect({ env, fetchImpl, signal }) {
+async function fairWanReference(path) {
+  if (typeof path !== 'string' || !path) throw new Error('Wan reference image must be a local file path.');
+  let handle;
+  try {
+    handle = await open(path, constants.O_RDONLY | constants.O_NOFOLLOW);
+    const info = await handle.stat();
+    if (!info.isFile() || info.size < 1 || info.size > fairWanMaxReferenceBytes) throw new Error('Wan reference image is empty or exceeds 50 MiB.');
+    const bytes = await handle.readFile();
+    let extension;
+    if (bytes.length >= 8 && bytes.subarray(0, 8).equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]))) extension = '.png';
+    else if (bytes.length >= 3 && bytes[0] === 0xff && bytes[1] === 0xd8 && bytes[2] === 0xff) extension = '.jpg';
+    else if (bytes.length >= 12 && bytes.toString('ascii', 0, 4) === 'RIFF' && bytes.toString('ascii', 8, 12) === 'WEBP') extension = '.webp';
+    else throw new Error('Wan reference image must contain PNG, JPEG, or WebP data.');
+    const sha256 = fairHash(bytes);
+    return { bytes, sha256, name: `fair-${sha256}${extension}` };
+  } finally { await handle?.close(); }
+}
+
+async function fairWanUpload(origin, reference, { fetchImpl, signal }) {
+  const form = new FormData();
+  form.append('image', new Blob([reference.bytes]), reference.name);
+  form.append('type', 'input');
+  form.append('overwrite', 'true');
+  const response = await fetchImpl(`${origin}/upload/image`, { method: 'POST', body: form, signal, redirect: 'error' });
+  let uploaded;
+  try { uploaded = JSON.parse((await fairWanBytes(response, 1024 * 1024)).toString('utf8')); }
+  catch (error) { if (error instanceof SyntaxError) throw new Error('ComfyUI returned invalid JSON for the reference upload.'); throw error; }
+  if (uploaded?.name !== reference.name || uploaded.subfolder !== '' || uploaded.type !== 'input') throw new Error('ComfyUI returned an unsafe or unexpected reference image path.');
+}
+
+async function fairWanInspect({ env, fetchImpl, signal, referenceName }) {
   const config = fairWanConfig(env);
   const info = await fairWanJson(config.origin, '/object_info', { fetchImpl, signal });
   const videoFormat = info?.SaveVideo?.input?.required?.format?.[0];
   const modernVideo = typeof videoFormat === 'string' && videoFormat.includes('DYNAMIC');
-  const graph = fairWanWorkflow({ env, modernVideo });
+  const graph = fairWanWorkflow({ env, modernVideo, referenceName });
   for (const { class_type, inputs } of Object.values(graph)) {
     const schema = info?.[class_type]?.input;
     if (!schema?.required) throw new Error(`ComfyUI is missing the built-in ${class_type} node. Update ComfyUI.`);
@@ -131,13 +165,16 @@ function fairWanCheckMp4(bytes) {
   if (bytes.length < 24 || bytes.toString('ascii', 4, 8) !== 'ftyp' || !bytes.includes(Buffer.from('moov')) || !bytes.includes(Buffer.from('mdat'))) throw new Error('ComfyUI output is not a complete MP4 container.');
 }
 
-export async function fairGenerateWanClip({ prompt, directory, signal, env = process.env, onProgress, fetchImpl = fetch, timeoutMs = 30 * 60_000, pollMs = 2000 } = {}) {
+export async function fairGenerateWanClip({ prompt, directory, referenceImage, signal, env = process.env, onProgress, fetchImpl = fetch, timeoutMs = 30 * 60_000, pollMs = 2000 } = {}) {
   if (typeof prompt !== 'string' || !prompt.trim() || prompt.length > 6000) throw new Error('Wan requires a nonempty prompt of at most 6000 characters.');
   if (typeof directory !== 'string' || !directory) throw new Error('Wan requires an output directory.');
   if (!Number.isInteger(timeoutMs) || timeoutMs < 1 || timeoutMs > 2 * 60 * 60_000 || !Number.isInteger(pollMs) || pollMs < 1) throw new Error('Invalid Wan timeout or polling interval.');
   signal?.throwIfAborted();
   const config = fairWanConfig(env);
-  const fingerprint = fairHash({ version: 1, origin: config.origin, graph: fairWanWorkflow({ prompt, env }) });
+  const reference = referenceImage ? await fairWanReference(referenceImage) : undefined;
+  const referenceName = reference?.name;
+  const referenceSha256 = reference?.sha256;
+  const fingerprint = fairHash({ version: 2, origin: config.origin, graph: fairWanWorkflow({ prompt, referenceName, env }), referenceSha256 });
   const file = resolve(directory, `fair-wan-${fingerprint}.mp4`);
   const manifestFile = `${file}.json`;
   const requestFile = `${file}.request.json`;
@@ -157,8 +194,9 @@ export async function fairGenerateWanClip({ prompt, directory, signal, env = pro
   const requestSignal = AbortSignal.any([deadline, ...(signal ? [signal] : [])]);
   let promptId; const temporary = `${file}.${randomUUID()}.tmp`;
   try {
-    const inspected = await fairWanInspect({ env, fetchImpl, signal: requestSignal });
-    const graph = fairWanWorkflow({ prompt, env, modernVideo: inspected.modernVideo });
+    if (reference) await fairWanUpload(config.origin, reference, { fetchImpl, signal: requestSignal });
+    const inspected = await fairWanInspect({ env, fetchImpl, signal: requestSignal, referenceName });
+    const graph = fairWanWorkflow({ prompt, referenceName, env, modernVideo: inspected.modernVideo });
     await mkdir(directory, { recursive: true });
     await onProgress?.('Generating the illustrative scene with Wan2.2 on ComfyUI.');
     let previous;
@@ -207,7 +245,7 @@ export async function fairGenerateWanClip({ prompt, directory, signal, env = pro
     fairWanCheckMp4(bytes);
     requestSignal.throwIfAborted();
     const sha256 = fairHash(bytes);
-    const provenance = { provider: 'comfyui', model: 'Wan2.2-TI2V-5B', modelFiles: config.models, modelLicense: 'Apache-2.0', workerLicense: 'GPL-3.0', promptId, promptSha256: fairHash(prompt), workflowSha256: previous?.workflowSha256 || fairHash(graph), generatedAt: new Date().toISOString(), frames: config.frames, fps: config.fps, width: config.width, height: config.height, steps: config.steps, textDevice: config.textDevice };
+    const provenance = { provider: 'comfyui', model: 'Wan2.2-TI2V-5B', modelFiles: config.models, modelLicense: 'Apache-2.0', workerLicense: 'GPL-3.0', promptId, promptSha256: fairHash(prompt), referenceSha256: referenceSha256 || null, workflowSha256: previous?.workflowSha256 || fairHash(graph), generatedAt: new Date().toISOString(), frames: config.frames, fps: config.fps, width: config.width, height: config.height, steps: config.steps, textDevice: config.textDevice };
     await writeFile(temporary, bytes, { mode: 0o600 });
     await rename(temporary, file);
     await fairWriteJson(manifestFile, { fingerprint, sha256, provenance });

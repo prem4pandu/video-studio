@@ -1,7 +1,7 @@
 import nodeTest from 'node:test';
 import assert from 'node:assert/strict';
 import { createServer } from 'node:http';
-import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
+import { mkdtemp, readFile, rm, symlink, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fairGenerateWanClip, fairWanReadiness, fairWanWorkflow } from '../src/fair-wan.mjs';
@@ -11,6 +11,7 @@ const test = (name, run) => nodeTest(name, { timeout: 15_000 }, run);
 const fairModernFormat = ['COMFY_DYNAMICCOMBO_V3', { options: [{ key: 'mp4', inputs: { required: { codec: ['COMFY_DYNAMICCOMBO_V3', { options: [{ key: 'h264', inputs: { required: {} } }] }] } } }] }];
 
 const fairMp4Fixture = Buffer.concat([Buffer.from([0, 0, 0, 24]), Buffer.from('ftypisom'), Buffer.alloc(12), Buffer.from('moov'), Buffer.alloc(12), Buffer.from('mdat'), Buffer.alloc(20)]);
+const fairPngFixture = Buffer.concat([Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]), Buffer.from('fixture')]);
 
 async function fairWorker(t, options = {}) {
   const directory = await mkdtemp(join(tmpdir(), 'fair-wan-'));
@@ -21,12 +22,22 @@ async function fairWorker(t, options = {}) {
   info.CLIPLoader.input.required.clip_name = [['umt5_xxl_fp16.safetensors']];
   info.VAELoader.input.required.vae_name = [['wan2.2_vae.safetensors']];
   info.SaveVideo.input.required.format = [['mp4', 'auto']];
+  info.Wan22ImageToVideoLatent.input.optional = { start_image: ['IMAGE'] };
+  info.LoadImage = { input: { required: { image: [[]] } } };
   if (options.missing) delete info[options.missing];
   if (options.modern) { info.SaveVideo.input.required.format = fairModernFormat; delete info.SaveVideo.input.required.codec; }
   const server = createServer(async (request, response) => {
-    let body = ''; for await (const chunk of request) body += chunk;
-    const call = { path: request.url, method: request.method, body: body ? JSON.parse(body) : undefined }; calls.push(call);
+    const chunks = []; for await (const chunk of request) chunks.push(chunk);
+    const rawBody = Buffer.concat(chunks);
+    const isJson = request.headers['content-type'] === 'application/json';
+    const call = { path: request.url, method: request.method, body: rawBody.length && isJson ? JSON.parse(rawBody) : undefined }; calls.push(call);
     const json = value => { response.setHeader('content-type', 'application/json'); response.end(JSON.stringify(value)); };
+    if (request.url === '/upload/image') {
+      const match = /filename="([^"]+)"/.exec(rawBody.toString('latin1'));
+      if (!match || !/^fair-[a-f0-9]{64}\.(?:png|jpg|webp)$/.test(match[1])) { response.statusCode = 400; return json({ error: 'unsafe upload' }); }
+      info.LoadImage.input.required.image[0] = [match[1]];
+      return json({ name: match[1], subfolder: '', type: 'input' });
+    }
     if (request.url === '/object_info') return json(info);
     if (request.url === '/prompt') {
       submitted = call.body.prompt;
@@ -108,6 +119,43 @@ test('Wan supports bounded server-side Mac preview settings and rejects invalid 
   assert.equal(graph['10'].inputs.fps, 8);
   assert.equal(graph['2'].inputs.device, 'cpu');
   for (const env of [{ FAIR_WAN_WIDTH: '511' }, { FAIR_WAN_FRAMES: '18' }, { FAIR_WAN_STEPS: '1000' }, { FAIR_WAN_TEXT_DEVICE: 'cuda' }]) assert.throws(() => fairWanWorkflow({ env }), /FAIR_WAN/);
+});
+
+test('Wan image-to-video conditions the latent on a trusted ComfyUI input', () => {
+  const graph = fairWanWorkflow({ prompt: 'Mira pulls a brass lever.', referenceName: 'fair-reference.png', env: {} });
+  assert.deepEqual(graph['12'], { class_type: 'LoadImage', inputs: { image: 'fair-reference.png' } });
+  assert.deepEqual(graph['7'].inputs.start_image, ['12', 0]);
+});
+
+test('Wan uploads a content-addressed reference, validates its schema, and caches by image bytes', async t => {
+  const worker = await fairWorker(t);
+  const referenceImage = join(worker.directory, 'misleading-extension.txt');
+  await writeFile(referenceImage, fairPngFixture);
+  const result = await fairGenerateWanClip({ ...worker, prompt: 'Mira pulls a brass lever.', referenceImage, pollMs: 1 });
+  const expectedName = `fair-${fairHash(fairPngFixture)}.png`;
+  assert.equal(worker.calls.filter(call => call.path === '/upload/image').length, 1);
+  assert.deepEqual(worker.submitted()['12'], { class_type: 'LoadImage', inputs: { image: expectedName } });
+  assert.deepEqual(worker.submitted()['7'].inputs.start_image, ['12', 0]);
+  assert.equal(result.provenance.referenceSha256, fairHash(fairPngFixture));
+  assert.equal((await fairGenerateWanClip({ ...worker, prompt: 'Mira pulls a brass lever.', referenceImage })).cached, true);
+  assert.equal(worker.calls.filter(call => call.path === '/upload/image').length, 1);
+  await writeFile(referenceImage, Buffer.concat([fairPngFixture, Buffer.from('changed')]));
+  const changed = await fairGenerateWanClip({ ...worker, prompt: 'Mira pulls a brass lever.', referenceImage, pollMs: 1 });
+  assert.notEqual(changed.file, result.file);
+  assert.equal(worker.calls.filter(call => call.path === '/prompt').length, 2);
+});
+
+test('Wan rejects disguised and symlinked reference images before contacting the worker', async t => {
+  const worker = await fairWorker(t);
+  const disguised = join(worker.directory, 'reference.png');
+  await writeFile(disguised, 'not an image');
+  await assert.rejects(fairGenerateWanClip({ ...worker, prompt: 'A robot waves.', referenceImage: disguised }), /must contain PNG/);
+  const target = join(worker.directory, 'target.png');
+  const link = join(worker.directory, 'link.png');
+  await writeFile(target, fairPngFixture);
+  await symlink(target, link);
+  await assert.rejects(fairGenerateWanClip({ ...worker, prompt: 'A robot waves.', referenceImage: link }));
+  assert.equal(worker.calls.length, 0);
 });
 
 for (const [name, options, expected] of [
