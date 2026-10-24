@@ -89,7 +89,11 @@ test('dashboard source submits quality and exposes accessible pipeline and gate 
   assert.match(html, /<section class="pipeline-dashboard" aria-labelledby="pipeline-dashboard-title">/);
   assert.match(html, /id="setup-summary" role="status" aria-live="polite"/);
   assert.match(html, /id="job-status"[^>]*role="status"[^>]*aria-live="polite"/);
-  assert.match(html, /id="stage-list"[^>]*aria-label="Generation stages"/);
+  assert.match(html, /id="stage-list"[^>]*aria-label="Generation timeline"/);
+  assert.match(html, /id="lesson-workspace"[^>]*aria-labelledby="lesson-workspace-title"/);
+  assert.match(html, /data-inspector-tab="plan"/);
+  assert.match(html, /data-inspector-tab="script"/);
+  assert.match(html, /data-inspector-tab="prompts"/);
   assert.match(html, /id="quality-section"[^>]*aria-labelledby="quality-report-title"/);
   assert.match(html, /id="quality-report-title"[^>]*>What passed, what needs review</);
 
@@ -97,8 +101,11 @@ test('dashboard source submits quality and exposes accessible pipeline and gate 
   assert.match(script, /option\.disabled = !available/);
   assert.match(script, /state\.voiceProvider = \$\('voice-provider'\)\.value/);
   assert.match(script, /api\('\/api\/jobs',\s*\{\s*method:\s*'POST',\s*body:\s*JSON\.stringify\(payload\)/);
-  assert.match(script, /jobVersion === 'quality'/);
-  assert.match(script, /\['verify', 'Quality gates'\]/);
+  assert.match(script, /function renderJobTimeline\(job, ready\)/);
+  assert.match(script, /function renderPromptRecords\(job, data\)/);
+  assert.match(script, /api\(job\.artifacts\.prompts\)/);
+  assert.match(script, /verify: \{ label: 'Quality gates'/);
+  assert.match(script, /educator: \{ label: 'Educator review'/);
   assert.match(script, /automated gates passed/);
   assert.match(script, /check\.passed \? 'Passed' : 'Review'/);
   assert.match(pipeline, /name: 'Complete teaching loop'/);

@@ -51,11 +51,27 @@
       <section id="job-view" hidden aria-labelledby="job-title">
         <button id="back-compose" type="button" class="text-button">← Back to your idea</button><p class="eyebrow">YOUR LESSON, TAKING SHAPE</p><h1 id="job-title" class="job-title" tabindex="-1">Creating your lesson</h1><p id="job-brief" class="intro-copy"></p><p id="job-generation" class="field-note"></p>
         <div id="benchmark-note" class="review-note" hidden><span class="review-label">AUTHORED ANIMATION BENCHMARK</span><p>Script authored and reviewed separately. This demonstrates rendering and narration, not automatic planning success.</p></div>
-        <div id="job-status" class="job-status" role="status" aria-live="polite"></div>
-        <div class="progress-heading"><span id="stage-label">Preparing</span><span id="progress-label">0%</span></div><progress id="progress" max="100" value="0">0%</progress><ol id="stage-list" class="stages" aria-label="Generation stages"></ol>
+        <section class="production-progress" aria-labelledby="production-progress-title">
+          <div class="progress-heading"><div><p class="section-kicker">Live production</p><h2 id="production-progress-title"><span id="stage-label">Preparing</span></h2></div><strong id="progress-label">0%</strong></div>
+          <div class="progress-track"><progress id="progress" max="100" value="0">0%</progress></div>
+          <p id="job-status" class="job-status" role="status" aria-live="polite" aria-atomic="true"></p>
+          <ol id="stage-list" class="stages" aria-label="Generation timeline"></ol>
+        </section>
         <div id="job-error" class="error-message" role="alert" hidden></div><div class="job-actions"><button id="retry" class="button secondary" type="button" hidden>Try again</button><button id="cancel" class="text-button" type="button" hidden>Stop generation</button></div>
         <div id="result" hidden><div class="review-note"><span class="review-label">EDUCATOR REVIEW</span><p>Your video is ready to review. Check the explanations, examples, pacing, and curriculum fit before sharing it with learners.</p></div><video id="video" controls playsinline preload="metadata" aria-label="Generated lesson preview"></video><div class="narration-controls"><button id="play-narration" class="button secondary" type="button" aria-controls="video" aria-describedby="playback-status">Play with narration</button><p id="playback-status" class="field-note" role="status" aria-live="polite" aria-atomic="true">Enables player sound at full volume. Your browser tab and device control the final audio output.</p></div><div id="downloads" class="downloads" aria-label="Download lesson materials"></div></div>
-        <section id="lesson-detail" class="lesson-detail" hidden><div class="section-heading"><h2>The teaching plan</h2><span id="scene-count"></span></div><p id="lesson-concept"></p><div id="curriculum-warnings"></div><ul id="objectives" class="objectives"></ul><div id="storyboard" class="storyboard"></div></section>
+        <section id="lesson-workspace" class="lesson-workspace" hidden aria-labelledby="lesson-workspace-title">
+          <div class="workspace-heading"><div><p class="section-kicker">Generated lesson content</p><h2 id="lesson-workspace-title">Inspect what the pipeline created</h2></div><span id="scene-count"></span></div>
+          <div class="inspector-tabs" role="tablist" aria-label="Lesson content">
+            <button id="plan-tab" type="button" role="tab" aria-selected="true" aria-controls="plan-panel" data-inspector-tab="plan">Teaching plan</button>
+            <button id="script-tab" type="button" role="tab" aria-selected="false" aria-controls="script-panel" data-inspector-tab="script" tabindex="-1">Narration script</button>
+            <button id="prompts-tab" type="button" role="tab" aria-selected="false" aria-controls="prompts-panel" data-inspector-tab="prompts" tabindex="-1">Prompts</button>
+          </div>
+          <section id="plan-panel" class="inspector-panel" role="tabpanel" aria-labelledby="plan-tab">
+            <div id="lesson-detail" class="lesson-detail"><p id="lesson-concept"></p><div id="curriculum-warnings"></div><h3 class="content-heading">Learning objectives</h3><ul id="objectives" class="objectives"></ul><h3 class="content-heading">Scene plan</h3><div id="storyboard" class="storyboard"></div></div>
+          </section>
+          <section id="script-panel" class="inspector-panel" role="tabpanel" aria-labelledby="script-tab" hidden><div id="narration-script"></div></section>
+          <section id="prompts-panel" class="inspector-panel" role="tabpanel" aria-labelledby="prompts-tab" hidden><div id="prompt-viewer" class="prompt-viewer"><p class="empty-detail">The exact generation prompts appear here after planning and export complete.</p></div></section>
+        </section>
         <section id="quality-section" class="quality-section" hidden aria-labelledby="quality-report-title"><div class="section-heading"><div><p class="section-kicker">Quality gates</p><h2 id="quality-report-title">What passed, what needs review</h2></div><span id="quality-gate-summary"></span></div><div id="quality-report"></div></section>
         <details class="activity"><summary>Generation activity</summary><ol id="events"></ol></details>
       </section>

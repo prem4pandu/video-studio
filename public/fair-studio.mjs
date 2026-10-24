@@ -1,9 +1,19 @@
 const $ = (id) => document.getElementById(id);
 const fairWorkspace = new URL('.', import.meta.url);
 const fairUrl = (path) => new URL(path.replace(/^\//, ''), fairWorkspace).href;
-const state = { jobs: [], selected: null, config: null, timer: null, revision: '', resultKey: '', capabilityWarning: '', generationVersion: 'classic', provider: 'local', voiceProvider: '', providerModels: {} };
+const state = { jobs: [], selected: null, config: null, timer: null, revision: '', resultKey: '', capabilityWarning: '', generationVersion: 'classic', provider: 'local', voiceProvider: '', providerModels: {}, promptCache: new Map(), promptLoading: new Set() };
 let playbackAttempt = 0, playerFeedbackActive = false;
 const stages = [['plan', 'Plan'], ['review', 'Check content'], ['narration', 'Narrate'], ['composition', 'Animate'], ['render', 'Render'], ['verify', 'Verify export']];
+const pipelineCatalog = {
+  plan: { label: 'Teaching plan', description: 'Turns the brief into focused objectives, examples, questions, and scene directions.', output: 'Lesson structure' },
+  review: { label: 'Pedagogy critique', description: 'Checks factual accuracy, teaching coverage, answers, pacing, and likely misconceptions.', output: 'Reviewed lesson plan' },
+  narration: { label: 'Narration', description: 'Records each approved scene and measures the spoken duration used by the timeline.', output: 'Audio and transcript' },
+  footage: { label: 'Generate footage', description: 'Creates a short cinematic establishing shot while exact teaching graphics stay deterministic.', output: 'Wan footage' },
+  composition: { label: 'Purposeful animation', description: 'Synchronizes teaching visuals, captions, gestures, and protected learner thinking time.', output: 'Timed composition' },
+  render: { label: 'Render', description: 'Combines scenes, narration, captions, and transitions into the final lesson video.', output: 'MP4 export' },
+  verify: { label: 'Quality gates', description: 'Measures the export, checks audio and captions, and verifies objective coverage.', output: 'Quality report' },
+  educator: { label: 'Educator review', description: 'A teacher checks subject accuracy, suitability, pacing, and curriculum fit before sharing.', output: 'Human decision', manual: true },
+};
 const active = (job) => ['queued', 'running'].includes(job?.status);
 const authoredBenchmark = (job) => job?.report?.origin === 'authored' || job?.report?.status === 'authored-benchmark' || job?.status === 'authored-benchmark';
 const exportReady = (job) => ['completed', 'authored-benchmark'].includes(job?.status);
@@ -81,10 +91,16 @@ function generationName(job) {
   return generationVersions().find((version) => version.id === id)?.name || (id === 'open-source' ? 'Open source' : 'Classic');
 }
 function pipelineSteps(version) {
-  if (Array.isArray(version?.stages) && version.stages.length) return version.stages.map((stage) => typeof stage === 'string' ? stage : stage.label || stage.name || stage.id).filter(Boolean);
-  if (version?.id === 'open-source') return ['Teaching plan', 'Content critique', 'Narration', 'Generate footage', 'Teaching graphics', 'Export checks'];
-  if (version?.id === 'quality') return ['Teaching plan', 'Pedagogy critique', 'Narration', 'Purposeful animation', 'Quality gates', 'Educator review'];
-  return ['Teaching plan', 'Content check', 'Narration', 'Animation', 'Export check', 'Educator review'];
+  if (Array.isArray(version?.stages) && version.stages.length) return version.stages.map((stage, index) => typeof stage === 'string' ? { id: `stage-${index}`, label: stage, description: 'A configured generation stage.', output: 'Reviewable artifact' } : { ...stage, label: stage.label || stage.name || stage.id }).filter(stage => stage.label);
+  const ids = version?.id === 'open-source'
+    ? ['plan', 'review', 'narration', 'footage', 'composition', 'render', 'verify', 'educator']
+    : ['plan', 'review', 'narration', 'composition', 'render', 'verify', 'educator'];
+  const steps = ids.map(id => ({ id, ...pipelineCatalog[id] }));
+  if (version?.id === 'classic') {
+    steps[1] = { ...steps[1], label: 'Content check', description: 'Checks the lesson structure, calculations, questions, and answers before production.' };
+    steps[3] = { ...steps[3], label: 'Illustrated animation', description: 'Builds the existing illustrated scenes and aligns them to the narration.' };
+  }
+  return steps;
 }
 function addSetupItem(label, detail, passed, action) {
   const item = el('li', undefined, passed ? 'setup-ready' : 'setup-action');
@@ -105,8 +121,10 @@ function renderPipelineTransparency() {
   $('pedagogy-summary').textContent = version?.pedagogySummary || (qualityGeneration() ? 'A worked example, protected think time, guided practice, independent transfer, and explicit misconception repair shape the lesson before rendering.' : 'The lesson plan uses objectives, worked examples, learner practice, and an educator review point.');
   $('teaching-pattern').textContent = version?.teachingPattern || (qualityGeneration() ? 'Explain, model, practise, transfer' : 'Objective-led lesson sequence');
   $('quality-target').textContent = version?.qualityTarget || (qualityGeneration() ? 'Pedagogy and export gates' : 'Automated export checks');
-  $('pipeline-preview').replaceChildren(...pipelineSteps(version).map((label, index) => {
-    const item = el('li'); item.append(el('span', String(index + 1).padStart(2, '0'), 'pipeline-number'), el('strong', label)); return item;
+  $('pipeline-preview').replaceChildren(...pipelineSteps(version).map((stage, index) => {
+    const item = el('li');
+    item.append(el('span', stage.manual ? 'Review' : String(index + 1).padStart(2, '0'), 'pipeline-number'), el('strong', stage.label), el('p', stage.description), el('span', stage.output, 'pipeline-output'));
+    return item;
   }));
 
   const provider = providers().find((entry) => entry.id === state.provider);
@@ -283,7 +301,7 @@ async function selectJob(id) {
   state.selected = id; state.revision = ''; state.resultKey = ''; clearTimeout(state.timer);
   $('compose-view').hidden = true; $('job-view').hidden = false;
   $('job-title').textContent = 'Opening your lesson…'; $('job-status').textContent = 'Loading the saved lesson.';
-  $('job-error').hidden = true; $('result').hidden = true; $('lesson-detail').hidden = true; $('quality-section').hidden = true; $('benchmark-note').hidden = true;
+  $('job-error').hidden = true; $('result').hidden = true; $('lesson-workspace').hidden = true; $('quality-section').hidden = true; $('benchmark-note').hidden = true;
   $('events').replaceChildren(); $('downloads').replaceChildren(); $('stage-list').replaceChildren(); $('cancel').hidden = true; $('retry').hidden = true;
   $('progress').value = 0; $('progress-label').textContent = '0%'; $('job-brief').textContent = '';
   $('job-generation').textContent = '';
@@ -305,6 +323,91 @@ async function pollJob() {
     state.timer = setTimeout(pollJob, 5000);
   }
 }
+function jobPipeline(job) {
+  const id = job.brief?.generationVersion || job.generationVersion || 'classic';
+  const version = generationVersions().find(entry => entry.id === id) || { id };
+  return pipelineSteps(version).filter(stage => !stage.manual);
+}
+function stageEvent(job, id) {
+  return (job.events || []).find(event => event.stage === id);
+}
+function timeLabel(value) {
+  const date = new Date(value);
+  return Number.isNaN(date.valueOf()) ? '' : date.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
+}
+function elapsedLabel(start, end = Date.now()) {
+  const seconds = Math.max(0, Math.round((new Date(end).valueOf() - new Date(start).valueOf()) / 1000));
+  if (!Number.isFinite(seconds)) return '';
+  if (seconds < 60) return `${seconds}s elapsed`;
+  return `${Math.floor(seconds / 60)}m ${seconds % 60}s elapsed`;
+}
+function renderJobTimeline(job, ready) {
+  const jobStages = jobPipeline(job);
+  const current = jobStages.findIndex(stage => stage.id === job.stage);
+  $('stage-label').textContent = ready ? 'Ready for review' : jobStages[current]?.label || 'Preparing';
+  $('stage-list').classList.toggle('stages-open-source', jobStages.length > stages.length);
+  $('stage-list').replaceChildren(...jobStages.map((stage, index) => {
+    const complete = ready || index < current;
+    const isCurrent = !ready && stage.id === job.stage;
+    const failed = job.status === 'failed' && isCurrent;
+    const item = el('li', undefined, complete ? 'done' : failed ? 'failed' : isCurrent ? 'current' : 'pending');
+    if (isCurrent && active(job)) item.setAttribute('aria-current', 'step');
+    const marker = el('span', complete ? '✓' : failed ? '!' : String(index + 1).padStart(2, '0'), 'stage-marker');
+    const body = el('div', undefined, 'stage-body');
+    const heading = el('div', undefined, 'stage-heading');
+    const label = job.report?.origin === 'authored' && stage.id === 'plan' ? 'Authored script' : job.report?.origin === 'authored' && stage.id === 'review' ? 'Script review' : stage.label;
+    const status = complete ? 'Complete' : failed ? 'Stopped' : isCurrent ? 'In progress' : 'Waiting';
+    heading.append(el('strong', label), el('span', status, 'stage-status'));
+    body.append(heading, el('p', stage.description));
+    const meta = el('div', undefined, 'stage-meta');
+    meta.append(el('span', stage.output));
+    const event = stageEvent(job, stage.id);
+    if (event) meta.append(el('time', `${timeLabel(event.at)}${isCurrent && active(job) ? ` · ${elapsedLabel(event.at)}` : ''}`));
+    body.append(meta); item.append(marker, body); return item;
+  }));
+}
+function activateInspectorTab(name, focus = false) {
+  const tabs = [...document.querySelectorAll('[data-inspector-tab]')];
+  for (const tab of tabs) {
+    const selected = tab.dataset.inspectorTab === name;
+    tab.setAttribute('aria-selected', String(selected)); tab.tabIndex = selected ? 0 : -1;
+    const panel = $(`${tab.dataset.inspectorTab}-panel`); if (panel) panel.hidden = !selected;
+    if (selected && focus) tab.focus();
+  }
+}
+function renderPromptRecords(job, data) {
+  const viewer = $('prompt-viewer'); viewer.replaceChildren();
+  const source = el('article', undefined, 'prompt-record source-brief');
+  source.append(el('span', 'Source brief', 'prompt-kind'), el('h3', 'What you asked the studio to teach'), el('pre', typeof job.brief === 'string' ? job.brief : job.brief?.text || 'No source brief was saved.'));
+  viewer.append(source);
+  const prompts = Array.isArray(data?.prompts) ? data.prompts : [];
+  if (!prompts.length) { viewer.append(el('p', 'No model prompt records were saved for this lesson.', 'empty-detail')); return; }
+  for (const [index, prompt] of prompts.entries()) {
+    const details = el('details', undefined, 'prompt-record');
+    if (index === 0) details.open = true;
+    const name = String(prompt.file || `Prompt ${index + 1}`).split('/').pop();
+    details.append(el('summary', name), el('pre', String(prompt.text || ''))); viewer.append(details);
+  }
+}
+function renderPrompts(job, ready) {
+  const viewer = $('prompt-viewer');
+  if (!ready || !job.artifacts?.prompts) {
+    viewer.replaceChildren(el('p', 'The source brief is saved now. Exact planner and review prompts appear here after the export completes.', 'empty-detail'));
+    const source = el('article', undefined, 'prompt-record source-brief');
+    source.append(el('span', 'Source brief', 'prompt-kind'), el('h3', 'What you asked the studio to teach'), el('pre', typeof job.brief === 'string' ? job.brief : job.brief?.text || 'No source brief was saved.'));
+    viewer.prepend(source); return;
+  }
+  if (state.promptCache.has(job.id)) { renderPromptRecords(job, state.promptCache.get(job.id)); return; }
+  viewer.replaceChildren(el('p', 'Loading the exact prompts saved by the generation pipeline…', 'empty-detail'));
+  if (state.promptLoading.has(job.id)) return;
+  state.promptLoading.add(job.id);
+  api(job.artifacts.prompts).then(data => {
+    state.promptCache.set(job.id, data);
+    if (state.selected === job.id) renderPromptRecords(job, data);
+  }).catch(error => {
+    if (state.selected === job.id) viewer.replaceChildren(el('p', `The saved prompts could not be loaded. ${error.message}`, 'empty-detail'));
+  }).finally(() => state.promptLoading.delete(job.id));
+}
 function renderJob(job) {
   const signature = JSON.stringify([job.updatedAt, job.status, job.stage, job.progress, job.message, job.error, job.report?.origin, job.report?.status]);
   if (state.revision === signature) return;
@@ -318,18 +421,7 @@ function renderJob(job) {
   $('video').setAttribute('aria-label', authored ? 'Authored animation benchmark preview' : 'Generated lesson preview');
   const progress = Math.max(0, Math.min(100, Number(job.progress) || 0));
   $('progress').value = progress; $('progress').textContent = `${progress}%`; $('progress-label').textContent = `${progress}%`;
-  const jobVersion = job.brief?.generationVersion || job.generationVersion;
-  const jobStages = jobVersion === 'open-source' || job.stage === 'footage' ? [...stages.slice(0, 3), ['footage', 'Generate footage'], ...stages.slice(3)] : jobVersion === 'quality' ? [['plan', 'Teaching plan'], ['review', 'Pedagogy critique'], ['narration', 'Narration'], ['composition', 'Purposeful animation'], ['render', 'Render'], ['verify', 'Quality gates']] : stages;
-  const current = jobStages.findIndex(([id]) => id === job.stage);
-  $('stage-list').classList.toggle('stages-open-source', jobStages.length > stages.length);
-  $('stage-label').textContent = ready ? 'Ready for review' : jobStages[current]?.[1] || 'Preparing';
-  $('stage-list').replaceChildren(...jobStages.map(([id, label], index) => {
-    const complete = ready || index < current;
-    const stageLabel = authored && id === 'plan' ? 'Authored script' : authored && id === 'review' ? 'Script review' : label;
-    const li = el('li', `${complete ? '✓ ' : `${index + 1}. `}${stageLabel}`, complete ? 'done' : id === job.stage ? 'current' : '');
-    if (id === job.stage && active(job)) li.setAttribute('aria-current', 'step');
-    return li;
-  }));
+  renderJobTimeline(job, ready);
   $('job-error').textContent = typeof job.error === 'string' ? job.error : job.error?.message || '';
   $('job-error').hidden = !$('job-error').textContent;
   $('retry').hidden = !['failed', 'interrupted'].includes(job.status); $('cancel').hidden = !active(job);
@@ -339,6 +431,7 @@ function renderJob(job) {
     li.append(time, el('span', event.message)); return li;
   }));
   renderLesson(job.lesson);
+  renderPrompts(job, ready);
   renderReport(job.report);
   const resultKey = JSON.stringify(job.artifacts || {});
   if (resultKey !== state.resultKey || !ready) {
@@ -360,7 +453,7 @@ function renderJob(job) {
   }
 }
 function renderLesson(lesson) {
-  $('lesson-detail').hidden = !lesson;
+  $('lesson-workspace').hidden = !lesson;
   if (!lesson) return;
   $('lesson-concept').textContent = typeof lesson.concept === 'string' ? lesson.concept : [lesson.concept?.hook, lesson.concept?.analogy, lesson.concept?.arc].filter(Boolean).join(' ');
   $('objectives').replaceChildren(...(lesson.objectives || []).map((objective) => el('li', text(objective))));
@@ -383,6 +476,18 @@ function renderLesson(lesson) {
     else if (scene.visual?.label) body.append(el('p', scene.visual.label));
     const details = el('details'); details.append(el('summary', 'Read narration'), el('p', scene.narration || 'Narration is being prepared.'));
     body.append(details); row.append(body); return row;
+  }));
+  $('narration-script').replaceChildren(...scenes.map((scene, index) => {
+    const article = el('article', undefined, 'script-scene');
+    const heading = el('header');
+    const title = el('div'); title.append(el('span', String(index + 1).padStart(2, '0'), 'script-number'), el('h3', scene.title || scene.beat || `Scene ${index + 1}`));
+    heading.append(title, el('span', [scene.beat, scene.pauseSeconds ? `${scene.pauseSeconds}s pause` : ''].filter(Boolean).join(' · '), 'scene-timing'));
+    const narration = [scene.narration, ...(Array.isArray(scene.spokenBeats) ? scene.spokenBeats : [])].filter(Boolean);
+    const copy = el('div', undefined, 'script-copy');
+    if (narration.length) for (const paragraph of narration) copy.append(el('p', paragraph));
+    else copy.append(el('p', 'Narration is being prepared.', 'empty-detail'));
+    if (scene.visual?.label) copy.append(el('p', `On screen: ${scene.visual.label}`, 'visual-direction'));
+    article.append(heading, copy); return article;
   }));
 }
 function renderReport(report) {
@@ -442,6 +547,17 @@ function updateBrief() {
   const mismatch = /\bigcse\b/i.test(brief) && /\b(?:(?:grade|year|stage)\s*5|5th\s*(?:grade|year))\b/i.test(brief);
   $('curriculum-hint').hidden = !mismatch;
   $('curriculum-hint').textContent = mismatch ? 'A quick curriculum check: IGCSE is normally for ages 14–16; Grade 5 usually means primary school. This draft will use the primary learner level and flag the assumption. Add a curriculum reference below to guide the lesson; official syllabus alignment remains unverified.' : '';
+}
+for (const tab of document.querySelectorAll('[data-inspector-tab]')) {
+  tab.addEventListener('click', () => activateInspectorTab(tab.dataset.inspectorTab));
+  tab.addEventListener('keydown', event => {
+    if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+    event.preventDefault();
+    const tabs = [...document.querySelectorAll('[data-inspector-tab]')];
+    const index = tabs.indexOf(tab);
+    const next = event.key === 'Home' ? 0 : event.key === 'End' ? tabs.length - 1 : (index + (event.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length;
+    activateInspectorTab(tabs[next].dataset.inspectorTab, true);
+  });
 }
 $('brief').addEventListener('input', updateBrief);
 $('audience').addEventListener('input', updateBrief);
