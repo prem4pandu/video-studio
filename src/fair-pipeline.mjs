@@ -24,7 +24,10 @@ export async function fairRunPipeline(brief, directory, { signal, env = process.
   const generationDir = join(directory, 'generation'), projectDir = join(directory, 'project');
   await mkdir(generationDir, { recursive: true });
   const lessonFile = join(generationDir, 'lesson.json'), cacheFile = join(generationDir, 'validated.json');
-  const fingerprint = fairHash({ revision: 2, brief, model: brief.model || (brief.provider === 'openai' ? env.FAIR_OPENAI_MODEL || 'gpt-5.6-terra' : env.FAIR_MODEL || 'gpt-oss:20b'), reviewModel: brief.provider === 'openai' ? env.FAIR_OPENAI_REVIEW_MODEL || '' : env.FAIR_REVIEW_MODEL || '', endpoint: env.FAIR_OLLAMA_URL || '' });
+  const fingerprint = fairHash({ revision: 3, brief,
+    model: brief.model || (brief.provider === 'openai' ? env.FAIR_OPENAI_MODEL || 'gpt-5.6-terra' : brief.provider === 'lmstudio' ? env.FAIR_LMSTUDIO_MODEL || 'qwen/qwen3.8-27b' : env.FAIR_MODEL || 'gpt-oss:20b'),
+    reviewModel: brief.provider === 'openai' ? env.FAIR_OPENAI_REVIEW_MODEL || '' : brief.provider === 'lmstudio' ? env.FAIR_LMSTUDIO_REVIEW_MODEL || '' : env.FAIR_REVIEW_MODEL || '',
+    endpoint: brief.provider === 'lmstudio' ? env.FAIR_LMSTUDIO_URL || 'http://127.0.0.1:1234/v1/' : env.FAIR_OLLAMA_URL || '' });
   let lesson;
   try {
     const cache = await fairReadJson(cacheFile);

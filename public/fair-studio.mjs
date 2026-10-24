@@ -80,6 +80,7 @@ function renderAvatars(avatars) {
 }
 const openSource = () => state.generationVersion === 'open-source';
 const qualityGeneration = () => state.generationVersion === 'quality';
+const localPlanner = () => ['local', 'lmstudio'].includes(state.provider);
 const modelKey = () => `${state.generationVersion}:${state.provider}`;
 function generationVersions() { return state.config?.generationVersions || [{ id: 'classic', name: 'Classic · illustrated lessons', available: true, description: 'Illustrated lessons with the existing animation studio.' }]; }
 function recommendedVersion() {
@@ -209,14 +210,14 @@ function selectProvider(id, remember = true) {
   state.provider = id;
   const provider = providers().find((entry) => entry.id === id);
   const models = provider?.models || [];
-  $('model').value = openSource() ? state.config.defaults?.openSourceModel || '' : state.providerModels[modelKey()] || (id === 'local' ? state.config.defaults?.model : models[0]) || models[0] || '';
+  $('model').value = openSource() ? state.config.defaults?.openSourceModel || '' : state.providerModels[modelKey()] || provider?.defaultModel || models[0] || '';
   $('model-options').replaceChildren(...models.map((model) => { const option = el('option'); option.value = typeof model === 'string' ? model : model.name || model.id; return option; }));
   $('model').readOnly = openSource();
   if (openSource()) $('model').removeAttribute('list'); else $('model').setAttribute('list', 'model-options');
-  $('model-label').textContent = id === 'local' ? 'Local language model' : 'OpenAI language model';
-  $('model-hint').textContent = id === 'local' ? 'Use a model installed in your local generation service.' : 'Paid planning uses the server’s OpenAI API key. Choose the narrator separately; video rendering remains local.';
-  if (openSource()) $('model-hint').textContent = 'This version uses the local model configured by the studio server. Keep its local service, such as Strata, running before generating.';
-  $('provider-status').textContent = provider?.available ? (id === 'local' ? 'Planning runs on your computer with no cloud API fee. Choose your narrator below.' : 'A server API key is configured; connectivity and account access are checked when generating. Paid planning incurs API usage charges; choose your narrator below.') : `${provider?.name || id} is not configured. ${provider?.description || 'Check the server configuration.'}`;
+  $('model-label').textContent = localPlanner() ? 'Local language model' : 'OpenAI language model';
+  $('model-hint').textContent = localPlanner() ? 'Use a model installed in your selected local generation service.' : 'Paid planning uses the server’s OpenAI API key. Choose the narrator separately; video rendering remains local.';
+  if (openSource()) $('model-hint').textContent = 'This version uses the local model configured by the studio server. Keep its local service, such as LM Studio, running before generating.';
+  $('provider-status').textContent = provider?.available ? (localPlanner() ? 'Planning runs on your computer with no cloud API fee. Choose your narrator below.' : 'A server API key is configured; connectivity and account access are checked when generating. Paid planning incurs API usage charges; choose your narrator below.') : `${provider?.name || id} is not configured. ${provider?.description || 'Check the server configuration.'}`;
   renderVoiceOptions(id);
   renderPipelineTransparency();
 }
@@ -238,7 +239,7 @@ function renderPricing() {
   if (openSource()) return;
   const pricing = state.config?.pricing; const paid = pricing?.openai;
   const container = $('pricing-detail'); container.replaceChildren();
-  $('cost-summary').textContent = state.provider === 'local' ? (paidVoice() ? 'Local plan · paid speech' : 'Local · no cloud API fee') : paid ? `${money(paid.estimatedLessonMin)}–${money(paid.estimatedLessonMax)} · 2–5 min example` : 'Paid · estimate unavailable';
+  $('cost-summary').textContent = localPlanner() ? (paidVoice() ? 'Local plan · paid speech' : 'Local · no cloud API fee') : paid ? `${money(paid.estimatedLessonMin)}–${money(paid.estimatedLessonMax)} · 2–5 min example` : 'Paid · estimate unavailable';
   const grid = el('div', undefined, 'price-grid'); const local = el('div'); const cloud = el('div');
   local.append(el('h3', 'Local generation'), el('p', pricing?.local?.description || 'No per-request cloud API fee. Your own hardware, electricity, and setup still have a cost.'));
   cloud.append(el('h3', 'OpenAI generation'));
@@ -533,6 +534,7 @@ async function initialize() {
     $('lesson-treatment').textContent = [state.config.animation?.name, state.config.animation?.description].filter(Boolean).join(' · ');
     $('lesson-treatment').hidden = !$('lesson-treatment').textContent;
     state.generationVersion = recommendedVersion()?.id || state.config.defaults?.generationVersion || 'classic';
+    state.provider = state.config.defaults?.provider || 'local';
     if (openSource()) state.provider = 'local';
     renderGenerationVersion();
     renderLibrary();

@@ -11,6 +11,7 @@ import { fairCurriculumCoverage, fairCurriculumIndex, fairFindTopic, fairLoadCur
 import { fairCommand } from './fair-utils.mjs';
 import { FAIR_PRICING } from './fair-pricing.mjs';
 import { FAIR_OPEN_MODEL, fairOpenEnvironment, fairOpenReadiness } from './fair-open-config.mjs';
+import { fairLmStudioModels } from './fair-lmstudio.mjs';
 
 const appDir = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const staticFiles = new Map([['/', 'index.html'], ['/index.html', 'index.html'], ['/curriculum.html', 'curriculum.html'], ['/fair-studio.css', 'fair-studio.css'], ['/fair-studio.mjs', 'fair-studio.mjs'], ['/fair-curriculum.mjs', 'fair-curriculum.mjs']]);
@@ -52,6 +53,9 @@ export async function fairServerConfig(env, { fetchImpl = fetch, command = fairC
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     const result = await response.json(); models = (result.models || []).map(model => model.name).filter(value => typeof value === 'string');
   } catch { planningError = 'Start Ollama and install a model, for example: ollama pull gemma3:12b.'; }
+  let lmstudioModels = [], lmstudioError = '';
+  try { lmstudioModels = await fairLmStudioModels(env, { fetchImpl }); }
+  catch { lmstudioError = 'Start the local server in LM Studio on port 1234 and load a model.'; }
   const installed = async (paths, module) => {
     try {
       const files = await Promise.all(Object.values(paths).map(path => fileStat(path)));
@@ -113,13 +117,15 @@ export async function fairServerConfig(env, { fetchImpl = fetch, command = fairC
       { id: 'open-source', name: 'Open-source video', available: openBlockers.length === 0, description: 'Wan2.2 footage with Manim teaching graphics, Qwen planning and local narration. No paid API fallback.', blockers: openBlockers },
     ],
     providers: [
-      { id: 'local', name: 'Local', available: models.length > 0 && renderAvailable, models,
+      { id: 'lmstudio', name: 'LM Studio · local', available: lmstudioModels.length > 0 && renderAvailable, models: lmstudioModels, defaultModel: env.FAIR_LMSTUDIO_MODEL || lmstudioModels.find(model => model === 'qwen/qwen3.8-27b') || lmstudioModels[0],
+        description: lmstudioError || `Local structured planning through ${lmstudioModels[0]}. Choose narration separately.` },
+      { id: 'local', name: 'Ollama · local', available: models.length > 0 && renderAvailable, models, defaultModel: env.FAIR_MODEL || (models.includes('gpt-oss:20b') ? 'gpt-oss:20b' : models[0]),
         description: planningError || 'Ollama planning on this computer. Choose narration separately.' },
       { id: 'openai', name: 'OpenAI', available: Boolean(env.OPENAI_API_KEY) && renderAvailable, models: [env.FAIR_OPENAI_MODEL || 'gpt-5.6-terra'],
         description: env.OPENAI_API_KEY ? 'API key configured. Account access is checked during generation. Brief is sent to OpenAI; choose narration separately.' : 'Set OPENAI_API_KEY in the server .env to enable paid planning. Choose narration separately.' },
-    ], defaults: { generationVersion: 'quality', openSourceModel: FAIR_OPEN_MODEL, provider: 'local', voiceProvider, model: env.FAIR_MODEL || (models.includes('gpt-oss:20b') ? 'gpt-oss:20b' : models[0] || 'gpt-oss:20b'), reviewModel: env.FAIR_REVIEW_MODEL || '', targetSeconds: 300, avatar: 'none' },
+    ], defaults: { generationVersion: 'quality', openSourceModel: FAIR_OPEN_MODEL, provider: lmstudioModels.length ? 'lmstudio' : 'local', voiceProvider, model: lmstudioModels.length ? env.FAIR_LMSTUDIO_MODEL || lmstudioModels.find(model => model === 'qwen/qwen3.8-27b') || lmstudioModels[0] : env.FAIR_MODEL || (models.includes('gpt-oss:20b') ? 'gpt-oss:20b' : models[0] || 'gpt-oss:20b'), reviewModel: lmstudioModels.length ? env.FAIR_LMSTUDIO_REVIEW_MODEL || '' : env.FAIR_REVIEW_MODEL || '', targetSeconds: 300, avatar: 'none' },
     capabilities: {
-      planning: { available: models.length > 0, detail: planningError || `${models.length} local model${models.length === 1 ? '' : 's'} available.` },
+      planning: { available: models.length > 0 || lmstudioModels.length > 0, detail: lmstudioModels.length ? `LM Studio is ready with ${lmstudioModels.length} local model${lmstudioModels.length === 1 ? '' : 's'}.` : planningError || `${models.length} local model${models.length === 1 ? '' : 's'} available.` },
       narration: { available: Boolean(selectedVoice?.available), detail: selectedVoice?.description || `Unsupported voice provider: ${voiceProvider}.` },
       render: { available: binaryChecks.every(result => result.status === 'fulfilled'), detail: 'HyperFrames + FFmpeg • local MP4 export. First render may install a browser.' },
     } };

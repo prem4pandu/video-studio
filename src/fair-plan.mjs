@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { fairBaseTenState } from './fair-base-ten.mjs';
+import { fairLmStudioGenerate } from './fair-lmstudio.mjs';
 
 // Apache-2.0 licensed planner default for the open-source version; override
 // with FAIR_OPEN_MODEL (the model must be pulled into Ollama first).
@@ -62,7 +63,7 @@ const visualSchema = z.discriminatedUnion('kind', [
 const briefSchema = z.object({
   text: z.string().trim().min(10).max(5000), audience: text.optional(),
   generationVersion: z.enum(['classic', 'quality', 'open-source']).default('classic'),
-  provider: z.enum(['local', 'openai']).default('local'),
+  provider: z.enum(['local', 'lmstudio', 'openai']).default('local'),
   voiceProvider: z.enum(['piper', 'kokoro', 'elevenlabs', 'openai', 'say', 'qwentts']).optional(),
   targetSeconds: z.number().int().min(60).max(600).default(180),
   avatar: z.enum(['none', 'mira', 'leo', 'orbit']).default('none'),
@@ -417,11 +418,12 @@ export async function generateLesson(input, { onProgress = () => {}, signal, out
   }
   if (introductoryScope) generationJsonSchema.properties.objectives.maxItems = 1;
   const paid = brief.provider === 'openai';
-  const model = brief.model || (paid ? env.FAIR_OPENAI_MODEL || 'gpt-5.6-terra' : env.FAIR_MODEL || 'gpt-oss:20b');
-  const reviewModel = (paid ? env.FAIR_OPENAI_REVIEW_MODEL : env.FAIR_REVIEW_MODEL) || model;
+  const lmstudio = brief.provider === 'lmstudio';
+  const model = brief.model || (paid ? env.FAIR_OPENAI_MODEL || 'gpt-5.6-terra' : lmstudio ? env.FAIR_LMSTUDIO_MODEL || 'qwen/qwen3.8-27b' : env.FAIR_MODEL || 'gpt-oss:20b');
+  const reviewModel = (paid ? env.FAIR_OPENAI_REVIEW_MODEL : lmstudio ? env.FAIR_LMSTUDIO_REVIEW_MODEL : env.FAIR_REVIEW_MODEL) || model;
   if (paid && !env.OPENAI_API_KEY?.trim()) throw new Error('Paid planning requires OPENAI_API_KEY in the server environment. Configure it locally; never paste a key into the brief. Local mode remains available.');
-  const base = paid ? new URL('https://api.openai.com/v1/') : new URL(env.FAIR_OLLAMA_URL || 'http://127.0.0.1:11434');
-  if (!['http:', 'https:'].includes(base.protocol) || base.username || base.password) throw new Error('FAIR_OLLAMA_URL must be an HTTP(S) endpoint without credentials');
+  const base = paid ? new URL('https://api.openai.com/v1/') : lmstudio ? null : new URL(env.FAIR_OLLAMA_URL || 'http://127.0.0.1:11434');
+  if (base && (!['http:', 'https:'].includes(base.protocol) || base.username || base.password)) throw new Error('FAIR_OLLAMA_URL must be an HTTP(S) endpoint without credentials');
   const timeoutMs = Math.min(600000, Math.max(1000, Number(env.FAIR_MODEL_TIMEOUT_MS) || 180000));
   const usage = [];
   if (outputDir) await mkdir(outputDir, { recursive: true });
@@ -430,6 +432,13 @@ export async function generateLesson(input, { onProgress = () => {}, signal, out
   async function ask(prompt, selectedModel, name, schema) {
     signal?.throwIfAborted();
     await save(`${name}-prompt.txt`, prompt);
+    if (lmstudio) {
+      const result = await fairLmStudioGenerate({ prompt, model: selectedModel, schema, name, env, signal, timeoutMs });
+      await save(`${name}-response.json`, result.body);
+      usage.push({ provider: 'lmstudio', model: selectedModel, stage: name, inputTokens: result.envelope.usage?.prompt_tokens ?? null, outputTokens: result.envelope.usage?.completion_tokens ?? null });
+      await save('usage.json', { requests: usage });
+      return JSON.parse(result.content);
+    }
     let response;
     try {
       response = await fetch(paid ? new URL('responses', base) : new URL('api/generate', `${base.href.replace(/\/$/, '')}/`), {
