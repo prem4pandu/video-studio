@@ -10,10 +10,11 @@ import { fairCommand, fairFileHash, fairHash, fairReadJson, fairWriteJson } from
 
 const require = createRequire(import.meta.url);
 export const FAIR_RENDERER = join(dirname(require.resolve('hyperframes/package.json')), 'bin', 'hyperframes.mjs');
+export const fairRendererKind = brief => brief.generationVersion === 'open-source' ? 'open-source' : 'hyperframes';
 
 export async function fairRunPipeline(brief, directory, { signal, env = process.env, onProgress = () => {} } = {}) {
   brief = normalizeBrief(brief);
-  if (brief.generationVersion === 'open-source') {
+  if (fairRendererKind(brief) === 'open-source') {
     env = fairOpenEnvironment(env, brief);
     await onProgress({ stage: 'plan', progress: 2, message: 'Checking the open-source planner, Wan models and Manim renderer.' });
     const readiness = await fairOpenReadiness({ env, signal });
@@ -53,7 +54,7 @@ export async function fairRenderLesson(lesson, brief, directory, { signal, env =
   if (origin !== 'authored' && previousQuality?.reviewed !== true) throw new Error('Generated lessons require a completed teaching critique before rendering.');
   lesson.quality = { reviewed: origin !== 'authored' && previousQuality?.reviewed === true,
     warnings: [...new Set([...lesson.quality.warnings, ...(previousQuality?.warnings || [])])] };
-  if (brief.generationVersion === 'open-source') {
+  if (fairRendererKind(brief) === 'open-source') {
     const { fairRenderOpenLesson } = await import('./fair-open-render.mjs');
     return fairRenderOpenLesson(lesson, brief, directory, { signal, env: fairOpenEnvironment(env, brief), onProgress, origin });
   }
@@ -90,6 +91,14 @@ export async function fairRenderLesson(lesson, brief, directory, { signal, env =
     { name: 'Full timeline', passed: Number.isFinite(durationSeconds) && Math.abs(durationSeconds - composition.durationSeconds) < 1, detail: `Expected ${composition.durationSeconds.toFixed(2)}s, measured ${durationSeconds.toFixed(2)}s.` },
     { name: 'Captions', passed: composition.captions.length > 0 && (await readFile(join(projectDir, 'captions.vtt'), 'utf8')).startsWith('WEBVTT'), detail: 'WebVTT captions are generated from the spoken script; word timing is estimated.' },
   ];
+  if (brief.generationVersion === 'quality') {
+    const beats = new Set(lesson.scenes.map(scene => scene.beat));
+    const requiredBeats = ['hook', 'concept', 'example', 'misconception', 'question', 'answer', 'recap'];
+    checks.unshift(
+      { name: 'Complete teaching loop', passed: requiredBeats.every(beat => beats.has(beat)), detail: 'Hook, concept, example, misconception repair, learner question, explained answer and recap are present.' },
+      { name: 'Protected response time', passed: lesson.scenes.filter(scene => scene.beat === 'question').every(scene => scene.pauseSeconds >= 5), detail: 'Every learner question reserves at least five seconds before feedback.' },
+    );
+  }
   const warnings = [...lesson.quality.warnings, ...lesson.curriculum.warnings,
     'Caption and visual reveal timings are estimated within measured narration scenes. Listen to the result to review synchronization.',
     ...(brief.avatar === 'none' ? [] : ['Presenter mouth motion follows audio energy; it is not phoneme-accurate lip sync.'])];

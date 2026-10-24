@@ -105,6 +105,7 @@ export async function fairServerConfig(env, { fetchImpl = fetch, command = fairC
   const openBlockers = [...openSource.blockers, ...(!piper && !openKokoro && !qwen ? ['Install Qwen3-TTS, Piper or Kokoro for open-source narration.'] : [])];
   return { avatars: FAIR_AVATARS, models, pricing: FAIR_PRICING, voiceOptions,
     generationVersions: [
+      { id: 'quality', name: 'Quality lesson', available: renderAvailable, recommended: true, description: 'Recommended HyperFrames lesson with enforced teaching structure, supported maths visuals, and learner response time.' },
       { id: 'classic', name: 'Classic lesson', available: renderAvailable, description: 'The existing illustrated lessons with HyperFrames animation and your chosen narrator.' },
       { id: 'open-source', name: 'Open-source video', available: openBlockers.length === 0, description: 'Wan2.2 footage with Manim teaching graphics, Qwen planning and local narration. No paid API fallback.', blockers: openBlockers },
     ],
@@ -113,7 +114,7 @@ export async function fairServerConfig(env, { fetchImpl = fetch, command = fairC
         description: planningError || 'Ollama planning on this computer. Choose narration separately.' },
       { id: 'openai', name: 'OpenAI', available: Boolean(env.OPENAI_API_KEY) && renderAvailable, models: [env.FAIR_OPENAI_MODEL || 'gpt-5.6-terra'],
         description: env.OPENAI_API_KEY ? 'API key configured. Account access is checked during generation. Brief is sent to OpenAI; choose narration separately.' : 'Set OPENAI_API_KEY in the server .env to enable paid planning. Choose narration separately.' },
-    ], defaults: { generationVersion: 'classic', openSourceModel: FAIR_OPEN_MODEL, provider: 'local', voiceProvider, model: env.FAIR_MODEL || (models.includes('gpt-oss:20b') ? 'gpt-oss:20b' : models[0] || 'gpt-oss:20b'), reviewModel: env.FAIR_REVIEW_MODEL || '', targetSeconds: 300, avatar: 'none' },
+    ], defaults: { generationVersion: 'quality', openSourceModel: FAIR_OPEN_MODEL, provider: 'local', voiceProvider, model: env.FAIR_MODEL || (models.includes('gpt-oss:20b') ? 'gpt-oss:20b' : models[0] || 'gpt-oss:20b'), reviewModel: env.FAIR_REVIEW_MODEL || '', targetSeconds: 300, avatar: 'none' },
     capabilities: {
       planning: { available: models.length > 0, detail: planningError || `${models.length} local model${models.length === 1 ? '' : 's'} available.` },
       narration: { available: Boolean(selectedVoice?.available), detail: selectedVoice?.description || `Unsupported voice provider: ${voiceProvider}.` },

@@ -69,15 +69,64 @@ function renderAvatars(avatars) {
   }
 }
 const openSource = () => state.generationVersion === 'open-source';
+const qualityGeneration = () => state.generationVersion === 'quality';
 const modelKey = () => `${state.generationVersion}:${state.provider}`;
 function generationVersions() { return state.config?.generationVersions || [{ id: 'classic', name: 'Classic · illustrated lessons', available: true, description: 'Illustrated lessons with the existing animation studio.' }]; }
+function recommendedVersion() {
+  const versions = generationVersions();
+  return versions.find((version) => version.recommended) || versions.find((version) => version.id === 'quality') || versions.find((version) => version.id === state.config?.defaults?.generationVersion) || versions.find((version) => version.available !== false) || versions[0];
+}
 function generationName(job) {
   const id = job.brief?.generationVersion || job.generationVersion || 'classic';
   return generationVersions().find((version) => version.id === id)?.name || (id === 'open-source' ? 'Open source' : 'Classic');
 }
+function pipelineSteps(version) {
+  if (Array.isArray(version?.stages) && version.stages.length) return version.stages.map((stage) => typeof stage === 'string' ? stage : stage.label || stage.name || stage.id).filter(Boolean);
+  if (version?.id === 'open-source') return ['Teaching plan', 'Content critique', 'Narration', 'Generate footage', 'Teaching graphics', 'Export checks'];
+  if (version?.id === 'quality') return ['Teaching plan', 'Pedagogy critique', 'Narration', 'Purposeful animation', 'Quality gates', 'Educator review'];
+  return ['Teaching plan', 'Content check', 'Narration', 'Animation', 'Export check', 'Educator review'];
+}
+function addSetupItem(label, detail, passed, action) {
+  const item = el('li', undefined, passed ? 'setup-ready' : 'setup-action');
+  const marker = el('span', passed ? 'Ready' : 'Action needed', 'setup-state');
+  const copy = el('span', undefined, 'setup-copy'); copy.append(el('strong', label), el('small', detail));
+  item.append(marker, copy);
+  if (!passed && action) item.append(el('span', action, 'setup-fix'));
+  $('setup-list').append(item);
+}
+function renderPipelineTransparency() {
+  const versions = generationVersions();
+  const version = versions.find((entry) => entry.id === state.generationVersion) || versions[0];
+  const recommended = recommendedVersion();
+  const isRecommended = version?.id === recommended?.id;
+  $('version-badge').hidden = !isRecommended;
+  $('version-badge').textContent = isRecommended ? 'Recommended path' : `Recommended: ${recommended?.name || 'quality'}`;
+  $('generation-summary').textContent = qualityGeneration() ? 'Pedagogy, production, and verification are visible as separate stages.' : openSource() ? 'Local services create footage, graphics, narration, and a verification report.' : 'Planning, narration, animation, and export remain visible as separate stages.';
+  $('pedagogy-summary').textContent = version?.pedagogySummary || (qualityGeneration() ? 'A worked example, protected think time, guided practice, independent transfer, and explicit misconception repair shape the lesson before rendering.' : 'The lesson plan uses objectives, worked examples, learner practice, and an educator review point.');
+  $('teaching-pattern').textContent = version?.teachingPattern || (qualityGeneration() ? 'Explain, model, practise, transfer' : 'Objective-led lesson sequence');
+  $('quality-target').textContent = version?.qualityTarget || (qualityGeneration() ? 'Pedagogy and export gates' : 'Automated export checks');
+  $('pipeline-preview').replaceChildren(...pipelineSteps(version).map((label, index) => {
+    const item = el('li'); item.append(el('span', String(index + 1).padStart(2, '0'), 'pipeline-number'), el('strong', label)); return item;
+  }));
+
+  const provider = providers().find((entry) => entry.id === state.provider);
+  const voice = selectedVoice();
+  const versionReady = version?.available !== false;
+  const providerReady = Boolean(provider?.available);
+  const voiceReady = openSource() ? ['piper', 'kokoro'].includes(voice?.id) && voiceAvailable(voice) : !state.config?.voiceOptions?.length || voiceAvailable(voice);
+  $('setup-list').replaceChildren();
+  addSetupItem('Generation path', versionReady ? `${version?.name || 'Selected path'} is available.` : `${version?.name || 'Selected path'} needs configuration.`, versionReady, 'Review the setup details above.');
+  addSetupItem('Lesson planner', providerReady ? `${provider?.name || 'Planner'} is connected.` : `${provider?.name || 'Planner'} is not configured.`, providerReady, provider?.description || 'Choose an available planner.');
+  addSetupItem('Narration', voiceReady ? `${voice?.name || 'Narration'} is available.` : 'The selected narrator is not ready.', voiceReady, 'Choose an available narrator or complete its local setup.');
+  addSetupItem('Quality review', qualityGeneration() ? 'Pedagogy and export gates run before delivery.' : 'Export checks run before delivery.', true);
+  const ready = versionReady && providerReady && voiceReady;
+  $('setup-title').textContent = ready ? 'Ready to generate' : 'Finish setup to continue';
+  $('setup-summary').textContent = ready ? `${version?.name || 'This path'} can start with the current planner and narrator.` : 'One or more required services need attention. Each item below shows the next action.';
+}
 function renderGenerationVersion() {
   const versions = generationVersions();
-  $('generation-version').replaceChildren(...versions.map((version) => { const option = el('option', `${version.name}${version.available ? '' : ' — setup needed'}`); option.value = version.id; return option; }));
+  const recommended = recommendedVersion();
+  $('generation-version').replaceChildren(...versions.map((version) => { const option = el('option', `${version.name}${version.id === recommended?.id ? ' (Recommended)' : ''}${version.available ? '' : ': setup needed'}`); option.value = version.id; return option; }));
   $('generation-version').value = state.generationVersion;
   const selected = versions.find((version) => version.id === state.generationVersion);
   $('generation-description').textContent = [selected?.description, openSource() ? 'No API fees. Hardware, electricity, storage and setup still have a cost. Generated footage needs educator review.' : ''].filter(Boolean).join(' ');
@@ -92,8 +141,10 @@ function renderGenerationVersion() {
   }
   $('instructor-field').hidden = openSource();
   $('instructor-field').disabled = openSource();
+  $('generate').textContent = qualityGeneration() ? 'Generate quality lesson →' : 'Generate lesson →';
   notice(openSource() ? '' : state.capabilityWarning);
   renderProviders(false);
+  renderPipelineTransparency();
 }
 function providers() {
   const choices = state.config?.providers || [{ id: 'local', name: 'Local', available: state.config?.capabilities?.planning?.available !== false, models: state.config?.models || [], description: 'Plan and narrate with your local services.' }];
@@ -117,12 +168,13 @@ function updateVoice() {
     if (sample.origin === location.origin && ['/assets/', '/api/'].some((prefix) => sample.pathname.startsWith(prefix))) { audio.src = fairUrl(sample.pathname); audio.hidden = false; }
   }
   renderPricing();
+  renderPipelineTransparency();
 }
 function renderVoiceOptions(provider) {
   const voices = (state.config?.voiceOptions || []).filter((voice) => !openSource() || ['piper', 'kokoro'].includes(voice.id));
   $('voice-field').hidden = !voices.length && !openSource();
   $('voice-provider').replaceChildren(...voices.map((voice) => {
-    const option = el('option', `${voice.name}${voiceAvailable(voice) ? '' : ' — setup needed'}${voice.quality === 'system' ? ' · draft quality' : ''}`); option.value = voice.id; return option;
+    const option = el('option', `${voice.name}${voiceAvailable(voice) ? '' : ': setup needed'}${voice.quality === 'system' ? ' · draft quality' : ''}`); option.value = voice.id; return option;
   }));
   const preferred = provider === 'openai' ? 'openai' : state.config?.defaults?.voiceProvider || 'piper';
   $('voice-provider').value = voices.some((voice) => voice.id === preferred) ? preferred : voices[0]?.id || '';
@@ -143,6 +195,7 @@ function selectProvider(id, remember = true) {
   if (openSource()) $('model-hint').textContent = 'This version uses the local model configured by the studio server. Keep its local service, such as Strata, running before generating.';
   $('provider-status').textContent = provider?.available ? (id === 'local' ? 'Planning runs on your computer with no cloud API fee. Choose your narrator below.' : 'A server API key is configured; connectivity and account access are checked when generating. Paid planning incurs API usage charges; choose your narrator below.') : `${provider?.name || id} is not configured. ${provider?.description || 'Check the server configuration.'}`;
   renderVoiceOptions(id);
+  renderPipelineTransparency();
 }
 function renderProviders(remember = true) {
   $('providers').replaceChildren();
@@ -258,11 +311,12 @@ function renderJob(job) {
   $('job-title').textContent = job.lesson?.title || (ready ? (authored ? 'Authored animation benchmark' : 'Your lesson is ready.') : 'An idea becomes a lesson.');
   $('job-brief').textContent = typeof job.brief === 'string' ? job.brief : job.brief?.text || '';
   $('job-generation').textContent = `Generation version: ${generationName(job)}`;
-  $('job-status').textContent = ready ? (authored ? 'Authored benchmark export complete · educator review needed' : 'Export complete · educator review needed') : job.message || `Lesson ${job.status}`;
+  $('job-status').textContent = ready ? (authored ? 'Authored benchmark export complete. Educator review needed.' : 'Export complete. Educator review needed.') : job.message || `Lesson ${job.status}`;
   $('video').setAttribute('aria-label', authored ? 'Authored animation benchmark preview' : 'Generated lesson preview');
   const progress = Math.max(0, Math.min(100, Number(job.progress) || 0));
   $('progress').value = progress; $('progress').textContent = `${progress}%`; $('progress-label').textContent = `${progress}%`;
-  const jobStages = job.brief?.generationVersion === 'open-source' || job.generationVersion === 'open-source' || job.stage === 'footage' ? [...stages.slice(0, 3), ['footage', 'Generate footage'], ...stages.slice(3)] : stages;
+  const jobVersion = job.brief?.generationVersion || job.generationVersion;
+  const jobStages = jobVersion === 'open-source' || job.stage === 'footage' ? [...stages.slice(0, 3), ['footage', 'Generate footage'], ...stages.slice(3)] : jobVersion === 'quality' ? [['plan', 'Teaching plan'], ['review', 'Pedagogy critique'], ['narration', 'Narration'], ['composition', 'Purposeful animation'], ['render', 'Render'], ['verify', 'Quality gates']] : stages;
   const current = jobStages.findIndex(([id]) => id === job.stage);
   $('stage-list').classList.toggle('stages-open-source', jobStages.length > stages.length);
   $('stage-label').textContent = ready ? 'Ready for review' : jobStages[current]?.[1] || 'Preparing';
@@ -332,21 +386,30 @@ function renderReport(report) {
   $('quality-section').hidden = !report;
   if (!report) return;
   const container = $('quality-report'); container.replaceChildren();
-  container.append(el('p', 'Automated checks cover the export and lesson structure. They do not replace an educator’s review.', 'muted'));
+  const checks = Array.isArray(report.checks) ? report.checks : [];
+  const passed = checks.filter((check) => check.passed).length;
+  $('quality-gate-summary').textContent = checks.length ? `${passed} of ${checks.length} automated gates passed` : 'Educator review required';
+  const intro = el('div', undefined, 'quality-intro');
+  intro.append(el('strong', report.passed === false ? 'The export needs attention before teaching.' : 'Automated verification is complete.'), el('p', 'These gates cover the export and lesson structure. They do not replace an educator’s subject and curriculum review.'));
+  container.append(intro);
   if (report.voice) {
     const voice = report.voice;
     const parts = typeof voice === 'string' ? [voice] : [voice.provider, voice.voice, voice.model, voice.tier || voice.quality?.tier || (typeof voice.quality === 'string' ? voice.quality : '')].filter(Boolean);
-    container.append(el('p', `Narration used: ${parts.join(' · ')}`, 'voice-metadata'));
+    container.append(el('p', `Narration: ${parts.join(' / ')}`, 'voice-metadata'));
   }
-  if (Array.isArray(report.checks)) {
-    const list = el('ul', undefined, 'objectives');
-    for (const check of report.checks) list.append(el('li', `${check.passed ? 'Passed' : 'Needs attention'} — ${check.name}${check.detail ? `: ${check.detail}` : ''}`));
+  if (checks.length) {
+    const list = el('ul', undefined, 'gate-grid');
+    for (const check of checks) {
+      const item = el('li', undefined, check.passed ? 'gate-pass' : 'gate-review');
+      item.append(el('span', check.passed ? 'Passed' : 'Review', 'gate-state'), el('strong', check.name), el('p', check.detail || (check.passed ? 'This automated check passed.' : 'Open the quality report for details.')));
+      list.append(item);
+    }
     container.append(list);
   }
   if (Array.isArray(report.coverage) && report.coverage.length) {
     container.append(el('h3', 'Objective coverage'));
-    const list = el('ul', undefined, 'objectives');
-    for (const objective of report.coverage) list.append(el('li', `${objective.text} — ${objective.explained ? 'explained' : 'explanation missing'}, ${objective.practised ? 'practised' : 'practice missing'}`));
+    const list = el('ul', undefined, 'coverage-list');
+    for (const objective of report.coverage) list.append(el('li', `${objective.text}: ${objective.explained ? 'explained' : 'explanation missing'}, ${objective.practised ? 'practised' : 'practice missing'}`));
     container.append(list);
   }
   for (const warning of report.warnings || []) container.append(el('p', text(warning), 'notice'));
@@ -359,7 +422,7 @@ async function initialize() {
     renderAvatars(state.config.avatars || []);
     $('lesson-treatment').textContent = [state.config.animation?.name, state.config.animation?.description].filter(Boolean).join(' · ');
     $('lesson-treatment').hidden = !$('lesson-treatment').textContent;
-    state.generationVersion = state.config.defaults?.generationVersion || 'classic';
+    state.generationVersion = recommendedVersion()?.id || state.config.defaults?.generationVersion || 'classic';
     if (openSource()) state.provider = 'local';
     renderGenerationVersion();
     renderLibrary();
@@ -429,10 +492,10 @@ $('lesson-form').addEventListener('submit', async (event) => {
   for (const field of ['audience', 'model', 'curriculumSource', 'voiceProvider']) { const value = String(values.get(field) || '').trim(); if (value) payload[field] = value; }
   if (payload.text.length < 10) { fail('Describe your lesson in at least 10 characters so the teaching plan has enough context.'); return; }
   if (!canGenerate()) { fail('Choose an available generation option or finish its server setup first.'); return; }
-  $('generate').disabled = true; $('generate').textContent = 'Starting your lesson…';
+  $('generate').disabled = true; $('generate').textContent = 'Starting quality generation...';
   try { const { job } = await api('/api/jobs', { method: 'POST', body: JSON.stringify(payload) }); updateJob(job); await selectJob(job.id); }
   catch (error) { fail(error.message); }
-  finally { $('generate').disabled = !canGenerate(); $('generate').textContent = 'Create my lesson ↗'; }
+  finally { $('generate').disabled = !canGenerate(); $('generate').textContent = qualityGeneration() ? 'Generate quality lesson →' : 'Generate lesson →'; }
 });
 for (const action of ['retry', 'cancel']) {
   $(action).addEventListener('click', async () => {
