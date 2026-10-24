@@ -98,7 +98,10 @@ export async function fairServerConfig(env, { fetchImpl = fetch, command = fairC
       description: env.OPENAI_API_KEY ? 'API key configured; account access is verified during generation. Narration is sent to OpenAI.' : 'Set OPENAI_API_KEY for paid narration.' },
     { id: 'say', name: 'System voice · draft', quality: 'system', available: process.platform === 'darwin', description: 'macOS system speech for drafts. Word timing is estimated.' },
   ];
-  const voiceProvider = env.FAIR_TTS_PROVIDER || 'qwentts', selectedVoice = voiceOptions.find(option => option.id === voiceProvider);
+  const requestedVoiceProvider = env.FAIR_TTS_PROVIDER || 'qwentts';
+  const requestedVoice = voiceOptions.find(option => option.id === requestedVoiceProvider);
+  const selectedVoice = requestedVoice?.available ? requestedVoice : voiceOptions.find(option => ['qwentts', 'piper', 'kokoro', 'say'].includes(option.id) && option.available) || requestedVoice;
+  const voiceProvider = selectedVoice?.id || requestedVoiceProvider;
   let openKokoro = kokoro;
   try { fairOpenEnvironment(env, { voiceProvider: 'kokoro' }); } catch { openKokoro = false; }
   for (const voice of voiceOptions) voice.openSourceAvailable = voice.id === 'piper' ? piper : voice.id === 'kokoro' ? openKokoro : voice.id === 'qwentts' ? qwen : false;

@@ -1,7 +1,7 @@
 const $ = (id) => document.getElementById(id);
 const fairWorkspace = new URL('.', import.meta.url);
 const fairUrl = (path) => new URL(path.replace(/^\//, ''), fairWorkspace).href;
-const state = { jobs: [], selected: null, config: null, timer: null, revision: '', resultKey: '', capabilityWarning: '', generationVersion: 'classic', provider: 'local', providerModels: {} };
+const state = { jobs: [], selected: null, config: null, timer: null, revision: '', resultKey: '', capabilityWarning: '', generationVersion: 'classic', provider: 'local', voiceProvider: '', providerModels: {} };
 let playbackAttempt = 0, playerFeedbackActive = false;
 const stages = [['plan', 'Plan'], ['review', 'Check content'], ['narration', 'Narrate'], ['composition', 'Animate'], ['render', 'Render'], ['verify', 'Verify export']];
 const active = (job) => ['queued', 'running'].includes(job?.status);
@@ -174,10 +174,13 @@ function renderVoiceOptions(provider) {
   const voices = (state.config?.voiceOptions || []).filter((voice) => !openSource() || ['piper', 'kokoro'].includes(voice.id));
   $('voice-field').hidden = !voices.length && !openSource();
   $('voice-provider').replaceChildren(...voices.map((voice) => {
-    const option = el('option', `${voice.name}${voiceAvailable(voice) ? '' : ': setup needed'}${voice.quality === 'system' ? ' · draft quality' : ''}`); option.value = voice.id; return option;
+    const available = voiceAvailable(voice);
+    const option = el('option', `${voice.name}${available ? '' : ': not installed'}${voice.quality === 'system' ? ' · draft quality' : ''}`); option.value = voice.id; option.disabled = !available; return option;
   }));
-  const preferred = provider === 'openai' ? 'openai' : state.config?.defaults?.voiceProvider || 'piper';
-  $('voice-provider').value = voices.some((voice) => voice.id === preferred) ? preferred : voices[0]?.id || '';
+  const preferredIds = [state.voiceProvider, provider === 'openai' ? 'openai' : state.config?.defaults?.voiceProvider, 'qwentts', 'piper', 'kokoro', 'say'];
+  const preferred = preferredIds.map(id => voices.find(voice => voice.id === id && voiceAvailable(voice))).find(Boolean) || voices.find(voiceAvailable);
+  $('voice-provider').value = preferred?.id || '';
+  state.voiceProvider = $('voice-provider').value;
   updateVoice();
   if (openSource() && !voices.length) $('voice-status').textContent = 'Set up a local Piper or Kokoro narrator before generating.';
 }
@@ -457,7 +460,7 @@ $('play-narration').addEventListener('click', async () => {
   } finally { if (attempt === playbackAttempt) $('play-narration').disabled = false; }
 });
 for (const event of ['playing', 'pause', 'volumechange', 'ended']) $('video').addEventListener(event, reflectPlayback);
-$('voice-provider').addEventListener('change', updateVoice);
+$('voice-provider').addEventListener('change', () => { state.voiceProvider = $('voice-provider').value; updateVoice(); });
 $('generation-version').addEventListener('change', () => {
   if ($('model').value.trim()) state.providerModels[modelKey()] = $('model').value.trim();
   state.generationVersion = $('generation-version').value;

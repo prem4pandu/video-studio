@@ -203,7 +203,8 @@ test('planning remains available when local voice dependencies are missing; paid
     command: async () => ({ stdout: '', stderr: '' }), fileStat: async () => { throw new Error('Fixture files absent'); },
   });
   assert.equal(value.providers.find(option => option.id === 'local').available, true);
-  assert.equal(value.defaults.voiceProvider, 'qwentts');
+  assert.equal(value.defaults.voiceProvider, 'say');
+  assert.equal(value.capabilities.narration.available, true);
   assert.equal(value.voiceOptions.find(option => option.id === 'qwentts').available, false);
   assert.equal(value.voiceOptions.find(option => option.id === 'piper').available, false);
   assert.equal(value.voiceOptions.find(option => option.id === 'kokoro').available, false);

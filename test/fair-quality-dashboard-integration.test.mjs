@@ -94,6 +94,8 @@ test('dashboard source submits quality and exposes accessible pipeline and gate 
   assert.match(html, /id="quality-report-title"[^>]*>What passed, what needs review</);
 
   assert.match(script, /generationVersion:\s*state\.generationVersion/);
+  assert.match(script, /option\.disabled = !available/);
+  assert.match(script, /state\.voiceProvider = \$\('voice-provider'\)\.value/);
   assert.match(script, /api\('\/api\/jobs',\s*\{\s*method:\s*'POST',\s*body:\s*JSON\.stringify\(payload\)/);
   assert.match(script, /jobVersion === 'quality'/);
   assert.match(script, /\['verify', 'Quality gates'\]/);
