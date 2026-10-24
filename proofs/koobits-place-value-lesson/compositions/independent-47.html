@@ -16,6 +16,7 @@
         <div data-hf-id="hf-k99u" class="col t"><div data-hf-id="hf-a2k2" class="head">Tens</div><div data-hf-id="hf-am8c" class="cell"><div data-hf-id="hf-8rn3" id="independent-seven" class="digit" data-layout-allow-overflow>7</div></div></div>
         <div data-hf-id="hf-60d5" class="col o"><div data-hf-id="hf-ex9z" class="head">Ones</div><div data-hf-id="hf-9fb9" class="cell"><div data-hf-id="hf-ytjk" id="independent-zero" class="digit">0</div></div></div>
       </div>
+      <div id="independent-pointer" class="attention-pointer" style="left:535px;top:185px"><span class="attention-label">Check each move</span></div>
       <div data-hf-id="hf-u6n9" id="independent-answer" class="equation feedback">47 × 10 = 470</div>
     </div>
   </div>
@@ -23,12 +24,17 @@
     const tl = gsap.timeline({ paused: true });
     tl.fromTo('#independent-four', { x: 380 }, { x: 380, duration: .01 }, 0)
       .fromTo('#independent-seven', { x: 380 }, { x: 380, duration: .01 }, 0)
-      .set('#independent-timer', { innerText: 'Shift each digit' }, 12)
-      .to('#independent-four, #independent-seven', { x: 0, duration: 1, ease: 'power4.out' }, 22)
-      .set('#independent-timer', { innerText: 'What fills ones?' }, 27)
-      .fromTo('#independent-zero', { opacity: 0, y: 82 }, { opacity: 1, y: 0, duration: .5, ease: 'power4.out' }, 33)
-      .fromTo('#independent-answer', { opacity: 0, filter: 'blur(6px)' }, { opacity: 1, filter: 'blur(0px)', duration: .45, ease: 'power4.out' }, 41)
-      .set('#independent-timer', { innerText: 'Check: 4 hundreds, 7 tens, 0 ones' }, 41);
+      .set('#independent-timer', { innerText: 'Commit your answer' }, 19.05)
+      .set('#independent-timer', { innerText: 'Check each digit' }, 30.04)
+      .fromTo('#independent-pointer', { opacity: 0, y: -8 }, { opacity: 1, y: 0, duration: .2, ease: 'power3.out' }, 30.04)
+      .to('#independent-four, #independent-seven', { x: 0, duration: 4, ease: 'power3.inOut' }, 30.04)
+      .set('#independent-timer', { innerText: 'What fills ones?' }, 35.03)
+      .to('#independent-pointer', { x: 760, duration: .3, ease: 'power3.inOut' }, 35.03)
+      .fromTo('#independent-zero', { opacity: 0, y: 82 }, { opacity: 1, y: 0, duration: 3.25, ease: 'power3.out' }, 35.03)
+      .set('#independent-timer', { innerText: '4 hundreds + 7 tens + 0 ones' }, 40.05)
+      .to('#independent-pointer', { opacity: 0, duration: .18 }, 40.05)
+      .fromTo('#independent-answer', { opacity: 0, filter: 'blur(6px)' }, { opacity: 1, filter: 'blur(0px)', duration: .45, ease: 'power4.out' }, 45.04)
+      .set('#independent-timer', { innerText: 'Correct: 470' }, 45.04);
     window.__timelines['independent-47'] = tl;
   </script>
 </template>

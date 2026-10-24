@@ -7,6 +7,8 @@ const project = resolve('proofs/koobits-place-value-lesson');
 const read = file => readFile(join(project, file), 'utf8');
 const count = (source, value) => source.split(value).length - 1;
 const at = (source, selector) => Number(source.match(new RegExp(`(?:fromTo|to)\\('${selector.replace(/[.*+?^${}()|[\\]\\]/g, '\\$&')}'[\\s\\S]*?\\},\\s*([\\d.]+)\\)`))?.[1]);
+const toAt = (source, selector) => Number(source.match(new RegExp(`\\.to\\('${selector.replace(/[.*+?^${}()|[\\]\\]/g, '\\$&')}'[\\s\\S]*?\\},\\s*([\\d.]+)\\)`))?.[1]);
+const setAt = (source, selector) => Number(source.match(new RegExp(`\\.set\\('${selector.replace(/[.*+?^${}()|[\\]\\]/g, '\\$&')}'[\\s\\S]*?\\},\\s*([\\d.]+)\\)`))?.[1]);
 
 test('KooBits place-value lesson is a complete, offline 23 × 10 learning loop', async () => {
   const files = {
@@ -32,7 +34,7 @@ test('KooBits place-value lesson is a complete, offline 23 × 10 learning loop',
   const scenes = [...source.index.matchAll(/data-composition-id="([^"]+)"[^>]+data-composition-src="([^"]+)"[^>]+data-start="([\d.]+)"[^>]+data-duration="([\d.]+)"/g)]
     .map(match => ({ id: match[1], file: match[2], start: Number(match[3]), duration: Number(match[4]) }))
     .filter(scene => scene.id !== 'captions');
-  assert.deepEqual(scenes.map(scene => scene.id), [
+  assert.deepEqual(scenes.map(scene => scene.id).filter(id => !id.startsWith('hook-split')), [
     'hook', 'goal', 'build-23', 'predict', 'prove-23', 'misconception', 'guided-41', 'independent-47', 'recap',
   ], 'lesson must preserve the ordered hook → goal → model → predict → proof → repair → guided → independent → recap loop');
   assert.equal(scenes[0].start, 0);
@@ -59,12 +61,14 @@ test('KooBits place-value lesson is a complete, offline 23 × 10 learning loop',
   const choicesAt = at(source.predict, '.choice');
   const predictionRevealAt = Number(source.predict.match(/\.to\('\.choice:nth-child\(2\)'[\s\S]*?\},\s*([\d.]+)\)/)?.[1]);
   assert.ok(Number.isFinite(choicesAt) && predictionRevealAt - choicesAt >= 3, 'prediction needs at least three seconds before its correct option is revealed');
+  assert.ok(predictionRevealAt >= 16, 'prediction feedback must wait until the narrated think window ends');
 
   const shiftAt = at(source.prove, '#prove23-two, #prove23-three');
   const emptyAt = at(source.prove, '#prove23-empty');
   const zeroAt = at(source.prove, '#prove23-zero');
   const resultAt = at(source.prove, '#prove23-eq');
   assert.ok(shiftAt < emptyAt && emptyAt < zeroAt && zeroAt < resultAt, 'digits must shift, expose the empty ones place, receive zero, then reveal 230');
+  assert.ok(shiftAt >= 24 && emptyAt >= 30 && zeroAt >= 34 && resultAt >= 37, 'proof actions must follow their narration anchors');
 
   assert.match(source.misconception, /[“\"]Just add a zero[”\"]/);
   assert.match(source.misconception, /fails with decimals/i);
@@ -84,6 +88,21 @@ test('KooBits place-value lesson is a complete, offline 23 × 10 learning loop',
   const independentZeroAt = at(source.independent, '#independent-zero');
   assert.ok(independentRevealAt - independentPromptAt >= 8, 'independent answer must remain hidden for a meaningful response window');
   assert.ok(independentShiftAt < independentZeroAt && independentZeroAt < independentRevealAt, 'independent model must withhold 470 until after the learner action');
+  assert.ok(independentShiftAt >= 30, 'independent digits must not move during thinking or commitment');
+  assert.ok(independentZeroAt >= 35, 'independent zero must wait for its narration');
+  assert.ok(independentRevealAt >= 45, 'independent answer must wait for the narrated reveal');
+
+  const guidedFourAt = toAt(source.guided, '#guided-four');
+  const guidedOneAt = toAt(source.guided, '#guided-one');
+  const guidedZeroAt = at(source.guided, '#guided-zero');
+  const guidedAnswerAt = setAt(source.guided, '.title');
+  assert.ok(guidedFourAt >= 18 && guidedOneAt >= 30, 'guided digit moves must follow their separate response windows');
+  assert.ok(guidedZeroAt >= 40 && guidedAnswerAt >= 43, 'guided zero and answer must not leak into the final response window');
+
+  for (const [name, html] of [['build', source.build], ['prove', source.prove], ['guided', source.guided], ['independent', source.independent]]) {
+    assert.match(html, /class="attention-pointer"/, `${name} must include a purposeful visual pointer`);
+    assert.match(html, /attention-label/, `${name} pointer must name the current referent`);
+  }
 
   const audioTags = [...source.index.matchAll(/<audio\b[^>]*>/g)].map(match => match[0]);
   assert.ok(audioTags.length >= 1, 'narration/audio must be mounted in the master composition');

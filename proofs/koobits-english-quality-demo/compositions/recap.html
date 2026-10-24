@@ -1,0 +1,82 @@
+<template
+  ><style>
+    @import url("assets/vendor/lesson.css");
+    #recap-pattern {
+      position: absolute;
+      left: 280px;
+      right: 280px;
+      top: 260px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 22px;
+    }
+    #recap-examples {
+      position: absolute;
+      left: 170px;
+      right: 170px;
+      bottom: 145px;
+      display: flex;
+      justify-content: space-between;
+    }
+    .pair {
+      padding: 24px 32px;
+      border-radius: 20px;
+      background: #f4f0e6;
+      font-size: 44px;
+      font-weight: 900;
+    }
+    .pair strong {
+      color: #13805b;
+    }
+    #recap-pattern .vowel-word {
+      width: 300px;
+      font-size: 54px;
+    }
+  </style>
+  <div
+    id="root"
+    data-composition-id="recap"
+    data-width="1920"
+    data-height="1080"
+    data-duration="15"
+  >
+    <div class="ground"></div>
+    <div
+      id="recap-canvas"
+      class="clip canvas"
+      data-start="0"
+      data-duration="15"
+      data-track-index="1"
+    >
+      <div class="kicker">Remember</div>
+      <div class="title">Silent e is quiet, but powerful</div>
+      <div id="recap-pattern">
+        <div class="tile vowel vowel-word">vowel</div>
+        <div class="tile">C</div>
+        <div class="tile magic">e</div>
+        <div class="instruction">→ long vowel sound</div>
+      </div>
+      <div id="recap-examples">
+        <div class="pair">cap → <strong>cape</strong></div>
+        <div class="pair">kit → <strong>kite</strong></div>
+        <div class="pair">hop → <strong>hope</strong></div>
+      </div>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo(
+      "#recap-pattern",
+      { opacity: 0, y: 12 },
+      { opacity: 1, y: 0, duration: 0.4, ease: "power4.out" },
+      0.4,
+    ).fromTo(
+      ".pair",
+      { opacity: 0, y: 10 },
+      { opacity: 1, y: 0, duration: 0.35, stagger: 0.22, ease: "power4.out" },
+      5,
+    );
+    window.__timelines.recap = tl;
+  </script></template
+>

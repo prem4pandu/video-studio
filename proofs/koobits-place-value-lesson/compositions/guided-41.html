@@ -16,6 +16,7 @@
         <div data-hf-id="hf-k99u" class="col t"><div data-hf-id="hf-a2k2" class="head">Tens</div><div data-hf-id="hf-am8c" class="cell"><div data-hf-id="hf-8csa" id="guided-one" class="digit" data-layout-allow-overflow>1</div><div data-hf-id="hf-4czw" class="objects"><i data-hf-id="hf-rmvd" class="ten"></i></div></div></div>
         <div data-hf-id="hf-60d5" class="col o"><div data-hf-id="hf-ex9z" class="head">Ones</div><div data-hf-id="hf-9fb9" class="cell"><div data-hf-id="hf-xduc" id="guided-zero" class="digit">0</div></div></div>
       </div>
+      <div id="guided-pointer" class="attention-pointer" style="left:535px;top:175px"><span class="attention-label">Four tens move</span></div>
       <div data-hf-id="hf-9aw1" id="guided-work">4 tens + 1 one → <span data-hf-id="hf-vwp7" class="accent">4 hundreds + 1 ten + 0 ones</span></div>
     </div>
   </div>
@@ -23,11 +24,21 @@
     const tl = gsap.timeline({ paused: true });
     tl.fromTo('#guided-four', { x: 380 }, { x: 380, duration: .01 }, 0)
       .fromTo('#guided-one', { x: 380 }, { x: 380, duration: .01 }, 0)
-      .fromTo('#guided-cue', { opacity: 0 }, { opacity: 1, duration: .3, ease: 'power2.out' }, 3)
-      .to('#guided-four, #guided-one', { x: 0, duration: 1, ease: 'power4.out' }, 12)
-      .fromTo('#guided-zero', { opacity: 0, y: 82 }, { opacity: 1, y: 0, duration: .5, ease: 'power4.out' }, 21)
-      .fromTo('#guided-work', { opacity: 0, filter: 'blur(5px)' }, { opacity: 1, filter: 'blur(0px)', duration: .45, ease: 'power4.out' }, 27)
-      .set('.title', { innerText: '41 × 10 = 410' }, 33);
+      .fromTo('#guided-cue', { opacity: 0 }, { opacity: 1, duration: .3, ease: 'power2.out' }, 5.04)
+      .fromTo('#guided-pointer', { opacity: 0, y: -8 }, { opacity: 1, y: 0, duration: .2, ease: 'power3.out' }, 18.03)
+      .to('#guided-chart .t, #guided-chart .o', { opacity: .42, duration: .2 }, 18.03)
+      .to('#guided-four', { x: 0, duration: 1, ease: 'power4.out' }, 18.03)
+      .to('#guided-pointer', { opacity: 0, duration: .16 }, 19.4)
+      .set('#guided-pointer .attention-label', { innerText: 'One one moves' }, 30.05)
+      .to('#guided-pointer', { x: 760, opacity: 1, duration: .2, ease: 'power3.out' }, 30.05)
+      .to('#guided-chart .h, #guided-chart .o', { opacity: .42, duration: .2 }, 30.05)
+      .to('#guided-chart .t', { opacity: 1, duration: .2 }, 30.05)
+      .to('#guided-one', { x: 0, duration: 1, ease: 'power4.out' }, 30.05)
+      .to('#guided-pointer', { opacity: 0, duration: .16 }, 31.4)
+      .to('#guided-chart .col', { opacity: 1, duration: .2 }, 39.8)
+      .fromTo('#guided-zero', { opacity: 0, y: 82 }, { opacity: 1, y: 0, duration: .5, ease: 'power4.out' }, 40.03)
+      .fromTo('#guided-work', { opacity: 0, filter: 'blur(5px)' }, { opacity: 1, filter: 'blur(0px)', duration: .45, ease: 'power4.out' }, 40.8)
+      .set('.title', { innerText: '41 × 10 = 410' }, 43.1);
     window.__timelines['guided-41'] = tl;
   </script>
 </template>

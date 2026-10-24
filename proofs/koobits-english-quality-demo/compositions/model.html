@@ -1,0 +1,103 @@
+<template
+  ><style>
+    @import url("assets/vendor/lesson.css");
+    #model-tiles {
+      position: absolute;
+      left: 360px;
+      top: 285px;
+    }
+    #model-e {
+      margin-left: 90px;
+    }
+    #model-beam {
+      position: absolute;
+      left: 535px;
+      top: 520px;
+      width: 720px;
+    }
+    #model-meaning {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 125px;
+      text-align: center;
+    }
+    .label {
+      position: absolute;
+      top: 225px;
+      font-size: 31px;
+      font-weight: 850;
+      color: #52717a;
+    }
+    #model-short {
+      left: 520px;
+    }
+    #model-long {
+      right: 500px;
+    }
+  </style>
+  <div
+    id="root"
+    data-composition-id="model"
+    data-width="1920"
+    data-height="1080"
+    data-duration="30"
+  >
+    <div class="ground"></div>
+    <div
+      id="model-canvas"
+      class="clip canvas"
+      data-start="0"
+      data-duration="30"
+      data-track-index="1"
+    >
+      <div class="kicker">Watch the pattern</div>
+      <div class="title">kit → kite</div>
+      <div id="model-short" class="label">short i</div>
+      <div id="model-long" class="label">long i</div>
+      <div id="model-tiles" class="tiles">
+        <div class="tile">k</div>
+        <div id="model-i" class="tile vowel">i</div>
+        <div class="tile">t</div>
+        <div id="model-e" class="tile magic">e</div>
+      </div>
+      <div id="model-beam" class="beam"></div>
+      <div id="model-meaning" class="meaning">
+        kit: a set of tools &nbsp; → &nbsp; kite: something that flies
+      </div>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo(
+      "#model-e",
+      { opacity: 0, x: 180 },
+      { opacity: 1, x: 0, duration: 0.65, ease: "power4.out" },
+      10,
+    )
+      .fromTo(
+        "#model-beam",
+        { scaleX: 0, opacity: 0 },
+        { scaleX: 1, opacity: 1, duration: 0.5, ease: "power3.out" },
+        10.2,
+      )
+      .to(
+        "#model-i",
+        { backgroundColor: "#ffd45e", duration: 0.3, ease: "power2.out" },
+        11,
+      )
+      .fromTo(
+        "#model-long",
+        { opacity: 0 },
+        { opacity: 1, duration: 0.25 },
+        11.2,
+      )
+      .fromTo(
+        "#model-meaning",
+        { opacity: 0, y: 10 },
+        { opacity: 1, y: 0, duration: 0.4, ease: "power4.out" },
+        20,
+      );
+    window.__timelines.model = tl;
+  </script></template
+>

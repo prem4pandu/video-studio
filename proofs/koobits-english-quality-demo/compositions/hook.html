@@ -1,0 +1,89 @@
+<template
+  ><style>
+    @import url("assets/vendor/lesson.css");
+    #hook-stage {
+      position: absolute;
+      left: 220px;
+      right: 220px;
+      top: 300px;
+    }
+    .hook-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 42px;
+    }
+    #hook-arrow {
+      font-size: 90px;
+      color: #c75a25;
+    }
+    #hook-question {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 130px;
+      text-align: center;
+      font-size: 46px;
+      font-weight: 850;
+    }
+  </style>
+  <div
+    id="root"
+    data-composition-id="hook"
+    data-width="1920"
+    data-height="1080"
+    data-duration="12"
+  >
+    <div class="ground"></div>
+    <div
+      id="hook-canvas"
+      class="clip canvas"
+      data-start="0"
+      data-duration="12"
+      data-track-index="1"
+    >
+      <div class="kicker">Spelling laboratory</div>
+      <div class="title">One quiet letter. One powerful change.</div>
+      <div id="hook-stage">
+        <div class="hook-row">
+          <div id="hook-cap" class="word">cap</div>
+          <div id="hook-arrow">→</div>
+          <div id="hook-cape" class="word">
+            cap<span class="answer">e</span>
+          </div>
+        </div>
+      </div>
+      <div id="hook-question">
+        What changed—the spelling, the sound, or both?
+      </div>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo(
+      "#hook-cap",
+      { opacity: 0, filter: "blur(7px)" },
+      { opacity: 1, filter: "blur(0px)", duration: 0.3, ease: "power4.out" },
+      0.5,
+    )
+      .fromTo(
+        "#hook-arrow",
+        { scaleX: 0, opacity: 0 },
+        { scaleX: 1, opacity: 1, duration: 0.35, ease: "power3.out" },
+        3,
+      )
+      .fromTo(
+        "#hook-cape",
+        { opacity: 0, x: -24 },
+        { opacity: 1, x: 0, duration: 0.45, ease: "power4.out" },
+        3.3,
+      )
+      .fromTo(
+        "#hook-question",
+        { opacity: 0 },
+        { opacity: 1, duration: 0.3, ease: "power2.out" },
+        7,
+      );
+    window.__timelines.hook = tl;
+  </script></template
+>

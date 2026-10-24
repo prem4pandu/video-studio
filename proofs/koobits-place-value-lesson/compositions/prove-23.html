@@ -24,6 +24,7 @@
         <div data-hf-id="hf-k99u" class="col t"><div data-hf-id="hf-a2k2" class="head">Tens</div><div data-hf-id="hf-am8c" class="cell"><div data-hf-id="hf-hs0d" id="prove23-three" class="digit" data-layout-allow-overflow>3</div><div data-hf-id="hf-wmbt" id="prove23-tens-model" class="exchange-model"><i data-hf-id="hf-fks9" class="growing-ten"></i><i data-hf-id="hf-u2tp" class="growing-ten"></i><i data-hf-id="hf-v9qs" class="growing-ten"></i></div><div data-hf-id="hf-e508" id="prove23-tens-note">3 ones × 10 = 3 tens</div></div></div>
         <div data-hf-id="hf-60d5" class="col o"><div data-hf-id="hf-ex9z" class="head">Ones</div><div data-hf-id="hf-9fb9" class="cell"><div data-hf-id="hf-8py1" id="prove23-zero" class="digit">0</div><div data-hf-id="hf-0nn9" id="prove23-empty">empty ones place</div></div></div>
       </div>
+      <div id="prove23-pointer" class="attention-pointer" style="left:925px;top:160px"><span class="attention-label">Tens to hundreds</span></div>
       <div data-hf-id="hf-fsf2" id="prove23-track"></div><div data-hf-id="hf-76oy" id="prove23-eq" class="equation">23 × 10 = <span data-hf-id="hf-fmnw" class="accent">230</span></div>
     </div>
   </div>
@@ -31,16 +32,25 @@
     const tl = gsap.timeline({ paused: true });
     tl.fromTo('#prove23-two', { x: 380 }, { x: 380, duration: .01 }, 0)
       .fromTo('#prove23-three', { x: 380 }, { x: 380, duration: .01 }, 0)
-      .fromTo('#prove23-track', { scaleX: 0, opacity: 0 }, { scaleX: 1, opacity: 1, duration: .45, ease: 'power3.out' }, 7)
-      .fromTo('#prove23-lever', { rotation: -4 }, { rotation: 11, duration: .42, ease: 'power3.inOut' }, 8)
-      .fromTo('#prove23-hundreds-model', { opacity: 1, x: 380, scaleX: .28 }, { opacity: 1, x: 0, scaleX: 1, duration: 1.1, ease: 'power3.inOut' }, 9)
-      .fromTo('#prove23-tens-model', { opacity: 1, x: 380, scaleY: .58 }, { opacity: 1, x: 0, scaleY: 1, duration: 1.1, ease: 'power3.inOut' }, 9)
-      .to('#prove23-two, #prove23-three', { x: 0, duration: 1, ease: 'power4.out' }, 10)
-      .fromTo('#prove23-hundreds-note, #prove23-tens-note', { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: .4, ease: 'power3.out' }, 11.2)
-      .fromTo('#prove23-empty', { opacity: 0 }, { opacity: 1, duration: .3, ease: 'power2.out' }, 14)
-      .fromTo('#prove23-zero', { opacity: 0, y: 82 }, { opacity: 1, y: 0, duration: .5, ease: 'power4.out' }, 21.3)
-      .to('#prove23-empty', { opacity: 0, duration: .18, ease: 'power2.in' }, 21)
-      .fromTo('#prove23-eq', { opacity: 0, filter: 'blur(6px)' }, { opacity: 1, filter: 'blur(0px)', duration: .45, ease: 'power4.out' }, 27);
+      .fromTo('#prove23-lever', { rotation: -4 }, { rotation: 11, duration: .42, ease: 'power3.inOut' }, .3)
+      .fromTo('#prove23-track', { scaleX: 0, opacity: 0 }, { scaleX: 1, opacity: 1, duration: .45, ease: 'power3.out' }, 5.9)
+      .to('#prove23-chart .t, #prove23-chart .o', { opacity: .42, duration: .22 }, 5.9)
+      .fromTo('#prove23-pointer', { opacity: 0, y: -8 }, { opacity: 1, y: 0, duration: .22, ease: 'power3.out' }, 5.9)
+      .fromTo('#prove23-hundreds-model', { opacity: 1, x: 380, scaleX: .28 }, { opacity: 1, x: 0, scaleX: 1, duration: 3.35, ease: 'power3.inOut' }, 6.05)
+      .fromTo('#prove23-hundreds-note', { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: .4, ease: 'power3.out' }, 9.4)
+      .set('#prove23-pointer .attention-label', { innerText: 'Ones to tens' }, 14.8)
+      .to('#prove23-pointer', { x: 380, duration: .32, ease: 'power3.inOut' }, 14.8)
+      .to('#prove23-chart .h', { opacity: .42, duration: .22 }, 14.8)
+      .to('#prove23-chart .t', { opacity: 1, duration: .22 }, 14.8)
+      .fromTo('#prove23-tens-model', { opacity: 1, x: 380, scaleY: .58 }, { opacity: 1, x: 0, scaleY: 1, duration: 3.4, ease: 'power3.inOut' }, 15.04)
+      .fromTo('#prove23-tens-note', { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: .4, ease: 'power3.out' }, 18.45)
+      .to('#prove23-two, #prove23-three', { x: 0, duration: 3.75, ease: 'power3.inOut' }, 24.05)
+      .to('#prove23-pointer', { opacity: 0, duration: .18 }, 28)
+      .to('#prove23-chart .col', { opacity: 1, duration: .22 }, 29.8)
+      .fromTo('#prove23-empty', { opacity: 0 }, { opacity: 1, duration: .3, ease: 'power2.out' }, 30.05)
+      .fromTo('#prove23-zero', { opacity: 0, y: 82 }, { opacity: 1, y: 0, duration: .5, ease: 'power4.out' }, 34.35)
+      .to('#prove23-empty', { opacity: 0, duration: .18, ease: 'power2.in' }, 34.3)
+      .fromTo('#prove23-eq', { opacity: 0, filter: 'blur(6px)' }, { opacity: 1, filter: 'blur(0px)', duration: .45, ease: 'power4.out' }, 37.05);
     window.__timelines['prove-23'] = tl;
   </script>
 </template>

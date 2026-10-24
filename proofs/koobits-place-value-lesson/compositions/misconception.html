@@ -22,9 +22,11 @@
   </div>
   <script>
     const tl = gsap.timeline({ paused: true });
-    tl.fromTo('#mis-wrong', { opacity: 0, x: -16 }, { opacity: 1, x: 0, duration: .42, ease: 'power4.out' }, 1)
-      .fromTo('#mis-right', { opacity: 0, x: 16 }, { opacity: 1, x: 0, duration: .42, ease: 'power4.out' }, 8)
-      .fromTo('#mis-rule', { opacity: 0, filter: 'blur(5px)' }, { opacity: 1, filter: 'blur(0px)', duration: .4, ease: 'power4.out' }, 18);
+    tl.fromTo('#mis-wrong', { opacity: 0, x: -16 }, { opacity: 1, x: 0, duration: .42, ease: 'power4.out' }, .05)
+      .fromTo('#mis-right', { opacity: 0, x: 16 }, { opacity: 1, x: 0, duration: .42, ease: 'power4.out' }, 6.04)
+      .to('#mis-wrong', { opacity: .42, duration: .22 }, 13.04)
+      .to('#mis-right', { boxShadow: 'inset 0 0 0 8px #178a50, 0 0 0 5px rgba(23,138,80,.18)', duration: .25 }, 13.04)
+      .fromTo('#mis-rule', { opacity: 0, filter: 'blur(5px)' }, { opacity: 1, filter: 'blur(0px)', duration: .4, ease: 'power4.out' }, 25.07);
     window.__timelines.misconception = tl;
   </script>
 </template>

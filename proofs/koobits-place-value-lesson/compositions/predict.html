@@ -18,15 +18,15 @@
   </div>
   <script>
     const tl = gsap.timeline({ paused: true });
-    tl.fromTo('#predict-question', { opacity: 0, filter: 'blur(5px)' }, { opacity: 1, filter: 'blur(0px)', duration: .4, ease: 'power4.out' }, .7)
-      .fromTo('.choice', { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: .4, stagger: .12, ease: 'power4.out' }, 2.2)
-      .fromTo('#predict-hint', { opacity: 0 }, { opacity: 1, duration: .3, ease: 'power2.out' }, 5)
-      .to('#predict-count', { innerText: 4, duration: 1, snap: { innerText: 1 }, ease: 'none' }, 8)
-      .to('#predict-count', { innerText: 3, duration: 1, snap: { innerText: 1 }, ease: 'none' }, 9)
-      .to('#predict-count', { innerText: 2, duration: 1, snap: { innerText: 1 }, ease: 'none' }, 10)
-      .to('#predict-count', { innerText: 1, duration: 1, snap: { innerText: 1 }, ease: 'none' }, 11)
-      .to('#predict-count', { innerText: 0, duration: 1, snap: { innerText: 1 }, ease: 'none' }, 12)
-      .to('.choice:nth-child(2)', { color: '#178a50', boxShadow: 'inset 0 0 0 6px #178a50', duration: .3, ease: 'power2.out' }, 14);
+    tl.fromTo('#predict-question', { opacity: 0, filter: 'blur(5px)' }, { opacity: 1, filter: 'blur(0px)', duration: .4, ease: 'power4.out' }, .05)
+      .fromTo('.choice', { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: .4, stagger: .12, ease: 'power4.out' }, 6.03)
+      .fromTo('#predict-hint', { opacity: 0 }, { opacity: 1, duration: .3, ease: 'power2.out' }, 8.65)
+      .to('#predict-count', { innerText: 4, duration: 1, snap: { innerText: 1 }, ease: 'none' }, 9)
+      .to('#predict-count', { innerText: 3, duration: 1, snap: { innerText: 1 }, ease: 'none' }, 10)
+      .to('#predict-count', { innerText: 2, duration: 1, snap: { innerText: 1 }, ease: 'none' }, 11)
+      .to('#predict-count', { innerText: 1, duration: 1, snap: { innerText: 1 }, ease: 'none' }, 12)
+      .to('#predict-count', { innerText: 0, duration: 1, snap: { innerText: 1 }, ease: 'none' }, 13)
+      .to('.choice:nth-child(2)', { color: '#178a50', boxShadow: 'inset 0 0 0 6px #178a50', duration: .3, ease: 'power2.out' }, 16.75);
     window.__timelines.predict = tl;
   </script>
 </template>
