@@ -43,6 +43,10 @@ test('KooBits place-value lesson is a complete, offline 23 × 10 learning loop',
 
   assert.match(source.goal, /Explain ×10 using place value/);
   assert.match(source.build, /23 means 2 tens and 3 ones/);
+  assert.equal((source.build.match(/class="ten"/g) ?? []).length, 2, '23 must contain exactly two ten-rods');
+  assert.equal((source.build.match(/class="one"/g) ?? []).length, 3, '23 must contain exactly three unit cubes');
+  assert.match(source.build, />2 tens = 20<\/div>/);
+  assert.match(source.build, />3 ones = 3<\/div>/);
   assert.match(source.build, /23 = <span[^>]*>2 tens<\/span> \+ <span[^>]*>3 ones<\/span>/);
   for (const label of ['Hundreds', 'Tens', 'Ones']) assert.match(source.prove, new RegExp(`>${label}<`));
   assert.match(source.prove, /id="prove23-two"[^>]*>2<\/div>/);
