@@ -1,0 +1,30 @@
+<template>
+  <style>
+    @import url("assets/vendor/lesson.css");
+    #mis-grid { position: absolute; left: 150px; top: 270px; width: 1440px; display: grid; grid-template-columns: 1fr 1fr; gap: 54px; }
+    .mis-case { min-height: 390px; padding: 42px; border-radius: 26px; background: #f7f3e9; box-shadow: inset 0 0 0 4px #d6cfbd; }
+    .mis-case h2 { margin: 0 0 25px; font-size: 40px; }
+    .mis-math { font-size: 70px; font-weight: 900; }
+    .mis-explain { margin-top: 30px; font-size: 31px; line-height: 1.3; font-weight: 700; }
+    #mis-right { box-shadow: inset 0 0 0 6px #178a50; }
+    #mis-rule { position: absolute; left: 420px; bottom: 88px; font-size: 42px; font-weight: 900; }
+  </style>
+  <div data-hf-id="hf-kzqx" id="root" data-composition-id="misconception" data-width="1920" data-height="1080" data-duration="30">
+    <div data-hf-id="hf-ygft" class="ground"></div>
+    <div data-hf-id="hf-y42u" id="mis-canvas" class="clip canvas" data-start="0" data-duration="30" data-track-index="1">
+      <div data-hf-id="hf-kcg5" class="brand">Check the idea</div><div data-hf-id="hf-28ud" class="eyebrow">Common misconception</div><div data-hf-id="hf-9ynb" class="title">Zero does not push the digits</div>
+      <div data-hf-id="hf-tksr" id="mis-grid">
+        <div data-hf-id="hf-vnrp" id="mis-wrong" class="mis-case"><h2 data-hf-id="hf-osvh" class="wrong">“Just add a zero”</h2><div data-hf-id="hf-26av" class="mis-math wrong">23 → 230</div><div data-hf-id="hf-dj2z" class="mis-explain">This shortcut hides why the value changes and fails with decimals.</div></div>
+        <div data-hf-id="hf-3hfk" id="mis-right" class="mis-case"><h2 data-hf-id="hf-doaf" class="feedback">Use place value</h2><div data-hf-id="hf-nevd" class="mis-math">T→H &nbsp; O→T</div><div data-hf-id="hf-ovh0" class="mis-explain">The 2 and 3 move first. Then zero holds the empty ones place.</div></div>
+      </div>
+      <div data-hf-id="hf-ns4b" id="mis-rule">Digits shift. Zero is a placeholder.</div>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo('#mis-wrong', { opacity: 0, x: -16 }, { opacity: 1, x: 0, duration: .42, ease: 'power4.out' }, 1)
+      .fromTo('#mis-right', { opacity: 0, x: 16 }, { opacity: 1, x: 0, duration: .42, ease: 'power4.out' }, 8)
+      .fromTo('#mis-rule', { opacity: 0, filter: 'blur(5px)' }, { opacity: 1, filter: 'blur(0px)', duration: .4, ease: 'power4.out' }, 18);
+    window.__timelines.misconception = tl;
+  </script>
+</template>

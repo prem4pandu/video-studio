@@ -1,0 +1,32 @@
+<template>
+  <style>
+    @import url("assets/vendor/lesson.css");
+    #predict-question { position: absolute; left: 178px; top: 250px; font-size: 62px; font-weight: 850; }
+    #predict-choice { position: absolute; left: 178px; top: 390px; display: flex; gap: 42px; }
+    .choice { width: 390px; padding: 30px; border-radius: 22px; text-align: center; background: #f6f3ea; box-shadow: inset 0 0 0 4px #c8c1af; font-size: 52px; font-weight: 900; }
+    #predict-hint { position: absolute; left: 178px; bottom: 150px; font-size: 38px; font-weight: 750; color: #555; }
+    #predict-count { color: #c85f1b; }
+  </style>
+  <div data-hf-id="hf-y82g" id="root" data-composition-id="predict" data-width="1920" data-height="1080" data-duration="20">
+    <div data-hf-id="hf-ygft" class="ground"></div>
+    <div data-hf-id="hf-rtq7" id="predict-canvas" class="clip canvas" data-start="0" data-duration="20" data-track-index="1">
+      <div data-hf-id="hf-fas9" class="brand">Your prediction</div><div data-hf-id="hf-62ld" class="eyebrow">Think first</div><div data-hf-id="hf-q3zp" class="title">23 × 10</div>
+      <div data-hf-id="hf-aszp" id="predict-question">Where will the digits move?</div>
+      <div data-hf-id="hf-zrac" id="predict-choice"><div data-hf-id="hf-tpcl" class="choice">Stay put</div><div data-hf-id="hf-u8ip" class="choice">One place left</div><div data-hf-id="hf-9kua" class="choice">One place right</div></div>
+      <div data-hf-id="hf-8twr" id="predict-hint">Pause and decide. <span data-hf-id="hf-5aua" id="predict-count">5</span></div>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo('#predict-question', { opacity: 0, filter: 'blur(5px)' }, { opacity: 1, filter: 'blur(0px)', duration: .4, ease: 'power4.out' }, .7)
+      .fromTo('.choice', { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: .4, stagger: .12, ease: 'power4.out' }, 2.2)
+      .fromTo('#predict-hint', { opacity: 0 }, { opacity: 1, duration: .3, ease: 'power2.out' }, 5)
+      .to('#predict-count', { innerText: 4, duration: 1, snap: { innerText: 1 }, ease: 'none' }, 8)
+      .to('#predict-count', { innerText: 3, duration: 1, snap: { innerText: 1 }, ease: 'none' }, 9)
+      .to('#predict-count', { innerText: 2, duration: 1, snap: { innerText: 1 }, ease: 'none' }, 10)
+      .to('#predict-count', { innerText: 1, duration: 1, snap: { innerText: 1 }, ease: 'none' }, 11)
+      .to('#predict-count', { innerText: 0, duration: 1, snap: { innerText: 1 }, ease: 'none' }, 12)
+      .to('.choice:nth-child(2)', { color: '#178a50', boxShadow: 'inset 0 0 0 6px #178a50', duration: .3, ease: 'power2.out' }, 14);
+    window.__timelines.predict = tl;
+  </script>
+</template>

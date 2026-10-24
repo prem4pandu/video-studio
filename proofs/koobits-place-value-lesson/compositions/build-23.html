@@ -1,0 +1,32 @@
+<template>
+  <style>
+    @import url("assets/vendor/lesson.css");
+    #build23-chart { top: 220px; }
+    #build23-two { position: absolute; left: 90px; top: 126px; }
+    #build23-three { position: absolute; left: 90px; top: 126px; }
+    #build23-eq { position: absolute; left: 588px; bottom: 72px; }
+    #build23-label-t, #build23-label-o { position: absolute; bottom: 28px; width: 100%; text-align: center; font-size: 27px; font-weight: 800; color: #5b4a35; }
+  </style>
+  <div data-hf-id="hf-f6ij" id="root" data-composition-id="build-23" data-width="1920" data-height="1080" data-duration="35">
+    <div data-hf-id="hf-ygft" class="ground"></div>
+    <div data-hf-id="hf-c71z" id="build23-canvas" class="clip canvas" data-start="0" data-duration="35" data-track-index="1">
+      <div data-hf-id="hf-18h7" class="brand">Place value</div><div data-hf-id="hf-d06t" class="eyebrow">Build the number</div><div data-hf-id="hf-3r4w" class="title">23 means 2 tens and 3 ones</div>
+      <div data-hf-id="hf-eh2s" id="build23-chart" class="chart">
+        <div data-hf-id="hf-v4vi" class="col h"><div data-hf-id="hf-7ruf" class="head">Hundreds</div><div data-hf-id="hf-7184" class="cell"></div></div>
+        <div data-hf-id="hf-k99u" class="col t"><div data-hf-id="hf-a2k2" class="head">Tens</div><div data-hf-id="hf-am8c" class="cell"><div data-hf-id="hf-hi5j" id="build23-two" class="digit">2</div><div data-hf-id="hf-l8as" id="build23-tens" class="objects"><i data-hf-id="hf-rmvd" class="ten"></i><i data-hf-id="hf-b6nx" class="ten"></i></div><div data-hf-id="hf-r8pj" id="build23-label-t">2 groups of ten = 20</div></div></div>
+        <div data-hf-id="hf-60d5" class="col o"><div data-hf-id="hf-ex9z" class="head">Ones</div><div data-hf-id="hf-9fb9" class="cell"><div data-hf-id="hf-17h6" id="build23-three" class="digit">3</div><div data-hf-id="hf-yk2v" id="build23-ones" class="objects"><i data-hf-id="hf-4qvc" class="one"></i><i data-hf-id="hf-245c" class="one"></i><i data-hf-id="hf-0x89" class="one"></i></div><div data-hf-id="hf-qv27" id="build23-label-o">3 ones = 3</div></div></div>
+      </div>
+      <div data-hf-id="hf-hgi9" id="build23-eq" class="equation">23 = <span data-hf-id="hf-ywd9" class="accent">2 tens</span> + <span data-hf-id="hf-dyi9" class="accent">3 ones</span></div>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo('#build23-chart', { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: .45, ease: 'expo.out' }, .5)
+      .fromTo('#build23-two', { opacity: 0, scale: .92 }, { opacity: 1, scale: 1, duration: .36, ease: 'back.out(1.2)' }, 4)
+      .fromTo('#build23-tens', { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: .4, ease: 'power4.out' }, 8)
+      .fromTo('#build23-three', { opacity: 0, scale: .92 }, { opacity: 1, scale: 1, duration: .36, ease: 'back.out(1.2)' }, 13)
+      .fromTo('#build23-ones', { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: .4, ease: 'power4.out' }, 17)
+      .fromTo('#build23-eq', { opacity: 0, filter: 'blur(5px)' }, { opacity: 1, filter: 'blur(0px)', duration: .4, ease: 'power4.out' }, 23);
+    window.__timelines['build-23'] = tl;
+  </script>
+</template>

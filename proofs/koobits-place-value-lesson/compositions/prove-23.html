@@ -1,0 +1,46 @@
+<template>
+  <style>
+    @import url("assets/vendor/lesson.css");
+    #prove23-chart { top: 215px; z-index: 2; }
+    #prove23-two, #prove23-three, #prove23-zero { position: absolute; top: 120px; }
+    #prove23-two { left: 100px; } #prove23-three { left: 100px; } #prove23-zero { left: 100px; opacity: 0; }
+    #prove23-track { z-index: 1; position: absolute; left: 430px; top: 425px; width: 720px; height: 14px; border-radius: 8px; background: #efa82d; transform-origin: right center; }
+    #prove23-track::before { content: ""; position: absolute; left: -2px; top: -18px; width: 40px; height: 40px; border-left: 13px solid #efa82d; border-bottom: 13px solid #efa82d; transform: rotate(45deg); }
+    #prove23-empty { position: absolute; right: 102px; top: 248px; color: #777; font-size: 29px; font-weight: 800; opacity: 0; }
+    .exchange-model { position:absolute; left:0; right:0; bottom:24px; height:100px; display:flex; justify-content:center; align-items:flex-end; gap:14px; z-index:2; }
+    .hundred-flat { width:92px; height:92px; border-radius:10px; background:repeating-linear-gradient(0deg,transparent 0 8px,rgba(120,72,10,.23) 9px 10px),repeating-linear-gradient(90deg,#f1b652 0 8px,#c97c1e 9px 10px); box-shadow:inset 0 0 0 4px #9a5717; }
+    .growing-ten { width:42px; height:94px; border-radius:8px; background:repeating-linear-gradient(0deg,#d48022 0 7px,#f8d27b 8px 10px); box-shadow:inset 0 0 0 3px #975516; }
+    #prove23-hundreds-model, #prove23-tens-model { opacity:0; }
+    #prove23-hundreds-note, #prove23-tens-note { position:absolute; top:330px; left:18px; right:18px; z-index:4; padding:7px 9px; border-radius:12px; text-align:center; font-size:20px; line-height:1.1; font-weight:900; color:#75430e; background:rgba(255,249,232,.94); box-shadow:0 3px 12px rgba(77,46,15,.1); opacity:0; }
+    #prove23-eq { position: absolute; left: 610px; bottom: 66px; opacity: 0; }
+    #prove23-lever { position: absolute; right: 80px; top: 82px; padding: 18px 34px; border-radius: 18px; background: #c85f1b; color: #fff; font-size: 36px; font-weight: 900; transform-origin: left center; }
+  </style>
+  <div data-hf-id="hf-kuzw" id="root" data-composition-id="prove-23" data-width="1920" data-height="1080" data-duration="40" data-motion-blur="on">
+    <div data-hf-id="hf-ygft" class="ground"></div>
+    <div data-hf-id="hf-jrcx" id="prove23-canvas" class="clip canvas" data-start="0" data-duration="40" data-track-index="1">
+      <div data-hf-id="hf-07jn" class="brand">Watch the places</div><div data-hf-id="hf-b7tq" class="eyebrow">Prove it</div><div data-hf-id="hf-s7ar" class="title">Every digit shifts one place left</div><div data-hf-id="hf-ai7h" id="prove23-lever">×10 lever</div>
+      <div data-hf-id="hf-wala" id="prove23-chart" class="chart">
+        <div data-hf-id="hf-v4vi" class="col h"><div data-hf-id="hf-7ruf" class="head">Hundreds</div><div data-hf-id="hf-7184" class="cell"><div data-hf-id="hf-vp80" id="prove23-two" class="digit" data-layout-allow-overflow>2</div><div data-hf-id="hf-m58i" id="prove23-hundreds-model" class="exchange-model"><i data-hf-id="hf-mr00" class="hundred-flat"></i><i data-hf-id="hf-thjc" class="hundred-flat"></i></div><div data-hf-id="hf-meyh" id="prove23-hundreds-note">2 tens × 10 = 2 hundreds</div></div></div>
+        <div data-hf-id="hf-k99u" class="col t"><div data-hf-id="hf-a2k2" class="head">Tens</div><div data-hf-id="hf-am8c" class="cell"><div data-hf-id="hf-hs0d" id="prove23-three" class="digit" data-layout-allow-overflow>3</div><div data-hf-id="hf-wmbt" id="prove23-tens-model" class="exchange-model"><i data-hf-id="hf-fks9" class="growing-ten"></i><i data-hf-id="hf-u2tp" class="growing-ten"></i><i data-hf-id="hf-v9qs" class="growing-ten"></i></div><div data-hf-id="hf-e508" id="prove23-tens-note">3 ones × 10 = 3 tens</div></div></div>
+        <div data-hf-id="hf-60d5" class="col o"><div data-hf-id="hf-ex9z" class="head">Ones</div><div data-hf-id="hf-9fb9" class="cell"><div data-hf-id="hf-8py1" id="prove23-zero" class="digit">0</div><div data-hf-id="hf-0nn9" id="prove23-empty">empty ones place</div></div></div>
+      </div>
+      <div data-hf-id="hf-fsf2" id="prove23-track"></div><div data-hf-id="hf-76oy" id="prove23-eq" class="equation">23 × 10 = <span data-hf-id="hf-fmnw" class="accent">230</span></div>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo('#prove23-two', { x: 380 }, { x: 380, duration: .01 }, 0)
+      .fromTo('#prove23-three', { x: 380 }, { x: 380, duration: .01 }, 0)
+      .fromTo('#prove23-track', { scaleX: 0, opacity: 0 }, { scaleX: 1, opacity: 1, duration: .45, ease: 'power3.out' }, 7)
+      .fromTo('#prove23-lever', { rotation: -4 }, { rotation: 11, duration: .42, ease: 'power3.inOut' }, 8)
+      .fromTo('#prove23-hundreds-model', { opacity: 1, x: 380, scaleX: .28 }, { opacity: 1, x: 0, scaleX: 1, duration: 1.1, ease: 'power3.inOut' }, 9)
+      .fromTo('#prove23-tens-model', { opacity: 1, x: 380, scaleY: .58 }, { opacity: 1, x: 0, scaleY: 1, duration: 1.1, ease: 'power3.inOut' }, 9)
+      .to('#prove23-two, #prove23-three', { x: 0, duration: 1, ease: 'power4.out' }, 10)
+      .fromTo('#prove23-hundreds-note, #prove23-tens-note', { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: .4, ease: 'power3.out' }, 11.2)
+      .fromTo('#prove23-empty', { opacity: 0 }, { opacity: 1, duration: .3, ease: 'power2.out' }, 14)
+      .fromTo('#prove23-zero', { opacity: 0, y: 82 }, { opacity: 1, y: 0, duration: .5, ease: 'power4.out' }, 21.3)
+      .to('#prove23-empty', { opacity: 0, duration: .18, ease: 'power2.in' }, 21)
+      .fromTo('#prove23-eq', { opacity: 0, filter: 'blur(6px)' }, { opacity: 1, filter: 'blur(0px)', duration: .45, ease: 'power4.out' }, 27);
+    window.__timelines['prove-23'] = tl;
+  </script>
+</template>

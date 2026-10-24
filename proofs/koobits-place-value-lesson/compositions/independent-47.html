@@ -1,0 +1,34 @@
+<template>
+  <style>
+    @import url("assets/vendor/lesson.css");
+    #independent-chart { top: 235px; }
+    #independent-four, #independent-seven, #independent-zero { position: absolute; top: 116px; }
+    #independent-four { left: 100px; } #independent-seven { left: 100px; } #independent-zero { left: 100px; opacity: 0; }
+    #independent-timer { position: absolute; right: 110px; top: 90px; font-size: 50px; font-weight: 900; color: #c85f1b; }
+    #independent-answer { position: absolute; left: 600px; bottom: 62px; opacity: 0; }
+  </style>
+  <div data-hf-id="hf-dav7" id="root" data-composition-id="independent-47" data-width="1920" data-height="1080" data-duration="50" data-motion-blur="on">
+    <div data-hf-id="hf-ygft" class="ground"></div>
+    <div data-hf-id="hf-qetx" id="independent-canvas" class="clip canvas" data-start="0" data-duration="50" data-track-index="1">
+      <div data-hf-id="hf-mhxb" class="brand">You do</div><div data-hf-id="hf-iex7" class="eyebrow">Independent example</div><div data-hf-id="hf-f77g" class="title">47 × 10 = <span data-hf-id="hf-6qyq" class="answer-line"></span></div><div data-hf-id="hf-6bcr" id="independent-timer">Think</div>
+      <div data-hf-id="hf-wug3" id="independent-chart" class="chart">
+        <div data-hf-id="hf-v4vi" class="col h"><div data-hf-id="hf-7ruf" class="head">Hundreds</div><div data-hf-id="hf-7184" class="cell"><div data-hf-id="hf-ohmh" id="independent-four" class="digit" data-layout-allow-overflow>4</div></div></div>
+        <div data-hf-id="hf-k99u" class="col t"><div data-hf-id="hf-a2k2" class="head">Tens</div><div data-hf-id="hf-am8c" class="cell"><div data-hf-id="hf-8rn3" id="independent-seven" class="digit" data-layout-allow-overflow>7</div></div></div>
+        <div data-hf-id="hf-60d5" class="col o"><div data-hf-id="hf-ex9z" class="head">Ones</div><div data-hf-id="hf-9fb9" class="cell"><div data-hf-id="hf-ytjk" id="independent-zero" class="digit">0</div></div></div>
+      </div>
+      <div data-hf-id="hf-u6n9" id="independent-answer" class="equation feedback">47 × 10 = 470</div>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo('#independent-four', { x: 380 }, { x: 380, duration: .01 }, 0)
+      .fromTo('#independent-seven', { x: 380 }, { x: 380, duration: .01 }, 0)
+      .set('#independent-timer', { innerText: 'Shift each digit' }, 12)
+      .to('#independent-four, #independent-seven', { x: 0, duration: 1, ease: 'power4.out' }, 22)
+      .set('#independent-timer', { innerText: 'What fills ones?' }, 27)
+      .fromTo('#independent-zero', { opacity: 0, y: 82 }, { opacity: 1, y: 0, duration: .5, ease: 'power4.out' }, 33)
+      .fromTo('#independent-answer', { opacity: 0, filter: 'blur(6px)' }, { opacity: 1, filter: 'blur(0px)', duration: .45, ease: 'power4.out' }, 41)
+      .set('#independent-timer', { innerText: 'Check: 4 hundreds, 7 tens, 0 ones' }, 41);
+    window.__timelines['independent-47'] = tl;
+  </script>
+</template>

@@ -1,0 +1,160 @@
+{
+  "id": "whole-numbers-multiply-by-10-place-value-v1",
+  "title": "Multiplying Whole Numbers by 10 Using Place Value",
+  "audience": {
+    "ageMin": 7,
+    "ageMax": 10,
+    "assumedLanguage": "English",
+    "delivery": "voice-led visual lesson with prediction and practice"
+  },
+  "runtime": {
+    "seconds": 280,
+    "display": "4:40",
+    "fps": 30,
+    "frames": 8400,
+    "width": 1920,
+    "height": 1080
+  },
+  "scope": {
+    "included": [
+      "whole numbers multiplied by 10",
+      "place value in hundreds, tens, and ones",
+      "concrete-to-pictorial-to-symbolic representation",
+      "zero as a placeholder for an empty ones place"
+    ],
+    "excluded": [
+      "decimal multiplication",
+      "multiplication by 100 or 1000",
+      "standard written multiplication algorithm",
+      "memorised append-zero procedure as the teaching rule"
+    ]
+  },
+  "learningObjective": "Given a two-digit whole number, the learner will multiply it by 10 and explain that each digit moves one place left in the place-value chart, with zero recording the empty ones place.",
+  "successCriteria": [
+    "Decompose 23 as 2 tens and 3 ones.",
+    "Explain that 2 tens multiplied by 10 become 2 hundreds and 3 ones multiplied by 10 become 3 tens.",
+    "Place 2, 3, and 0 correctly in Hundreds, Tens, and Ones to form 230.",
+    "Reject 203 and 2300 using place-value reasoning.",
+    "Solve 41 × 10 with guidance and 47 × 10 independently."
+  ],
+  "prerequisites": [
+    "Read and write whole numbers to at least 999.",
+    "Identify hundreds, tens, and ones places.",
+    "Interpret a ten-rod as 10 ones and a hundred-flat as 10 tens.",
+    "Understand multiplication as making a quantity a stated number of times as large."
+  ],
+  "representations": {
+    "concrete": "unit cubes, ten-rods, and hundred-flats with visible subdivisions",
+    "pictorial": "persistent Hundreds–Tens–Ones chart and source-to-destination arrows",
+    "symbolic": "expanded-value equations and multiplication equations",
+    "requiredSequence": ["concrete", "pictorial", "symbolic"]
+  },
+  "workedExample": {
+    "input": "23 × 10",
+    "decomposition": "2 tens + 3 ones",
+    "transformation": "2 hundreds + 3 tens + 0 ones",
+    "expandedEquation": "(20 × 10) + (3 × 10) = 200 + 30",
+    "answer": 230
+  },
+  "guidedExample": {
+    "input": "41 × 10",
+    "prompts": [
+      "What does 4 tens become?",
+      "What does 1 one become?",
+      "What belongs in the empty ones place?"
+    ],
+    "answer": 410,
+    "supportPolicy": "Show one destination arrow for the first prompt, then remove arrows and retain only column labels."
+  },
+  "independentExample": {
+    "input": "47 × 10",
+    "silentThinkSeconds": 12,
+    "commitSeconds": 6,
+    "answer": 470,
+    "verification": "4 hundreds + 7 tens + 0 ones = 400 + 70 + 0"
+  },
+  "misconceptions": [
+    {
+      "id": "append-zero-rule",
+      "claim": "Multiplying by 10 means just adding a zero.",
+      "diagnosis": "Ask the learner to explain what the zero does after the non-zero digits have moved.",
+      "repair": "Move each original digit one place left first, hold the ones place empty, then insert zero as the record of zero ones."
+    },
+    {
+      "id": "zero-pushes-digits",
+      "claim": "The new zero pushes the other digits left.",
+      "diagnosis": "Ask which event occurs first in the model.",
+      "repair": "Animate the value exchange and digit shift before zero appears."
+    },
+    {
+      "id": "wrong-direction-203",
+      "claim": "23 × 10 = 203.",
+      "diagnosis": "Ask where the 3 ones should move when their value becomes ten times as great.",
+      "repair": "Show each of the 3 ones becoming a ten and occupying the Tens column."
+    },
+    {
+      "id": "two-place-shift-2300",
+      "claim": "23 × 10 = 2300.",
+      "diagnosis": "Ask how many place-value steps correspond to one factor of 10.",
+      "repair": "Trace exactly one column pitch from Ones to Tens and Tens to Hundreds."
+    }
+  ],
+  "chapters": [
+    {"id": "hook", "start": 0, "duration": 12, "purpose": "Activate the problem with visible quantities and an unanswered equation."},
+    {"id": "goal", "start": 12, "duration": 18, "purpose": "State the child-readable objective and success criterion."},
+    {"id": "build-23", "start": 30, "duration": 35, "purpose": "Construct 23 concretely as 2 tens and 3 ones."},
+    {"id": "predict", "start": 65, "duration": 20, "purpose": "Elicit direction prediction before revealing the rule."},
+    {"id": "prove-23", "start": 85, "duration": 40, "purpose": "Model the concrete, pictorial, and symbolic proof of 23 × 10."},
+    {"id": "misconception", "start": 125, "duration": 30, "purpose": "Repair append-zero and zero-push misconceptions."},
+    {"id": "guided-41", "start": 155, "duration": 45, "purpose": "Apply the model with fading prompts."},
+    {"id": "independent-47", "start": 200, "duration": 50, "purpose": "Measure independent transfer on an unseen number."},
+    {"id": "recap", "start": 250, "duration": 30, "purpose": "Retrieve the rule, zero's role, and three examples."}
+  ],
+  "assessment": {
+    "prediction": {
+      "prompt": "When multiplying 23 by 10, do the digits stay put, move one place left, or move one place right?",
+      "correct": "one place left"
+    },
+    "guided": "41 × 10 = 410 with verbal place-value explanation",
+    "independent": "47 × 10 = 470 with no answer or destination arrows before commitment",
+    "misconceptionCheck": {
+      "options": [230, 203, 2300],
+      "correct": 230,
+      "feedback": {
+        "203": "This leaves 3 in Ones. Three ones multiplied by 10 become three tens, so 3 belongs in Tens.",
+        "2300": "This moves each digit two places, which represents multiplication by 100. Multiplication by 10 moves one place."
+      }
+    },
+    "laterRetrievalRecommendation": "Recheck 47 × 10 and a structurally similar item such as 62 × 10 after at least one day."
+  },
+  "accessibility": {
+    "captions": true,
+    "captionPolicy": "Sentence case, synchronized to narration, never covering manipulatives or place labels.",
+    "minimumTextPixels": 42,
+    "minimumBodyContrast": "4.5:1",
+    "colorIndependence": "Every color-coded state also has a label, shape, or position cue.",
+    "reducedMotion": "Replace morphs and camera moves with direct state cuts while retaining counts, origins, destinations, and pauses.",
+    "thinkingWindows": "No narration and no answer reveal during specified silence."
+  },
+  "evidenceBoundary": {
+    "source": "KooBits curriculum/video catalogue and teaching-strategy audit dated 2026-10-20",
+    "supported": [
+      "learning-system loop of explanation, guided action, checking, and reward",
+      "Math grammar of concrete to pictorial to symbolic",
+      "guided prediction, worked examples, misconception repair, transfer, and retrieval"
+    ],
+    "notClaimed": [
+      "that this script reproduces a specific KooBits video's narration or visuals",
+      "that the source catalogue is exhaustive",
+      "that a catalogued whole-number multiply-by-10 tutorial was observed"
+    ]
+  },
+  "hardGates": [
+    "Every chapter directly supports the learning objective.",
+    "All object counts and equations agree.",
+    "Zero appears only after the ones place is empty.",
+    "No answer appears during prediction or independent thinking windows.",
+    "The independent item is not worked before learner commitment.",
+    "A mathematics educator verifies content and an age-appropriate learner can explain the result before release."
+  ]
+}

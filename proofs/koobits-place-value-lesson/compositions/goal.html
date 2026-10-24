@@ -1,0 +1,30 @@
+<template>
+  <style>
+    @import url("assets/vendor/lesson.css");
+    #goal-list { position: absolute; left: 190px; top: 300px; width: 1450px; display: grid; gap: 36px; }
+    .goal-row { display: grid; grid-template-columns: 78px 1fr; align-items: center; gap: 28px; font-size: 42px; font-weight: 750; }
+    .goal-mark { width: 70px; height: 70px; display: grid; place-items: center; border-radius: 50%; color: #fff; background: #c85f1b; font-size: 34px; }
+    #goal-rule { position: absolute; left: 300px; bottom: 105px; font-size: 48px; font-weight: 900; color: #143d3f; }
+  </style>
+  <div data-hf-id="hf-go6z" id="root" data-composition-id="goal" data-width="1920" data-height="1080" data-duration="18">
+    <div data-hf-id="hf-ygft" class="ground"></div>
+    <div data-hf-id="hf-dghw" id="goal-canvas" class="clip canvas" data-start="0" data-duration="18" data-track-index="1">
+      <div data-hf-id="hf-jcr1" class="brand">KooBits-inspired lesson</div><div data-hf-id="hf-anlp" class="eyebrow">Today’s goal</div><div data-hf-id="hf-otsv" class="title">Explain ×10 using place value</div>
+      <div data-hf-id="hf-aqcl" id="goal-list">
+        <div data-hf-id="hf-skbv" id="goal-a" class="goal-row"><span data-hf-id="hf-mnl1" class="goal-mark">1</span><span data-hf-id="hf-nt41">Build a number with tens and ones.</span></div>
+        <div data-hf-id="hf-hou8" id="goal-b" class="goal-row"><span data-hf-id="hf-nui4" class="goal-mark">2</span><span data-hf-id="hf-1adv">Shift every digit one place left.</span></div>
+        <div data-hf-id="hf-ko3t" id="goal-c" class="goal-row"><span data-hf-id="hf-ng73" class="goal-mark">3</span><span data-hf-id="hf-vth6">Use zero to hold the empty ones place.</span></div>
+      </div>
+      <div data-hf-id="hf-061b" id="goal-rule">Value changes because place changes.</div>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo('#goal-canvas', { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: .4, ease: 'power4.out' }, 0)
+      .fromTo('#goal-a', { opacity: 0, x: -18 }, { opacity: 1, x: 0, duration: .35, ease: 'power4.out' }, 2)
+      .fromTo('#goal-b', { opacity: 0, x: -18 }, { opacity: 1, x: 0, duration: .35, ease: 'power4.out' }, 5.2)
+      .fromTo('#goal-c', { opacity: 0, x: -18 }, { opacity: 1, x: 0, duration: .35, ease: 'power4.out' }, 8.4)
+      .fromTo('#goal-rule', { opacity: 0, filter: 'blur(5px)' }, { opacity: 1, filter: 'blur(0px)', duration: .36, ease: 'power4.out' }, 12.1);
+    window.__timelines.goal = tl;
+  </script>
+</template>
