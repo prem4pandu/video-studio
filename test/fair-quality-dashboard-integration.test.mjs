@@ -106,11 +106,14 @@ test('dashboard source submits quality and exposes accessible pipeline and gate 
   assert.match(script, /api\(job\.artifacts\.prompts\)/);
   assert.match(script, /verify: \{ label: 'Quality gates'/);
   assert.match(script, /educator: \{ label: 'Educator review'/);
-  assert.match(script, /label: 'KooBits-inspired teaching film'/);
+  assert.match(script, /label: 'Approved proof-derived teaching film'/);
   assert.match(script, /automated gates passed/);
   assert.match(script, /check\.passed \? 'Passed' : 'Review'/);
   assert.match(pipeline, /name: 'Complete teaching loop'/);
   assert.match(pipeline, /name: 'Protected response time'/);
   assert.match(pipeline, /name: 'Approved visual treatment'/);
-  assert.match(pipeline, /koobits-quality-v1/);
+  assert.match(pipeline, /koobits-approved-v2/);
+  assert.match(pipeline, /Semantic focus targets/);
+  assert.match(pipeline, /Progressive teaching reveals/);
+  assert.match(pipeline, /Protected answer windows/);
 });

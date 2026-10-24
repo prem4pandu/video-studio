@@ -124,12 +124,18 @@ test('quality mode always uses the approved teaching-film treatment for non-base
       directory,
     );
 
-    assert.equal(composition.animation.type, 'koobits-quality-v1');
-    assert.equal(composition.animation.attention, 'purposeful pointers and staged reveals');
+    assert.equal(composition.animation.type, 'koobits-approved-v2');
+    assert.equal(composition.animation.source, 'approved proof port');
+    assert.equal(composition.qualityProof.treatment, 'approved-proof-port-v2');
+    assert.equal(composition.qualityProof.nativeCanvas, '1920x1080');
+    assert.equal(composition.qualityProof.semanticTargets, true);
+    assert.equal(composition.qualityProof.progressiveReveal, true);
     const child = await readFile(join(directory, 'scenes', 'quality-step.html'), 'utf8');
     assert.match(child, /class="film-frame quality-film/);
     assert.match(child, /class="attention-pointer"/);
     assert.match(child, /LEARNING GOAL/);
-    assert.match(child, /Focus here/);
+    assert.match(child, /data-quality-target/);
+    assert.match(child, /getBoundingClientRect/);
+    assert.match(child, /width:1920px;height:1080px;transform:none/);
   } finally { await rm(directory, { recursive: true, force: true }); }
 });

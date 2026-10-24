@@ -39,7 +39,7 @@ test('quality is accepted and keeps the HyperFrames renderer route', () => {
   assert.equal(fairRendererKind({ generationVersion: 'open-source' }), 'open-source');
   assert.match(buildPlanningPrompt(brief), /Quality mode is strict/);
   assert.match(buildPlanningPrompt(brief), /at least five seconds of protected response time/);
-  assert.match(buildPlanningPrompt(brief), /KooBits-inspired teaching-film structure/);
+  assert.match(buildPlanningPrompt(brief), /approved proof-derived teaching-film structure/);
   assert.match(buildPlanningPrompt(brief), /independent transfer question/);
 });
 

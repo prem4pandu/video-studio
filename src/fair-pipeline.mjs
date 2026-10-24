@@ -98,7 +98,10 @@ export async function fairRenderLesson(lesson, brief, directory, { signal, env =
     const beats = new Set(lesson.scenes.map(scene => scene.beat));
     const requiredBeats = ['hook', 'concept', 'example', 'misconception', 'question', 'answer', 'recap'];
     checks.unshift(
-      { name: 'Approved visual treatment', passed: composition.animation?.type === 'koobits-quality-v1', detail: 'Quality mode rendered through the dedicated KooBits-inspired teaching-film treatment.' },
+      { name: 'Approved visual treatment', passed: composition.animation?.type === 'koobits-approved-v2' && composition.qualityProof?.treatment === 'approved-proof-port-v2', detail: 'Quality mode rendered through the approved proof-derived teaching-film treatment.' },
+      { name: 'Semantic focus targets', passed: composition.qualityProof?.semanticTargets === true, detail: 'Every instructional event names the visual object it focuses or changes.' },
+      { name: 'Progressive teaching reveals', passed: composition.qualityProof?.progressiveReveal === true, detail: 'Scenes expose narration-anchored teaching events instead of a whole-card entrance.' },
+      { name: 'Protected answer windows', passed: composition.qualityProof?.protectedResponses === true, detail: 'Question response windows remain separate from the following answer scene.' },
       { name: 'Complete teaching loop', passed: requiredBeats.every(beat => beats.has(beat)), detail: 'Hook, concept, example, misconception repair, learner question, explained answer and recap are present.' },
       { name: 'Guided and independent practice', passed: lesson.scenes.filter(scene => scene.beat === 'question').length >= 2, detail: 'The lesson includes both a guided question and a separate transfer question.' },
       { name: 'Protected response time', passed: lesson.scenes.filter(scene => scene.beat === 'question').every(scene => scene.pauseSeconds >= 5), detail: 'Every learner question reserves at least five seconds before feedback.' },

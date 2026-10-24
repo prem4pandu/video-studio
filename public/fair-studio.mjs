@@ -101,7 +101,7 @@ function pipelineSteps(version) {
     steps[1] = { ...steps[1], label: 'Content check', description: 'Checks the lesson structure, calculations, questions, and answers before production.' };
     steps[3] = { ...steps[3], label: 'Illustrated animation', description: 'Builds the existing illustrated scenes and aligns them to the narration.' };
   } else if (version?.id === 'quality') {
-    steps[3] = { ...steps[3], label: 'KooBits-inspired teaching film', description: 'Uses the approved lesson canvas, staged reveals, attention pointers, captions, and protected learner thinking time.' };
+    steps[3] = { ...steps[3], label: 'Approved proof-derived teaching film', description: 'Uses the confirmed native 1080p lesson canvas, narration-anchored staged reveals, semantic attention targets, captions, and protected learner thinking time.' };
   }
   return steps;
 }
