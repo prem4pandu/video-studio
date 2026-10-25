@@ -83,3 +83,15 @@ test('classic mode retains its existing compatibility gates', () => {
   classic.scenes[1].visual = { kind: 'steps', items: ['Two tens and three ones.'], label: 'Place value' };
   assert.doesNotThrow(() => validateLesson(classic, { ...brief, generationVersion: 'classic' }));
 });
+
+
+test('decimal rounding accepts number lines and substantive round imperatives', () => {
+  const lesson = fixture();
+  lesson.title = 'Rounding decimal numbers';
+  lesson.objectives[0].text = 'Round tenths to the nearest whole number.';
+  lesson.scenes[2].visual = { kind: 'number-line', min: 2, max: 3, mark: 2.8, label: 'Two point eight' };
+  lesson.scenes[2].narration = 'Two point eight is closer to three than two. It rounds to three.';
+  lesson.scenes[4].narration = 'Round six point two to the nearest whole number.';
+  lesson.scenes[5].narration = 'Six point two rounds to six because six is the closer whole number.';
+  assert.doesNotThrow(() => validateLesson(lesson, { ...brief, text: 'Rounding decimals; avoid unrelated base-ten place value demonstrations.' }));
+});
