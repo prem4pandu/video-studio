@@ -1,0 +1,16 @@
+{
+  "title": "The Decimal Workshop",
+  "audience": "Ages 9–10; Cambridge Primary Stage 5",
+  "objective": "Explain the value of tenths and hundredths using a consistent whole.",
+  "workedNumber": "3.47",
+  "practiceNumber": "2.63",
+  "segments": [
+    {"id":"hook","text":"In three point four seven, is the four or the seven worth more? Let's build it."},
+    {"id":"whole","text":"Each tile is one whole. Here are three wholes. Let's look closely at the next tile."},
+    {"id":"tenths","text":"Divide it into ten equal strips. Four strips are four tenths: zero point four."},
+    {"id":"hundredths","text":"Divide each strip into ten equal squares. Seven little squares are seven hundredths: zero point zero seven."},
+    {"id":"compare","text":"Four tenths cover forty hundredths. That's more than seven hundredths. The four has the greater value."},
+    {"id":"practice","text":"Your turn. In two point six three, what is the value of the three?","pauseAfter":4},
+    {"id":"answer","text":"Three hundredths: zero point zero three. A digit's place tells us its value."}
+  ]
+}

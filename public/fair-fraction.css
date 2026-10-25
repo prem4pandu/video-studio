@@ -1,0 +1,40 @@
+.model-card [hidden] {
+  display: none !important;
+}
+
+.fraction-bars {
+  display: grid;
+  gap: 26px;
+  min-height: 360px;
+  padding: 22px 0;
+  align-content: center;
+}
+
+.fraction-row {
+  display: grid;
+  gap: 10px;
+}
+
+.fraction-pieces {
+  display: grid;
+  height: 92px;
+  border: 3px solid var(--ink);
+}
+
+.fraction-pieces span {
+  border-right: 2px solid var(--ink);
+  background: white;
+}
+
+.fraction-pieces span:last-child {
+  border-right: 0;
+}
+
+.fraction-pieces .filled {
+  background: var(--teal-soft);
+}
+
+.fraction-row strong {
+  font: 600 17px var(--serif);
+  text-align: center;
+}

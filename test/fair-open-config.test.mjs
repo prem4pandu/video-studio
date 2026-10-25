@@ -18,6 +18,7 @@ test('old briefs retain classic generation; open-source briefs pin local open-so
   assert.equal(brief.provider, 'local');
   assert.equal(brief.model, 'qwen2.5:7b');
   assert.equal(brief.voiceProvider, 'qwentts');
+  assert.equal(brief.footage, 'none');
   for (const patch of [{ provider: 'openai' }, { voiceProvider: 'elevenlabs' }, { voiceProvider: 'openai' }, { generationVersion: 'unknown' }]) {
     assert.throws(() => normalizeBrief({ text, generationVersion: 'open-source', ...patch }));
   }
@@ -39,7 +40,7 @@ test('open-source planning cannot inherit a paid or differently licensed review 
 
 test('readiness collects missing services and never calls a remote planner', async () => {
   let calls = 0;
-  const deps = { env: {}, command: async () => { throw new Error('missing executable'); },
+  const deps = { env: {}, brief: { footage: 'wan' }, command: async () => { throw new Error('missing executable'); },
     fetchImpl: async () => { calls++; return Response.json({ models: [{ name: 'gemma3:12b' }] }); },
     wanReadiness: async () => ({ available: false, detail: 'Wan checkpoint is missing.' }) };
   const result = await fairOpenReadiness(deps);
@@ -55,10 +56,21 @@ test('readiness collects missing services and never calls a remote planner', asy
 });
 
 test('readiness requires all runtime checks, a real installed Qwen name, and Wan readiness', async () => {
-  const result = await fairOpenReadiness({ env: {}, command: async () => ({ stdout: 'unit-test runtime', stderr: '' }),
+  const result = await fairOpenReadiness({ env: {}, brief: { footage: 'wan' }, command: async () => ({ stdout: 'unit-test runtime', stderr: '' }),
     fetchImpl: async (_, options) => { assert.equal(options.redirect, 'error'); return Response.json({ models: [{ name: 'qwen2.5:7b' }] }); },
     wanReadiness: async () => ({ available: true }) });
   assert.deepEqual(result, { available: true, blockers: [] });
+});
+
+test('teaching-only readiness skips Wan and checks the selected planner and separate critic', async () => {
+  const deps = { env: { FAIR_OPEN_MODEL: 'qwen2.5:7b', FAIR_OPEN_REVIEW_MODEL: 'qwen3:30b' },
+    brief: { model: 'qwen3:14b', footage: 'none' }, command: async () => ({ stdout: 'runtime' }),
+    fetchImpl: async () => Response.json({ models: [{ name: 'qwen3:14b' }, { name: 'qwen3:30b' }] }),
+    wanReadiness: () => { throw new Error('Unrequested footage must not be checked'); } };
+  assert.deepEqual(await fairOpenReadiness(deps), { available: true, blockers: [] });
+  const missing = await fairOpenReadiness({ ...deps, fetchImpl: async () => Response.json({ models: [{ name: 'qwen3:14b' }] }) });
+  assert.equal(missing.available, false);
+  assert.match(missing.blockers.join(' '), /qwen3:30b/);
 });
 
 test('composition artifacts are selected only from the trusted generation version', () => {

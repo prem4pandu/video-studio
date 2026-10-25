@@ -1,0 +1,18 @@
+{
+  "_readme": "Licence-audited music beds. The pipeline never downloads audio: it reads this file, picks the first track whose mood matches, converts it to 24 kHz mono WAV and loops it under the narration. With no matching track it synthesises a labelled placeholder so generation still works. Only add tracks whose licence permits redistribution inside generated videos — CC0 preferred, CC-BY acceptable if assets/audio/ATTRIBUTION.md records the credit that the lesson end card must show. Verify the licence page on the download date and record it below; never add a track you have not checked.",
+  "_schema": {
+    "file": "path relative to the repository root",
+    "title": "human readable title",
+    "artist": "author",
+    "mood": "focus | curious | warm | celebrate",
+    "bpm": "whole number, used to place transition sounds on the beat",
+    "beatOffsetSeconds": "seconds from file start to the first downbeat",
+    "licence": "SPDX-ish label, e.g. CC0-1.0 or CC-BY-4.0",
+    "sourceUrl": "page the track was obtained from",
+    "licenceUrl": "page that states the licence",
+    "verifiedAt": "YYYY-MM-DD when the licence page was checked",
+    "attribution": "exact credit line required by the licence, or empty for CC0",
+    "sha256": "sha256 of the file, so a swapped file is detected"
+  },
+  "tracks": []
+}

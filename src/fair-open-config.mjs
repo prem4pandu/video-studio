@@ -1,7 +1,11 @@
 import { fairCommand } from './fair-utils.mjs';
 import { fairWanReadiness } from './fair-wan.mjs';
+import { existsSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 
 export const FAIR_OPEN_MODEL = process.env.FAIR_OPEN_MODEL || 'qwen2.5:7b';
+const bundledManim = fileURLToPath(new URL('../.fair-open/venv/bin/python', import.meta.url));
+export const fairManimPython = (env = process.env) => env.FAIR_MANIM_PYTHON || (existsSync(bundledManim) ? bundledManim : 'python3');
 
 function localOrigin(value, name) {
   const url = new URL(value);
@@ -22,14 +26,15 @@ export function fairOpenEnvironment(env = process.env, brief = {}) {
   // Keep a paid or differently licensed classic review model out of this version.
   // Planner and critic may be configured separately; the critic defaults to the
   // planner for compatibility, but a distinct critic model is recommended.
-  return { ...env, FAIR_MODEL: env.FAIR_OPEN_MODEL || FAIR_OPEN_MODEL, FAIR_REVIEW_MODEL: env.FAIR_OPEN_REVIEW_MODEL || env.FAIR_OPEN_MODEL || FAIR_OPEN_MODEL };
+  const model = brief.model || env.FAIR_OPEN_MODEL || FAIR_OPEN_MODEL;
+  return { ...env, FAIR_MODEL: model, FAIR_REVIEW_MODEL: env.FAIR_OPEN_REVIEW_MODEL || model };
 }
 
-export async function fairOpenReadiness({ env = process.env, signal, fetchImpl = fetch, command = fairCommand, wanReadiness = fairWanReadiness } = {}) {
-  try { env = fairOpenEnvironment(env); }
+export async function fairOpenReadiness({ env = process.env, brief = {}, signal, fetchImpl = fetch, command = fairCommand, wanReadiness = fairWanReadiness } = {}) {
+  try { env = fairOpenEnvironment(env, brief); }
   catch (error) { return { available: false, blockers: [error.message] }; }
   const checks = await Promise.allSettled([
-    command(env.FAIR_MANIM_PYTHON || 'python3', ['-c', 'import manim; print(manim.__version__)'], { env, signal, timeoutMs: 10_000 }),
+    command(fairManimPython(env), ['-c', 'import manim; print(manim.__version__)'], { env, signal, timeoutMs: 10_000 }),
     command(env.FAIR_FFMPEG || 'ffmpeg', ['-version'], { env, signal, timeoutMs: 3000 }),
     command(env.FAIR_FFPROBE || 'ffprobe', ['-version'], { env, signal, timeoutMs: 3000 }),
     (async () => {
@@ -38,19 +43,21 @@ export async function fairOpenReadiness({ env = process.env, signal, fetchImpl =
       });
       if (!response.ok) throw new Error('Ollama unavailable');
       const body = await response.json();
-      if (!body.models?.some(model => model.name === FAIR_OPEN_MODEL)) throw new Error('Model missing');
+      for (const name of new Set([env.FAIR_MODEL, env.FAIR_REVIEW_MODEL])) {
+        if (!body.models?.some(model => model.name === name)) throw new Error(`Install the configured local model: ollama pull ${name}.`);
+      }
     })(),
-    wanReadiness({ env, signal, fetchImpl }),
+    brief.footage === 'wan' ? wanReadiness({ env, signal, fetchImpl }) : Promise.resolve({ available: true }),
   ]);
   const messages = [
     'Install Manim in a Python environment and set FAIR_MANIM_PYTHON to that interpreter.',
     'Install FFmpeg or set FAIR_FFMPEG.',
     'Install ffprobe or set FAIR_FFPROBE.',
-    `Start Ollama and install the open-source planner: ollama pull ${FAIR_OPEN_MODEL}.`,
+    `Start Ollama and install the configured planner and critic: ${[...new Set([env.FAIR_MODEL, env.FAIR_REVIEW_MODEL])].join(', ')}.`,
     'Start ComfyUI with the Wan2.2 models installed; see the open-source setup guide.',
   ];
   const blockers = checks.flatMap((result, index) => {
-    if (result.status === 'rejected') return [messages[index]];
+    if (result.status === 'rejected') return [index === 3 ? `${messages[index]} ${result.reason.message}` : messages[index]];
     if (index === 4 && !result.value.available) return [result.value.detail || messages[index]];
     return [];
   });

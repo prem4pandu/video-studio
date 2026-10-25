@@ -16,7 +16,9 @@ export function fairEscape(value) {
   return String(value).replace(/[&<>"']/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[character]));
 }
 
-export function fairCommand(bin, args, { cwd, signal, timeoutMs = 120_000, onOutput, env = process.env } = {}) {
+// allowFailure resolves with the exit code instead of rejecting, for tools whose
+// machine-readable report is more authoritative than their exit status.
+export function fairCommand(bin, args, { cwd, signal, timeoutMs = 120_000, onOutput, env = process.env, allowFailure = false } = {}) {
   return new Promise((resolve, reject) => {
     if (signal?.aborted) return reject(new Error('Generation cancelled.'));
     const child = spawn(bin, args, { cwd, env, stdio: ['ignore', 'pipe', 'pipe'], detached: process.platform !== 'win32' });
@@ -38,10 +40,32 @@ export function fairCommand(bin, args, { cwd, signal, timeoutMs = 120_000, onOut
     child.on('close', code => {
       cleanup();
       if (stopped) reject(new Error(signal?.aborted ? 'Generation cancelled.' : `${bin} exceeded its time limit.`));
-      else if (code !== 0) reject(new Error(`${bin} exited ${code}: ${(stderr || stdout).slice(-3500)}`));
-      else resolve({ stdout, stderr });
+      else if (code !== 0 && !allowFailure) reject(new Error(`${bin} exited ${code}: ${(stderr || stdout).slice(-3500)}`));
+      else resolve({ stdout, stderr, code });
     });
   });
+}
+
+// Tools print warnings on the same stream as their JSON report. Take the first
+// balanced object rather than assuming the whole stream is JSON.
+export function fairParseJsonOutput(text) {
+  const source = String(text ?? '');
+  const start = source.indexOf('{');
+  if (start < 0) throw new Error(`No JSON object in tool output: ${source.slice(0, 200)}`);
+  let depth = 0, inString = false, escaped = false;
+  for (let at = start; at < source.length; at++) {
+    const character = source[at];
+    if (inString) {
+      if (escaped) escaped = false;
+      else if (character === '\\') escaped = true;
+      else if (character === '"') inString = false;
+      continue;
+    }
+    if (character === '"') inString = true;
+    else if (character === '{') depth++;
+    else if (character === '}' && --depth === 0) return JSON.parse(source.slice(start, at + 1));
+  }
+  throw new Error(`Unterminated JSON object in tool output: ${source.slice(0, 200)}`);
 }
 
 export function fairTimestamp(seconds) {

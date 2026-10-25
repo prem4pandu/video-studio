@@ -482,8 +482,10 @@ test('generic short brief uses model-chosen numbers and derived states before na
       calls = 0;
       const result = await generateLesson({ text, targetSeconds: 120 }, { env: {} });
       assert.equal(calls, 3);
-      assert.match(result.quality.warnings.join(' '), /not the entire place-value curriculum/);
+      assert.match(result.quality.warnings.join(' '), /introduction covers tens-digit values/);
       assert.match(result.curriculum.warnings.join(' '), /two-digit whole numbers/);
+      assert.ok(result.curriculum.warnings.every(warning => warning.length <= 240));
+      assert.doesNotThrow(() => validateLesson(result, { text, targetSeconds: 120 }));
       assert.equal(result.scenes.find(scene => scene.beat === 'answer').visual.number, 73);
     }
   } finally { globalThis.fetch = original; }

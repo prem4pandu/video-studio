@@ -48,16 +48,16 @@ test('captions start after silent establishing shot and escape text markup', () 
 
 test('open-source renderer rejects paid providers and missing review', async () => {
   await assert.rejects(fairRenderOpenLesson(lesson, { provider: 'openai' }, '/unused'), /local lesson/);
-  await assert.rejects(fairRenderOpenLesson(lesson, { provider: 'local', voiceProvider: 'say' }, '/unused'), /Piper or Kokoro/);
+  await assert.rejects(fairRenderOpenLesson(lesson, { provider: 'local', voiceProvider: 'say' }, '/unused'), /Qwen3-TTS, Piper or Kokoro/);
   await assert.rejects(fairRenderOpenLesson({ ...lesson, quality: {} }, { provider: 'local' }, '/unused'), /critique/);
 });
 
-for (const clipDuration of [5.04, .708]) test(`real FFmpeg assembly with ${clipDuration}s fixture includes audio, subtitles, duration and manifest (Manim/Wan/narration are test fixtures)`, async t => {
+for (const clipDuration of [5.04, .708, 0]) test(`real FFmpeg assembly with ${clipDuration}s fixture includes audio, subtitles, duration and manifest (Manim/Wan/narration are test fixtures)`, async t => {
   try { await fairCommand('ffmpeg', ['-version']); await fairCommand('ffprobe', ['-version']); }
   catch { t.skip('FFmpeg and ffprobe are unavailable'); return; }
   const directory = await mkdtemp(join(tmpdir(), 'fair-open-render-'));
   t.after(() => rm(directory, { recursive: true, force: true }));
-  const rendered = await fairRenderOpenLesson(lesson, { provider: 'local', voiceProvider: 'piper', targetSeconds: 60 }, directory, {
+  const rendered = await fairRenderOpenLesson(lesson, { provider: 'local', voiceProvider: clipDuration ? 'piper' : 'qwentts', footage: clipDuration ? 'wan' : 'none', targetSeconds: 60 }, directory, {
     command: async (bin, args, options) => {
       if (args[0] === '-c') return { stdout: 'test-fixture', stderr: '' };
       if (String(args[0]).endsWith('fair-manim-scene.py')) return fairCommand('ffmpeg', ['-v', 'error', '-y', '-f', 'lavfi', '-i', 'color=c=white:s=1280x720:r=30:d=3.7', '-c:v', 'libx264', '-pix_fmt', 'yuv420p', args[2]]);
@@ -70,6 +70,7 @@ for (const clipDuration of [5.04, .708]) test(`real FFmpeg assembly with ${clipD
       return [{ ...track, sha256: await fairFileHash(file) }];
     },
     generateWan: async ({ directory: output }) => {
+      assert.ok(clipDuration > 0, 'No-footage rendering must not call Wan');
       await mkdir(output, { recursive: true });
       const file = join(output, 'fair-test-wan.mp4');
       await fairCommand('ffmpeg', ['-v', 'error', '-y', '-f', 'lavfi', '-i', `color=c=blue:s=1280x704:r=24:d=${clipDuration}`, '-c:v', 'libx264', '-pix_fmt', 'yuv420p', file]);
@@ -77,7 +78,9 @@ for (const clipDuration of [5.04, .708]) test(`real FFmpeg assembly with ${clipD
     },
   });
   assert.equal(rendered.report.passed, true);
-  assert.ok(Math.abs(rendered.report.durationSeconds - (clipDuration > 5 ? 8.7 : 4.4)) < .2);
+  assert.ok(Math.abs(rendered.report.durationSeconds - (clipDuration > 5 ? 8.7 : clipDuration ? 4.4 : 3.7)) < .2);
+  const footage = JSON.parse(await readFile(join(rendered.projectDir, 'wan-provenance.json'), 'utf8'));
+  assert.equal(footage.enabled, clipDuration > 0);
   const manifest = JSON.parse(await readFile(join(rendered.projectDir, 'manifest.json'), 'utf8'));
   assert.ok(manifest.artifacts.some(item => item.file === 'fair-manim-scene.py'));
   for (const artifact of manifest.artifacts) assert.equal(await fairFileHash(join(rendered.projectDir, artifact.file)), artifact.sha256);

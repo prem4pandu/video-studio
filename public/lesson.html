@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="description" content="An interactive decimal place-value learning session for ages 9 to 10.">
+  <title>Decimal Place Value · Fair Learning Session</title>
+  <link rel="stylesheet" href="./fair-lesson.css">
+  <link rel="stylesheet" href="./fair-fraction.css">
+  <script type="module" src="./fair-lesson.mjs"></script>
+</head>
+<body>
+  <a class="skip-link" href="#lesson">Skip to lesson</a>
+  <header class="topbar"><a href="./index.html" class="brand">fair<span>•</span></a><p id="lesson-label">LEARNING LAB</p><span id="progress-label">Getting ready</span></header>
+  <main id="lesson">
+    <section class="lesson-copy" aria-live="polite">
+      <p id="eyebrow" class="eyebrow">AGES 9–10 · ABOUT 8 MINUTES</p>
+      <h1 id="title">Can four be worth more than seven?</h1>
+      <p id="body" class="body-copy">You will use one fixed hundred-square to discover why place can matter more than the digit itself.</p>
+      <div id="question" class="question" hidden>
+        <fieldset><legend id="prompt"></legend><div id="choices" class="choices"></div></fieldset>
+        <label for="explanation">Explain your thinking <span>optional in this prototype</span></label>
+        <textarea id="explanation" rows="3"></textarea>
+        <button id="check" class="primary" type="button">Check my thinking</button>
+      </div>
+      <div id="feedback" class="feedback" role="status" tabindex="-1" hidden></div>
+      <div class="actions"><button id="continue" class="primary" type="button">Start with a quick check</button><button id="restart" class="secondary" type="button" hidden>Start again</button></div>
+      <p id="review-note" class="review-note">Prototype for supervised testing. Not yet educator-approved or child-validated.</p>
+    </section>
+    <aside class="model-card" aria-labelledby="model-title">
+      <div class="model-heading"><div><p>ONE FIXED WHOLE</p><h2 id="model-title">Hundred-square</h2></div><span id="model-count">0 / 100</span></div>
+      <div id="hundred-square" class="hundred-square" role="img" aria-label="An unshaded square divided into one hundred equal cells"></div>
+      <p id="model-label" class="model-label">The outside boundary never changes.</p>
+      <ul id="model-key" class="key" aria-label="Model key"><li><i class="tenth"></i> complete tenths</li><li><i class="hundredth"></i> extra hundredths</li></ul>
+    </aside>
+  </main>
+</body>
+</html>

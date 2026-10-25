@@ -4,6 +4,7 @@ import { fairCommand, fairFileHash, fairHash, fairReadJson, fairWriteJson } from
 import { fairCloudSpeech } from './fair-cloud-speech.mjs';
 import { fairElevenLabsSpeech, fairLocalNeuralSpeech, fairEstimatedWords, fairNeuralPaths, fairPiperPaths, fairPiperSpeech } from './fair-neural-voice.mjs';
 import { fairQwenPaths, fairQwenSpeech } from './fair-qwen-voice.mjs';
+import { fairAlignSpeech } from './fair-alignment.mjs';
 
 export const FAIR_AVATARS = [
   { id: 'none', name: 'No guide', description: 'A clean lesson canvas — visuals and narration carry the teaching. Recommended for curriculum content.', color: '#285e50' },
@@ -121,6 +122,10 @@ export async function fairNarrate(lesson, directory, { signal, env = process.env
       cached = { sceneId: scene.id, file, fingerprint, sha256: await fairFileHash(absolute), bytes: (await stat(absolute)).size,
         provider: voice.provider, voice: voice.voice || 'system default', quality: { tier: voice.provider === 'say' ? 'system' : ['kokoro', 'piper', 'qwentts'].includes(voice.provider) ? 'neural' : 'premium', provider: voice.provider, model: voice.modelId || (voice.provider === 'kokoro' ? 'Kokoro-82M-v1.0' : voice.model || 'system'), voice: voice.voice || 'system default' }, ...timing, ...audio };
       await fairWriteJson(manifestFile, cached);
+    }
+    if (env.FAIR_ALIGNMENT_MODEL_DIR) {
+      await onProgress({ stage: 'narration', progress: 30 + Math.round((index + .5) / lesson.scenes.length * 30), message: `Aligning spoken words in scene ${index + 1} of ${lesson.scenes.length}.` });
+      cached = await fairAlignSpeech(scene.narration, absolute, cached, { env, signal });
     }
     tracks.push(cached);
   }

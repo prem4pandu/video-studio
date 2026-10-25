@@ -4,9 +4,9 @@ This is a second generation version inside the existing **Content studio → Vid
 
 ## What this version generates
 
-1. Qwen2.5 7B through local Ollama creates and critiques the teaching plan. The existing structural and arithmetic validation still applies.
-2. Local Piper or Kokoro narrates the validated scenes. Paid and system voices are rejected for this version.
-3. Wan2.2 TI2V-5B through local ComfyUI generates one short, silent establishing shot. It is illustrative, not a mathematical demonstration. The actual clip duration, capped at five seconds, is preserved.
+1. A configured local Ollama model creates the teaching plan. Set `FAIR_OPEN_REVIEW_MODEL` for a separate critic. The existing structural and arithmetic validation still applies.
+2. Local Qwen3-TTS, Piper or Kokoro narrates the validated scenes. Paid and system voices are rejected for this version. Set `FAIR_ALIGNMENT_MODEL_DIR` to align the approved words locally with MLX Qwen3-ForcedAligner.
+3. Optional: request `footage: "wan"` (CLI: `--footage wan`) to generate a short, silent establishing shot with Wan2.2 TI2V-5B through local ComfyUI. It is illustrative, not a mathematical demonstration. Its actual duration, capped at five seconds, is preserved. The default `footage: "none"` requires no ComfyUI service.
 4. A trusted, JSON-driven Manim renderer draws the teaching scenes. It supports place-value columns, equations, comparisons, number lines, steps, recaps and base-ten grouping/trading/zero/expansion/multiplication. Question screens do not display the answer-bearing visual or title.
 5. FFmpeg assembles the footage, teaching scenes, measured narration and subtitles. Captions are also burned into the teaching video. Verification checks streams, audible audio, duration and artifact hashes.
 
@@ -32,7 +32,7 @@ python3.12 -m venv .fair-open/venv
 ollama pull qwen2.5:7b
 ```
 
-Manim is pinned to 0.22.0. This version deliberately uses the Apache-2.0 Qwen2.5 7B model, not the Classic version's Gemma/Llama defaults. The review pass uses the same Qwen model even if `FAIR_REVIEW_MODEL` is set for Classic.
+Manim is pinned to 0.22.0 and its bundled environment is detected automatically. The normal open-source planner defaults to Qwen2.5 7B; choose another installed model with `FAIR_OPEN_MODEL` or `--model`. The separate critic uses `FAIR_OPEN_REVIEW_MODEL`, otherwise it defaults to the planner. Classic review settings are not inherited. The real smoke command uses the configured `FAIR_MODEL` (normally gpt-oss:20b) and a separate qwen3:30b critic.
 
 ComfyUI is pinned to revision `3541246a9c997f4b8c32f9f88f3c985d02021c79` (v0.40.0). Keep all upstream notices. Its required model files are:
 
@@ -75,7 +75,7 @@ Local Piper setup remains `node scripts/fair-setup-voice.mjs`. Kokoro may use it
 
 ## Run and diagnose
 
-After starting Ollama and ComfyUI:
+After starting Ollama (and ComfyUI only when requesting footage):
 
 ```sh
 npm run check:open
@@ -87,7 +87,7 @@ From the Learning App root, the existing `pnpm dev:studio`/`pnpm start:studio` c
 CLI equivalent:
 
 ```sh
-npm run generate -- "Explain whole-number place value to primary learners" --version open-source --voice piper --seconds 60
+npm run generate -- "Teach place value." --version open-source --voice qwentts --seconds 90
 ```
 
 Readiness lists concrete blockers. A missing model, runtime error, cancelled job or failed content check never becomes a successful export. No paid-provider or upstream-production fallback exists.
@@ -121,10 +121,22 @@ npm run check
 FAIR_MANIM_PYTHON="$PWD/.fair-open/venv/bin/python" node --test test/fair-open-render.test.mjs
 ```
 
-The test suite distinguishes HTTP fixtures, FFmpeg assembly fixtures and actual Manim renders. A synthetic clip in a contract test is not evidence of successful Wan inference. Actual Wan generation and end-to-end lesson evidence are recorded separately after local runtime verification.
+The test suite distinguishes HTTP fixtures, FFmpeg assembly fixtures and actual Manim renders. A synthetic clip in a contract test is not evidence of successful Wan inference. For the real model-to-MP4 smoke test, install the pinned aligner with `.fair-neural/qwen-venv/bin/python scripts/fair-setup-alignment.py`, then run `npm run test:pipeline`. Evidence and stage timings are recorded under `.fair-video/smoke/JOB_ID/`. Forced alignment locates approved words; it does not independently verify spoken-script accuracy. Actual Wan generation remains a separate optional test.
 
 
-Local verification during implementation:
+### Local pipeline test — 20 October 2026
+
+- A real gpt-oss:20b plan passed a separate qwen3:30b teaching critique. The initial Qwen2.5 7B attempt failed structural validation and was retained as a failed job.
+- Qwen3-TTS generated seven narration scenes; all words were aligned locally with the pinned Apache-2.0 Qwen3-ForcedAligner checkpoint. The aligner does not independently verify spoken content.
+- Manim and FFmpeg exported a 61.467-second, 1280×720, 30 fps draft with burned-in and embedded captions, a five-second practice pause and complete declared objective coverage. Media, timing, audio and hash checks passed.
+- The first live run exposed a reviewer ambiguity around the internal `expanded` mode, an oversized system warning, and curly-apostrophe alignment handling. These were fixed. The warning-only repair is recorded alongside unchanged raw generation records.
+- Frame inspection caught missing glyphs for non-breaking hyphens. A separate corrected render revision preserves the initial export and records its parent job.
+- Corrected pilot: `.fair-video/smoke/4cee8d6c-6505-4226-9c71-919057eb1876/project/lesson.mp4`. Its render revision reused reviewed content and aligned audio and took 18.08 seconds; this is not full cold-generation latency.
+- A real, uncached Wan2.2 TI2V-5B test generated 17 frames at 512×288/24 fps in 148.48 seconds. Container verification passed, but frame inspection found heavily distorted output. Its visual review is `needs-changes`; it is not used in the pilot. Native-resolution production quality remains unvalidated.
+- Wan evidence: `.fair-video/wan-smoke-Pr3HYr/smoke-report.json` and `frame.png`.
+- The automated suite passed all 140 tests with real Manim enabled and no skips. The pilot remains pending educator and voice listening review. Its sparse visual presentation is a technical baseline, not the finished design target.
+
+Historical verification during the earlier implementation:
 
 - 129 studio tests passed, with real Manim and FFmpeg checks enabled; no skipped tests.
 - Learning App proxy integration tests (10), web typecheck and production build passed.

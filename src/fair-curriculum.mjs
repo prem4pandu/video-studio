@@ -84,6 +84,7 @@ export function fairTopicBrief({ tree, unit, topic }, overrides = {}) {
   const prerequisiteNote = topic.prerequisites.length ? ` Learners have already covered prerequisite topics: ${topic.prerequisites.join(', ')}.` : '';
   const visuals = topic.suggestedVisuals.length ? ` Suitable renderer visual kinds include: ${topic.suggestedVisuals.join(', ')}.` : '';
   return {
+    generationVersion: 'quality',
     text: `${tree.title} — ${unit.title} — ${topic.title}. ${topic.summary} Learning objectives to cover: ${objectives} Scope: ${topic.scope}${restrictions}${prerequisiteNote}${visuals}`,
     audience: tree.audience,
     curriculumSource: tree.sources.map(source => source.url).join(' '),

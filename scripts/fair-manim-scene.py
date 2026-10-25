@@ -20,6 +20,8 @@ FAIR_TEN_COLUMNS = 10
 
 
 def fair_text(value, size=32, width=12, height=5, color=FAIR_INK, wrap=62):
+    # Pango's default font can lack non-breaking hyphens emitted by local models.
+    value = str(value).translate({0x2011: '-', 0x2010: '-', 0x00a0: ' ', 0x202f: ' '})
     lines = "\n".join(textwrap.fill(str(line), width=wrap, break_long_words=True)
                       for line in str(value).splitlines())
     result = Text(lines, font_size=size, color=color, line_spacing=.8)

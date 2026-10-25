@@ -1,0 +1,41 @@
+{
+  "id": "decimal-place-value-9-10",
+  "title": "Can four be worth more than seven?",
+  "ageRange": [9, 10],
+  "objective": "Explain why a digit can contribute more than a larger digit because of its place.",
+  "successEvidence": "The learner compares tenths and hundredths using the same whole and explains a new example in words.",
+  "estimatedMinutes": 8,
+  "recallDelayHours": 24,
+  "steps": [
+    {"id":"repair-equal-parts","phase":"repair","eyebrow":"Quick repair","title":"Keep the whole fixed","body":"One strip contains ten of the small cells. The outside square has not changed, so one strip is one tenth and each small cell is one hundredth.","model":{"kind":"hundred-square","shadedTenths":1,"shadedHundredths":0,"label":"1 tenth = 10 hundredths"}},
+    {"id":"explain-units","phase":"explain","eyebrow":"Build the idea","title":"Compare with the same-sized pieces","body":"A tenth is ten times the size of a hundredth. Convert both contributions to hundredths before comparing them.","model":{"kind":"hundred-square","shadedTenths":1,"shadedHundredths":0,"label":"0.1 = 0.10"}},
+    {"id":"explain-four","phase":"explain","eyebrow":"Worked example","title":"The 4 contributes forty hundredths","body":"In 3.47, the 4 is in the tenths place. Four full strips contain forty hundredth cells.","model":{"kind":"hundred-square","shadedTenths":4,"shadedHundredths":0,"label":"4 tenths = 40 hundredths = 0.4"}},
+    {"id":"explain-seven","phase":"guided","eyebrow":"Compare","title":"The 7 contributes seven hundredths","body":"Seven small cells do not fill one complete tenth. Forty hundredths are greater than seven hundredths, so the 4 contributes more.","model":{"kind":"hundred-square","shadedTenths":4,"shadedHundredths":7,"label":"0.4 > 0.07"}},
+    {"id":"repair-place","phase":"repair","eyebrow":"Look at the place","title":"Name the unit, not only the digit","body":"The first place after the decimal point is tenths. The second is hundredths. In 2.63, the 3 is three hundredths, written 0.03.","model":{"kind":"hundred-square","shadedTenths":0,"shadedHundredths":3,"label":"3 hundredths = 0.03"}},
+    {"id":"repair-zero","phase":"repair","eyebrow":"Use one common unit","title":"The zero holds the tenths place","body":"0.6 is six tenths, or sixty hundredths. 0.06 is only six hundredths. The zero changes the place of the 6.","model":{"kind":"hundred-square","shadedTenths":6,"shadedHundredths":0,"label":"0.6 = 0.60 > 0.06"}},
+    {"id":"recap-rule","phase":"recap","eyebrow":"Keep this rule","title":"Digit tells how many; place tells which unit","body":"When you explain a decimal digit, name both the number of units and whether those units are tenths or hundredths.","model":{"kind":"hundred-square","shadedTenths":4,"shadedHundredths":7,"label":"3.47 = 3 + 0.4 + 0.07"}}
+  ],
+  "checks": [
+    {"id":"readiness","phase":"readiness","prompt":"One whole is split into 100 equal cells. How many cells make one tenth?","correctChoiceId":"ten","successMessage":"Ready. One tenth is ten hundredths of the same whole.","repairStepId":"repair-equal-parts","explanationPrompt":"Tell someone why the outside square must stay the same size.","choices":[
+      {"id":"one","text":"1 cell","feedback":"One cell is one hundredth. Look at how many cells fill a complete strip.","misconception":"Confuses one tenth with one hundredth"},
+      {"id":"ten","text":"10 cells","feedback":"Correct.","misconception":null},
+      {"id":"hundred","text":"100 cells","feedback":"One hundred cells make the whole, not one tenth.","misconception":"Treats the whole as one tenth"}
+    ]},
+    {"id":"practice","phase":"practice","prompt":"In 2.63, what value does the 3 contribute?","correctChoiceId":"three-hundredths","successMessage":"Yes. The 3 is in the hundredths place, so it contributes 0.03.","repairStepId":"repair-place","explanationPrompt":"Explain using both the digit and its place.","choices":[
+      {"id":"three","text":"3","feedback":"That names the digit as ones. Check which side of the decimal point it is on.","misconception":"Treats the digit as ones"},
+      {"id":"three-tenths","text":"0.3","feedback":"That would be true in 2.36. In 2.63, the 3 is in the second decimal place.","misconception":"Confuses tenths and hundredths"},
+      {"id":"three-hundredths","text":"0.03","feedback":"Correct.","misconception":null}
+    ]},
+    {"id":"transfer","phase":"transfer","prompt":"Which is greater: 0.6 or 0.06?","correctChoiceId":"six-tenths","successMessage":"Correct. Six tenths equal sixty hundredths, which is greater than six hundredths.","repairStepId":"repair-zero","explanationPrompt":"Explain the comparison without saying only that one number has fewer digits.","choices":[
+      {"id":"six-tenths","text":"0.6 is greater","feedback":"Correct.","misconception":null},
+      {"id":"six-hundredths","text":"0.06 is greater","feedback":"More written digits do not make a decimal larger. Convert both to hundredths.","misconception":"Compares decimal strings like whole numbers"},
+      {"id":"same","text":"They are equal","feedback":"The same digit can represent different values in different places.","misconception":"Attends to the digit but not its place"}
+    ]},
+    {"id":"recall","phase":"recall","prompt":"Tomorrow: which digit contributes more in 2.39—the 3 or the 9?","correctChoiceId":"three-tenths","successMessage":"Correct. Three tenths equal thirty hundredths, so the 3 contributes more than the 9.","repairStepId":"repair-place","explanationPrompt":"Explain by converting both contributions to hundredths.","choices":[
+      {"id":"three-tenths","text":"The 3","feedback":"Correct.","misconception":null},
+      {"id":"nine-hundredths","text":"The 9","feedback":"Nine is the larger digit, but its place makes it nine hundredths. Compare 30 hundredths with 9 hundredths.","misconception":"Assumes the larger digit always contributes more"},
+      {"id":"same-value","text":"They contribute the same","feedback":"They use different units: tenths and hundredths.","misconception":"Treats tenths and hundredths as equal-sized units"}
+    ]}
+  ],
+  "review": {"educatorApproved":false,"childTested":false,"status":"prototype-ready-for-supervised-child-test"}
+}

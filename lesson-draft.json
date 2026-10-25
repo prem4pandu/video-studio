@@ -1,0 +1,298 @@
+{
+  "title": "Place value: bundling tens and the job of zero",
+  "audience": "Learners building whole-number place-value understanding with three-digit numbers.",
+  "curriculum": {
+    "requested": "Understanding place value",
+    "resolved": "Bounded whole-number place value: grouping ten rods into hundreds, naming digit values and explaining zero in three-digit numbers.",
+    "warnings": [
+      "The brief names no education stage or curriculum source, so this is a bounded introduction to three-digit whole numbers, not a syllabus certification.",
+      "Covers three-digit whole numbers only; decimals, negative numbers and four-digit numbers are outside this lesson."
+    ],
+    "sources": []
+  },
+  "objectives": [
+    {
+      "id": "regroup-tens",
+      "text": "Regroup twenty three ten rods into two hundreds and three tens, and explain that the total of two hundred and thirty does not change."
+    },
+    {
+      "id": "name-digit-values",
+      "text": "Name the value of each digit in a three-digit whole number, including a zero that means no units in its place."
+    }
+  ],
+  "prerequisites": [
+    "Count and read whole numbers to one hundred.",
+    "Read three-digit whole numbers such as two hundred and thirty.",
+    "Recognise a single cube as one unit and a ten rod as ten units.",
+    "Know that ten ones make one ten."
+  ],
+  "concept": {
+    "hook": "The written number says two hundred and thirty, yet there is not one loose cube beside the blocks. Why write a zero when there is nothing to count?",
+    "analogy": "The written number is three labelled columns. A zero is an empty column that still holds its place, keeping every other digit where it belongs.",
+    "arc": "Begin with rods of ten, bundle them into hundreds, read each digit's value, then meet a zero holding an empty place."
+  },
+  "scenes": [
+    {
+      "id": "hook-empty-ones",
+      "beat": "hook",
+      "title": "The number with an empty ones place",
+      "narration": null,
+      "objectiveIds": [
+        "name-digit-values"
+      ],
+      "visual": {
+        "kind": "base-ten",
+        "mode": "zero",
+        "number": 230,
+        "place": "ones",
+        "label": "A zero in the ones place",
+        "spokenBeats": [
+          "Here are two flats that each show one hundred, plus three ten rods, with no loose ones at all. Together the blocks show two hundred and thirty.",
+          "The ones column is empty. Nothing has been removed and no block has moved; the empty space is the important part.",
+          "That empty ones column is written with a zero, so the number reads two hundred and thirty, not twenty three. Why does an empty place still need a written zero?"
+        ]
+      },
+      "pauseSeconds": 3,
+      "questionId": null,
+      "mathClaims": []
+    },
+    {
+      "id": "concept-bundle-tens",
+      "beat": "concept",
+      "title": "Bundle ten rods into one hundred",
+      "narration": null,
+      "objectiveIds": [
+        "regroup-tens"
+      ],
+      "visual": {
+        "kind": "base-ten",
+        "mode": "group",
+        "number": 230,
+        "place": "tens",
+        "label": "Ten rods of ten make one hundred",
+        "spokenBeats": [
+          "Here are twenty three ten rods on the table. Each rod is worth ten, so together the rods make two hundred and thirty. The starting total is two hundred and thirty, and it must stay the same.",
+          "Bundle ten rods into a flat worth one hundred. Then bundle ten more rods into a second flat, leaving three ten rods behind. Watch each bundled group become a flat worth one hundred.",
+          "Now the blocks read two hundreds, three tens and zero ones, which we write as two hundred and thirty. No rod has vanished; only the grouping has changed, so the total stays the same."
+        ]
+      },
+      "pauseSeconds": 3,
+      "questionId": null,
+      "mathClaims": [
+        {
+          "left": "10 * 10",
+          "right": "100"
+        },
+        {
+          "left": "2 * 100 + 3 * 10",
+          "right": "230"
+        }
+      ]
+    },
+    {
+      "id": "example-digit-values",
+      "beat": "example",
+      "title": "What each digit is worth",
+      "narration": null,
+      "objectiveIds": [
+        "name-digit-values"
+      ],
+      "visual": {
+        "kind": "base-ten",
+        "mode": "expanded",
+        "number": 230,
+        "place": "hundreds",
+        "label": "Two hundreds, three tens, zero ones",
+        "spokenBeats": [
+          "Here are two flats that each show one hundred, three ten rods and no loose ones, exactly the blocks for two hundred and thirty. Nothing needs bundling now, and the blocks are already in neat groups.",
+          "The digit two in the hundreds place is worth two hundreds, so two hundred. The digit three in the tens place is worth three tens, so thirty. The zero in the ones place is worth zero ones, so nothing.",
+          "Two hundred plus thirty plus zero equals two hundred and thirty. We write the digits two, three and zero, and each place tells us what its digit is worth. The blocks have not moved; we are only naming their values."
+        ]
+      },
+      "pauseSeconds": 3,
+      "questionId": null,
+      "mathClaims": [
+        {
+          "left": "2 * 100",
+          "right": "200"
+        },
+        {
+          "left": "3 * 10",
+          "right": "30"
+        },
+        {
+          "left": "200 + 30 + 0",
+          "right": "230"
+        }
+      ]
+    },
+    {
+      "id": "misconception-drop-zero",
+      "beat": "misconception",
+      "title": "Do not drop the zero",
+      "narration": "A common mistake is to read two hundred and thirty as twenty three by dropping the zero. It marks an empty ones place, so the three stays in the tens place and is worth thirty, not three. Dropping the zero slides every digit to the right and changes the value.",
+      "objectiveIds": [
+        "name-digit-values"
+      ],
+      "visual": {
+        "kind": "comparison",
+        "left": "230",
+        "right": "23",
+        "leftLabel": "Zero holds the ones place",
+        "rightLabel": "Dropping the zero changes the value"
+      },
+      "pauseSeconds": 3,
+      "questionId": null,
+      "mathClaims": [
+        {
+          "left": "3 * 10",
+          "right": "30"
+        },
+        {
+          "left": "3 * 1",
+          "right": "3"
+        }
+      ]
+    },
+    {
+      "id": "question-regroup",
+      "beat": "question",
+      "title": "Your turn: bundle thirty four tens",
+      "narration": "Start with thirty four ten rods, and each rod is worth ten. Bundle each group of ten rods into a flat worth one hundred. How many hundreds and how many ten rods remain, and what total value do you have? Picture the flats and rods as you work.",
+      "objectiveIds": [
+        "regroup-tens"
+      ],
+      "visual": {
+        "kind": "steps",
+        "items": [
+          "Thirty four ten rods",
+          "Bundle every ten rods",
+          "Find the hundreds, tens and total"
+        ],
+        "label": "Your turn"
+      },
+      "pauseSeconds": 12,
+      "questionId": "q-regroup",
+      "mathClaims": []
+    },
+    {
+      "id": "answer-regroup",
+      "beat": "answer",
+      "title": "Answer: three hundreds and four tens",
+      "narration": null,
+      "objectiveIds": [
+        "regroup-tens"
+      ],
+      "visual": {
+        "kind": "base-ten",
+        "mode": "group",
+        "number": 340,
+        "place": "tens",
+        "label": "Thirty four tens become three hundreds and four tens",
+        "spokenBeats": [
+          "Start with thirty four ten rods. Each rod is worth ten, so the rods have a total value of three hundred and forty. The rods are loose, waiting to be grouped.",
+          "Bundle ten rods into a flat worth one hundred, then repeat until three flats are made, leaving four ten rods. Each flat takes exactly ten rods, and no rod is thrown away.",
+          "So the answer is three hundreds and four tens, and the total is still three hundred and forty. The regrouping changed the blocks, not the quantity, because each flat was made from ten rods and the value is preserved."
+        ]
+      },
+      "pauseSeconds": 3,
+      "questionId": "q-regroup",
+      "mathClaims": [
+        {
+          "left": "10 * 10",
+          "right": "100"
+        },
+        {
+          "left": "3 * 100 + 4 * 10",
+          "right": "340"
+        }
+      ]
+    },
+    {
+      "id": "question-zero",
+      "beat": "question",
+      "title": "Your turn: value every digit",
+      "narration": "In the number five hundred and eight, what is the value of the five, the value of the zero, and the value of the eight? Explain what the hundreds, tens and ones places tell you about each digit. Use each digit's place, not just the digit itself.",
+      "objectiveIds": [
+        "name-digit-values"
+      ],
+      "visual": {
+        "kind": "steps",
+        "items": [
+          "The number five hundred and eight",
+          "Values of five, zero and eight",
+          "Use hundreds, tens and ones"
+        ],
+        "label": "Your turn"
+      },
+      "pauseSeconds": 12,
+      "questionId": "q-zero",
+      "mathClaims": []
+    },
+    {
+      "id": "answer-zero",
+      "beat": "answer",
+      "title": "Answer: five hundreds, zero tens, eight ones",
+      "narration": null,
+      "objectiveIds": [
+        "name-digit-values"
+      ],
+      "visual": {
+        "kind": "base-ten",
+        "mode": "zero",
+        "number": 508,
+        "place": "tens",
+        "label": "The empty tens place in five hundred and eight",
+        "spokenBeats": [
+          "Here are five flats that each show one hundred, no ten rods and eight loose ones. These blocks show five hundred and eight, and nothing has been removed. There is simply no group of ten to count.",
+          "The tens column is empty, so there are zero tens. Nothing is missing from the hundreds or the ones; the empty column is information, not a gap to skip.",
+          "The five in the hundreds place is worth five hundred, the zero in the tens place is worth zero, and the eight in the ones place is worth eight. So five hundreds plus zero tens plus eight ones gives five hundred and eight, written as five, zero, eight."
+        ]
+      },
+      "pauseSeconds": 3,
+      "questionId": "q-zero",
+      "mathClaims": [
+        {
+          "left": "5 * 100",
+          "right": "500"
+        },
+        {
+          "left": "0 * 10",
+          "right": "0"
+        },
+        {
+          "left": "500 + 0 + 8",
+          "right": "508"
+        }
+      ]
+    },
+    {
+      "id": "recap-place-zero",
+      "beat": "recap",
+      "title": "Recap: place, value and zero",
+      "narration": "Today we bundled groups of ten rods into flats worth one hundred and kept the total at two hundred and thirty. We named each digit's value: two hundreds, three tens and zero ones. A zero holds an empty place and means zero units there. Keep asking what each digit is worth. That habit will help you read and build larger whole numbers accurately.",
+      "objectiveIds": [
+        "regroup-tens",
+        "name-digit-values"
+      ],
+      "visual": {
+        "kind": "recap",
+        "items": [
+          "Ten rods, each worth ten, regroup into one flat worth one hundred.",
+          "Each digit's place gives its value.",
+          "Zero holds an empty place and means zero units.",
+          "Two hundred and thirty is two hundreds, three tens and zero ones."
+        ],
+        "label": "What we learned"
+      },
+      "pauseSeconds": 3,
+      "questionId": null,
+      "mathClaims": [
+        {
+          "left": "2 * 100 + 3 * 10",
+          "right": "230"
+        }
+      ]
+    }
+  ]
+}

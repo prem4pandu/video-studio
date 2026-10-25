@@ -1,0 +1,40 @@
+{
+  "id": "equivalent-fractions-9-10",
+  "title": "How can two fractions look different but be equal?",
+  "ageRange": [9, 10],
+  "objective": "Explain equivalent fractions by partitioning the same whole into more equal parts without changing the shaded amount.",
+  "successEvidence": "The learner identifies and explains a new equivalent-fraction pair using equal-sized wholes and matching shaded area.",
+  "estimatedMinutes": 8,
+  "recallDelayHours": 24,
+  "steps": [
+    {"id":"repair-equal-parts","phase":"repair","eyebrow":"Quick repair","title":"Fractions need equal parts","body":"A fraction describes equal parts of one whole. If the pieces are different sizes, counting them cannot tell us a fraction of the whole.","model":{"kind":"fraction-bars","label":"Same whole; equal-sized parts","bars":[{"numerator":1,"denominator":2,"label":"1 of 2 equal parts"}]}},
+    {"id":"explain-half","phase":"explain","eyebrow":"Start with one whole","title":"Shade one of two equal parts","body":"Split one bar into two equal parts and shade one. The shaded amount is one half.","model":{"kind":"fraction-bars","label":"The whole and shaded amount stay fixed","bars":[{"numerator":1,"denominator":2,"label":"1/2"}]}},
+    {"id":"explain-fourths","phase":"explain","eyebrow":"Partition again","title":"Cut every half into two equal pieces","body":"The same bar now has four equal parts. The shaded half contains two of those fourths. No shaded area was added or removed.","model":{"kind":"fraction-bars","label":"The shaded length is unchanged","bars":[{"numerator":1,"denominator":2,"label":"1/2"},{"numerator":2,"denominator":4,"label":"2/4"}]}},
+    {"id":"compare-area","phase":"guided","eyebrow":"Compare","title":"Different counts, same amount","body":"One half and two fourths use different-sized parts, but they cover the same length of an equal whole. That makes them equivalent fractions.","model":{"kind":"fraction-bars","label":"1/2 = 2/4","bars":[{"numerator":1,"denominator":2,"label":"1/2"},{"numerator":2,"denominator":4,"label":"2/4"}]}},
+    {"id":"repair-matching-change","phase":"repair","eyebrow":"Change both numbers","title":"Each old part was split into the same number of pieces","body":"To change thirds into sixths, split every third into two. The number of shaded pieces and the total number of pieces both double, so the amount stays equal.","model":{"kind":"fraction-bars","label":"2/3 = 4/6","bars":[{"numerator":2,"denominator":3,"label":"2/3"},{"numerator":4,"denominator":6,"label":"4/6"}]}},
+    {"id":"recap-rule","phase":"recap","eyebrow":"Keep this rule","title":"Repartition the same whole; preserve the amount","body":"Equivalent fractions can name the same amount with different equal-sized parts. Check them with equal wholes and matching shaded area.","model":{"kind":"fraction-bars","label":"Same whole + same shaded area = equivalent","bars":[{"numerator":3,"denominator":4,"label":"3/4"},{"numerator":6,"denominator":8,"label":"6/8"}]}}
+  ],
+  "checks": [
+    {"id":"readiness","phase":"readiness","prompt":"Which must be true before the pieces can represent a fraction?","correctChoiceId":"equal","successMessage":"Ready. Fraction parts must be equal parts of the same whole.","repairStepId":"repair-equal-parts","explanationPrompt":"Explain why unequal pieces cannot be counted as equal fractional parts.","choices":[
+      {"id":"equal","text":"The pieces are equal in size","feedback":"Correct.","misconception":null},
+      {"id":"color","text":"Every piece has a different colour","feedback":"Colour can help us see pieces, but it does not define a fraction.","misconception":"Uses appearance instead of equal partitioning"},
+      {"id":"many","text":"There are more than two pieces","feedback":"A whole may be split into two equal parts. The important condition is equal size.","misconception":"Assumes fractions require many parts"}
+    ]},
+    {"id":"practice","phase":"practice","prompt":"Which fraction is equivalent to 3/4?","correctChoiceId":"six-eighths","successMessage":"Yes. Splitting every fourth into two makes eight equal parts, with six shaded: 3/4 = 6/8.","repairStepId":"repair-matching-change","explanationPrompt":"Explain what happened to both the numerator and denominator.","choices":[
+      {"id":"six-eighths","text":"6/8","feedback":"Correct.","misconception":null},
+      {"id":"three-eighths","text":"3/8","feedback":"The denominator changed but the numerator did not, so the shaded amount became smaller.","misconception":"Changes only the denominator"},
+      {"id":"four-fifths","text":"4/5","feedback":"Adding one to both numbers does not preserve the same shaded proportion.","misconception":"Adds the same number instead of scaling both numbers"}
+    ]},
+    {"id":"transfer","phase":"transfer","prompt":"Which fraction is equivalent to 2/3?","correctChoiceId":"four-sixths","successMessage":"Correct. Every third was split into two, so 2/3 = 4/6.","repairStepId":"repair-matching-change","explanationPrompt":"Justify the match using the same whole and shaded area.","choices":[
+      {"id":"two-sixths","text":"2/6","feedback":"That keeps two shaded pieces while making each piece smaller, so it is only one third.","misconception":"Changes only the denominator"},
+      {"id":"three-fourths","text":"3/4","feedback":"Those fractions do not cover the same proportion of an equal whole.","misconception":"Chooses nearby numbers without preserving proportion"},
+      {"id":"four-sixths","text":"4/6","feedback":"Correct.","misconception":null}
+    ]},
+    {"id":"recall","phase":"recall","prompt":"Tomorrow: which fraction is equivalent to 3/5?","correctChoiceId":"six-tenths","successMessage":"Correct. Splitting every fifth into two gives 6/10 without changing the amount.","repairStepId":"repair-matching-change","explanationPrompt":"Describe how each fifth was repartitioned.","choices":[
+      {"id":"three-tenths","text":"3/10","feedback":"The parts became smaller but the shaded count did not change, so the amount was halved.","misconception":"Changes only the denominator"},
+      {"id":"six-tenths","text":"6/10","feedback":"Correct.","misconception":null},
+      {"id":"four-sixths","text":"4/6","feedback":"Adding one to both numbers does not preserve the same fraction.","misconception":"Adds the same number instead of scaling"}
+    ]}
+  ],
+  "review": {"educatorApproved":false,"childTested":false,"status":"prototype-ready-for-supervised-child-test"}
+}
