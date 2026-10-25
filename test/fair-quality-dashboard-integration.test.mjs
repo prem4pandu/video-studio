@@ -87,6 +87,8 @@ test('React studio submits quality and exposes accessible pipeline and gate stat
   ]);
 
   assert.match(app, /className="pipeline-dashboard" aria-labelledby="pipeline-dashboard-title"/);
+  assert.match(app, /className="creation-guide" aria-label="Lesson creation stages"/);
+  assert.match(app, /Quality pipeline online/);
   assert.match(app, /id="setup-summary" role="status" aria-live="polite"/);
   assert.match(app, /id="job-status"[^>]*role="status" aria-live="polite"/);
   assert.match(app, /id="stage-list"[^>]*aria-label="Generation timeline"/);

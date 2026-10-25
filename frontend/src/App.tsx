@@ -26,19 +26,35 @@ function WorkflowDashboard() {
   </section>;
 }
 
+function CreationGuide() {
+  const steps = [
+    ['01', 'Define', 'Learning outcome'],
+    ['02', 'Design', 'Teaching experience'],
+    ['03', 'Produce', 'Voice and animation'],
+    ['04', 'Review', 'Quality and release'],
+  ];
+  return <nav className="creation-guide" aria-label="Lesson creation stages">
+    <div className="guide-heading"><span>Guided studio</span><strong>From brief to reviewed film</strong></div>
+    <ol>{steps.map(([number, title, detail], index) => <li className={index === 0 ? 'active' : ''} aria-current={index === 0 ? 'step' : undefined} key={number}><span>{number}</span><div><strong>{title}</strong><small>{detail}</small></div></li>)}</ol>
+  </nav>;
+}
+
 function ComposeView() {
   return <section id="compose-view" aria-labelledby="compose-title">
     <div className="mobile-flow-head" aria-hidden="true"><span>NEW LESSON</span><strong>Shape the experience</strong><div><i className="done"></i><i className="active"></i><i></i><i></i></div></div>
-    <div className="intro"><p className="eyebrow">New production</p><h1 id="compose-title">Create a lesson film</h1><p className="intro-copy">Define the learning outcome. The studio plans the teaching sequence, produces the film, and checks the final export before review.</p></div>
+    <CreationGuide />
+    <div className="intro studio-intro"><div><p className="eyebrow">New production</p><h1 id="compose-title">Create a lesson film</h1><p className="intro-copy">Start with what learners should understand. The studio turns it into a teachable sequence, directs every scene, and verifies the finished film before review.</p></div><aside className="studio-readiness" aria-label="Studio readiness"><span aria-hidden="true"></span><div><strong>Quality pipeline online</strong><small>Local planning · timed narration · educator gates</small></div></aside></div>
     <div id="connection-notice" className="notice" role="status" hidden></div>
     <form id="lesson-form">
-      <div className="composer"><div className="field-heading"><label htmlFor="brief">Lesson brief</label><span className="required-note">Required</span></div><textarea id="brief" name="text" required minLength={10} maxLength={5000} rows={4} placeholder="What should learners understand? Include the subject, age or grade, examples, and the kind of experience you want."></textarea><div className="composer-foot"><span>Outcome, learner level, and teaching approach.</span><span id="brief-count">0 / 5,000</span></div></div>
-      <div id="curriculum-hint" className="notice" role="status" hidden></div>
-      <div className="examples"><span>Start with an example</span><button type="button" data-example="Teach place value to Grade 5 learners. Show how a digit changes value in different positions, use everyday examples, and finish with a short challenge.">Place value</button><button type="button" data-example="Explain the water cycle to 9-year-olds through the journey of a single raindrop. Include evaporation, condensation, precipitation, and a quick check for understanding.">Water cycle</button></div>
+      <div className="brief-column">
+        <div className="composer"><div className="field-heading"><label htmlFor="brief">Lesson brief</label><span className="required-note">Required</span></div><textarea id="brief" name="text" required minLength={10} maxLength={5000} rows={4} placeholder="What should learners understand? Include the subject, age or grade, examples, and the kind of experience you want."></textarea><div className="composer-foot"><span>Outcome, learner level, and teaching approach.</span><span id="brief-count">0 / 5,000</span></div></div>
+        <div id="curriculum-hint" className="notice" role="status" hidden></div>
+        <div className="examples"><span>Start with an example</span><button type="button" data-example="Teach place value to Grade 5 learners. Show how a digit changes value in different positions, use everyday examples, and finish with a short challenge.">Place value</button><button type="button" data-example="Explain the water cycle to 9-year-olds through the journey of a single raindrop. Include evaporation, condensation, precipitation, and a quick check for understanding.">Water cycle</button></div>
+        <div className="lesson-settings"><div className="field"><label htmlFor="audience">Learners <span>Optional</span></label><input id="audience" name="audience" maxLength={240} placeholder="e.g. Grade 5 · ages 10–11" /></div><div className="field duration-field"><label htmlFor="duration">Target length <output id="duration-label" htmlFor="duration">3 minutes</output></label><input id="duration" name="targetSeconds" type="range" min="60" max="600" defaultValue="180" step="30" /><div className="range-labels"><span>1 min</span><span>10 min</span></div></div></div>
+      </div>
       <div className="form-divider"></div>
       <WorkflowDashboard />
       <fieldset id="instructor-field" className="instructor-field"><legend>Visual presenter <span>Optional · clean canvas recommended</span></legend><div id="avatars" className="avatar-grid"><p className="muted">Loading presenter presets…</p></div><p id="lesson-treatment" className="field-note" hidden></p></fieldset>
-      <div className="lesson-settings"><div className="field"><label htmlFor="audience">Learners <span>Optional</span></label><input id="audience" name="audience" maxLength={240} placeholder="e.g. Grade 5 · ages 10–11" /></div><div className="field duration-field"><label htmlFor="duration">Target length <output id="duration-label" htmlFor="duration">3 minutes</output></label><input id="duration" name="targetSeconds" type="range" min="60" max="600" defaultValue="180" step="30" /><div className="range-labels"><span>1 min</span><span>10 min</span></div></div></div>
       <fieldset id="provider-field" className="provider-field"><legend>AI lesson planner</legend><div id="providers" className="provider-grid"><p className="muted">Loading generation options…</p></div><p id="provider-status" className="field-note" role="status"></p></fieldset>
       <div id="voice-field" className="field voice-field" hidden><label htmlFor="voice-provider">Narrator voice</label><select id="voice-provider" name="voiceProvider" aria-describedby="voice-status"></select><p id="voice-status" className="field-note" role="status"></p><audio id="voice-sample" controls preload="none" aria-label="Selected narrator voice sample" hidden></audio></div>
       <details id="pricing-section" className="pricing-section"><summary>Generation costs <span id="cost-summary">Compare local and paid options</span></summary><div id="pricing-detail"></div></details>
