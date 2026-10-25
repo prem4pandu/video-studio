@@ -79,23 +79,26 @@ test('server config exposes quality as the recommended available generation path
   assert.equal(config.defaults.generationVersion, 'quality');
 });
 
-test('dashboard source submits quality and exposes accessible pipeline and gate status', async () => {
-  const [html, script, pipeline] = await Promise.all([
-    readFile(new URL('../public/index.html', import.meta.url), 'utf8'),
+test('React studio submits quality and exposes accessible pipeline and gate status', async () => {
+  const [app, script, pipeline] = await Promise.all([
+    readFile(new URL('../frontend/src/App.tsx', import.meta.url), 'utf8'),
     readFile(new URL('../public/fair-studio.mjs', import.meta.url), 'utf8'),
     readFile(new URL('../src/fair-pipeline.mjs', import.meta.url), 'utf8'),
   ]);
 
-  assert.match(html, /<section class="pipeline-dashboard" aria-labelledby="pipeline-dashboard-title">/);
-  assert.match(html, /id="setup-summary" role="status" aria-live="polite"/);
-  assert.match(html, /id="job-status"[^>]*role="status"[^>]*aria-live="polite"/);
-  assert.match(html, /id="stage-list"[^>]*aria-label="Generation timeline"/);
-  assert.match(html, /id="lesson-workspace"[^>]*aria-labelledby="lesson-workspace-title"/);
-  assert.match(html, /data-inspector-tab="plan"/);
-  assert.match(html, /data-inspector-tab="script"/);
-  assert.match(html, /data-inspector-tab="prompts"/);
-  assert.match(html, /id="quality-section"[^>]*aria-labelledby="quality-report-title"/);
-  assert.match(html, /id="quality-report-title"[^>]*>What passed, what needs review</);
+  assert.match(app, /className="pipeline-dashboard" aria-labelledby="pipeline-dashboard-title"/);
+  assert.match(app, /id="setup-summary" role="status" aria-live="polite"/);
+  assert.match(app, /id="job-status"[^>]*role="status" aria-live="polite"/);
+  assert.match(app, /id="stage-list"[^>]*aria-label="Generation timeline"/);
+  assert.match(app, /id="lesson-workspace"[^>]*aria-labelledby="lesson-workspace-title"/);
+  assert.match(app, /data-inspector-tab="plan"/);
+  assert.match(app, /data-inspector-tab="script"/);
+  assert.match(app, /data-inspector-tab="prompts"/);
+  assert.match(app, /data-mode="storyboard"/);
+  assert.match(app, /data-mode="advanced"/);
+  assert.match(app, /id="quality-section"[^>]*aria-labelledby="quality-report-title"/);
+  assert.match(app, /id="quality-report-title">What passed, what needs review/);
+  assert.match(app, /import\(\/\* @vite-ignore \*\/ controllerUrl\)/);
 
   assert.match(script, /generationVersion:\s*state\.generationVersion/);
   assert.match(script, /option\.disabled = !available/);

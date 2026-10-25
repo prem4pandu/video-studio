@@ -14,14 +14,14 @@ import { FAIR_OPEN_MODEL, fairOpenEnvironment, fairOpenReadiness } from './fair-
 import { fairLmStudioModels } from './fair-lmstudio.mjs';
 
 const appDir = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const staticFiles = new Map([['/', 'index.html'], ['/index.html', 'index.html'], ['/curriculum.html', 'curriculum.html'], ['/ui-templates.html', 'ui-templates.html'], ['/fair-studio.css', 'fair-studio.css'], ['/fair-curriculum.css', 'fair-curriculum.css'], ['/ui-templates.css', 'ui-templates.css'], ['/fair-studio.mjs', 'fair-studio.mjs'], ['/fair-curriculum.mjs', 'fair-curriculum.mjs'], ['/ui-templates.mjs', 'ui-templates.mjs']]);
+const staticFiles = new Map([['/', 'app/index.html'], ['/index.html', 'app/index.html'], ['/legacy.html', 'index.html'], ['/app/assets/studio.js', 'app/assets/studio.js'], ['/app/assets/studio.css', 'app/assets/studio.css'], ['/curriculum.html', 'curriculum.html'], ['/ui-templates.html', 'ui-templates.html'], ['/fair-studio.css', 'fair-studio.css'], ['/fair-curriculum.css', 'fair-curriculum.css'], ['/ui-templates.css', 'ui-templates.css'], ['/fair-studio.mjs', 'fair-studio.mjs'], ['/fair-curriculum.mjs', 'fair-curriculum.mjs'], ['/ui-templates.mjs', 'ui-templates.mjs']]);
 const assetFiles = new Map([
   ['/assets/fair-pip-sprites.png', 'fair-pip-sprites.png'],
   ['/assets/fair-voice-sample.wav', 'fair-voice-sample.wav'],
   ['/assets/fair-voice-piper-comparison.wav', 'fair-voice-piper-comparison.wav'],
   ['/assets/fair-voice-qwen-audition.wav', 'fair-voice-qwen-audition.wav'],
 ]);
-const mimeTypes = { '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8', '.mjs': 'text/javascript; charset=utf-8', '.json': 'application/json; charset=utf-8', '.mp4': 'video/mp4', '.wav': 'audio/wav', '.png': 'image/png', '.vtt': 'text/vtt; charset=utf-8', '.txt': 'text/plain; charset=utf-8' };
+const mimeTypes = { '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.mjs': 'text/javascript; charset=utf-8', '.json': 'application/json; charset=utf-8', '.mp4': 'video/mp4', '.wav': 'audio/wav', '.png': 'image/png', '.vtt': 'text/vtt; charset=utf-8', '.txt': 'text/plain; charset=utf-8' };
 const json = (response, status, value) => { response.writeHead(status, { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store' }); response.end(JSON.stringify(value)); };
 
 export function fairByteRange(header, size) {

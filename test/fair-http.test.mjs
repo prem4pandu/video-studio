@@ -61,6 +61,11 @@ test('cross-site top-level navigation serves the studio with browser security he
   assert.equal(response.status, 200);
   assert.match(response.headers['content-type'], /^text\/html/);
   assert.match(response.body.toString(), /Video Studio/);
+  assert.match(response.body.toString(), /\/app\/assets\/studio\.js/);
+  const bundle = await http('/app/assets/studio.js');
+  assert.equal(bundle.status, 200);
+  assert.match(bundle.headers['content-type'], /^text\/javascript/);
+  assert.match(bundle.body.toString(), /Create a lesson film/);
   assert.equal(response.headers['x-content-type-options'], 'nosniff');
   assert.match(response.headers['content-security-policy'], /frame-ancestors 'none'/);
   assert.equal(response.headers['access-control-allow-origin'], undefined);

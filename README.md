@@ -28,13 +28,25 @@ concept or curriculum topic
 npm install
 cp .env.example .env
 npm run check:env        # reports what is installed and what is missing
-npm start              # studio UI → http://127.0.0.1:4310
+npm run check:ui         # type-check and build the React studio
+npm start                # studio UI → http://127.0.0.1:4310
 ```
 
 - **Single concept**: open the studio, describe the lesson, generate.
+- **Storyboard mode**: review the finished film beside its teaching plan,
+  narration script, prompts, scene cards, and quality gates.
+- **Advanced mode**: expose the detailed production timeline when diagnosing a
+  run. On smaller screens the creation form becomes a guided, touch-friendly
+  sequence while preserving the same lesson data.
 - **Curriculum mode**: open `curriculum.html` (or the topbar link) to browse the
   Cambridge Primary Mathematics Stage 5 tree, generate per topic or unit, and
   work the review queue.
+
+The web studio is React + TypeScript + Vite. `npm run dev:ui` starts the Vite
+development server; `npm run build:ui` writes the production bundle to
+`public/app/`, which the local Node server serves at `/`. The previous static
+shell remains available at `/legacy.html` while its controller is migrated into
+typed React modules.
 
 ## CLI
 
@@ -85,7 +97,8 @@ not change.
 src/            pipeline: plan → voice → compose → render → verify
 curriculum/     authored curriculum trees (board, stage, subject, topics)
 content/voices/ designed-voice profiles
-public/         studio UI + curriculum/review page
+frontend/       React + TypeScript studio shell and responsive workspace
+public/         built studio assets + curriculum/review page
 tools/          environment readiness check
 scripts/        voice setup, Wan/ComfyUI helpers, benchmarks
 test/           node --test suite (135 tests)

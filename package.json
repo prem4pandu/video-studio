@@ -8,6 +8,9 @@
     "node": ">=22.9"
   },
   "scripts": {
+    "build:ui": "vite build --config frontend/vite.config.ts",
+    "check:ui": "tsc -p frontend/tsconfig.json && vite build --config frontend/vite.config.ts",
+    "dev:ui": "vite --config frontend/vite.config.ts",
     "start": "node --env-file-if-exists=.env src/fair-server.mjs",
     "dev": "node --env-file-if-exists=.env --watch src/fair-server.mjs",
     "test": "node --test test/*.test.mjs",
@@ -28,10 +31,19 @@
   "dependencies": {
     "gsap": "3.14.2",
     "hyperframes": "0.8.161",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
     "ws": "8.22.0",
     "zod": "3.25.76"
   },
   "allowScripts": {
     "esbuild@0.25.12": true
+  },
+  "devDependencies": {
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "@vitejs/plugin-react": "6.1.2",
+    "typescript": "7.0.2",
+    "vite": "8.3.5"
   }
 }
