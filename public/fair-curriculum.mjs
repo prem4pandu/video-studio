@@ -112,7 +112,7 @@ function renderTree() {
         <h3>${esc(unit.title)}</h3><span class="strand">${esc(unit.strand)}</span>
         <span class="unit-stats">${done}/${unit.topics.length} approved</span><span class="unit-disclosure" aria-hidden="true">›</span>
       </button>
-      <button type="button" class="gen-btn" data-unit-gen="${unit.id}">Generate unit</button>
+      <button type="button" class="gen-btn" disabled title="Select one lesson and review its teaching film first.">Bulk generation paused</button>
     </header>${open ? `<ul class="unit-topics" id="topics-${unit.id}">${topics}</ul>` : ''}</section>`;
   }).join('')).join('');
 }

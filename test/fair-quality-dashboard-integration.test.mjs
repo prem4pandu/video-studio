@@ -16,7 +16,7 @@ const waitFor = async (predicate, timeoutMs = 1500) => {
   throw new Error('Timed out waiting for the quality job fixture.');
 };
 
-test('dashboard-shaped quality payload crosses the job store boundary into the pipeline runner', async t => {
+test('new jobs default to the approved quality pipeline when no version is supplied', async t => {
   const root = await mkdtemp(join(tmpdir(), 'fair-quality-dashboard-'));
   const received = [];
   const store = new FairJobStore(root, { env: { FIXTURE: 'quality' }, run: async (brief, directory, options) => {
@@ -34,7 +34,7 @@ test('dashboard-shaped quality payload crosses the job store boundary into the p
 
   const job = await store.create({
     text: 'Teach place value with a worked example and independent transfer.',
-    generationVersion: 'quality', provider: 'local', targetSeconds: 180, avatar: 'none',
+    provider: 'local', targetSeconds: 180, avatar: 'none',
   });
   assert.equal(job.brief.generationVersion, 'quality');
 
@@ -88,7 +88,7 @@ test('React studio submits quality and exposes accessible pipeline and gate stat
 
   assert.match(app, /className="pipeline-dashboard" aria-labelledby="pipeline-dashboard-title"/);
   assert.match(app, /className="creation-guide" aria-label="Lesson creation stages"/);
-  assert.match(app, /Quality pipeline online/);
+  assert.match(app, /KooBits-inspired teaching structure/);
   assert.match(app, /id="setup-summary" role="status" aria-live="polite"/);
   assert.match(app, /id="job-status"[^>]*role="status" aria-live="polite"/);
   assert.match(app, /id="stage-list"[^>]*aria-label="Generation timeline"/);

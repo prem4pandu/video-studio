@@ -9,6 +9,14 @@ it. No paid APIs are required anywhere in the pipeline.
 Built for Apple Silicon. Every generated video is a **draft** until an educator
 reviews it.
 
+New dashboard, API, CLI and curriculum lessons default to the **KooBits-inspired
+teaching film** (`quality`): hook → concept → worked example → guided practice
+and feedback → misconception repair → independent transfer and feedback → recap.
+This selects the approved proof-derived 1080p renderer; it is not a guarantee
+that every generated lesson matches the reference quality. Review one lesson
+before scaling. Unit/all-topic generation is paused in both the API and CLI.
+Classic remains an explicit legacy option, never the default for new jobs.
+
 ## What it does
 
 ```

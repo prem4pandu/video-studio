@@ -1,7 +1,7 @@
 const $ = (id) => document.getElementById(id);
 const fairWorkspace = new URL('.', import.meta.url);
 const fairUrl = (path) => new URL(path.replace(/^\//, ''), fairWorkspace).href;
-const state = { jobs: [], selected: null, config: null, timer: null, revision: '', resultKey: '', capabilityWarning: '', generationVersion: 'classic', provider: 'local', voiceProvider: '', providerModels: {}, promptCache: new Map(), promptLoading: new Set() };
+const state = { jobs: [], selected: null, config: null, timer: null, revision: '', resultKey: '', capabilityWarning: '', generationVersion: 'quality', provider: 'local', voiceProvider: '', providerModels: {}, promptCache: new Map(), promptLoading: new Set() };
 let playbackAttempt = 0, playerFeedbackActive = false;
 const stages = [['plan', 'Plan'], ['review', 'Check content'], ['narration', 'Narrate'], ['composition', 'Animate'], ['render', 'Render'], ['verify', 'Verify export']];
 const pipelineCatalog = {
@@ -82,7 +82,7 @@ const openSource = () => state.generationVersion === 'open-source';
 const qualityGeneration = () => state.generationVersion === 'quality';
 const localPlanner = () => ['local', 'lmstudio'].includes(state.provider);
 const modelKey = () => `${state.generationVersion}:${state.provider}`;
-function generationVersions() { return state.config?.generationVersions || [{ id: 'classic', name: 'Classic · illustrated lessons', available: true, description: 'Illustrated lessons with the existing animation studio.' }]; }
+function generationVersions() { return state.config?.generationVersions || [{ id: 'quality', name: 'KooBits-inspired teaching film', available: false, description: 'Waiting for pipeline readiness checks.' }]; }
 function recommendedVersion() {
   const versions = generationVersions();
   return versions.find((version) => version.recommended) || versions.find((version) => version.id === 'quality') || versions.find((version) => version.id === state.config?.defaults?.generationVersion) || versions.find((version) => version.available !== false) || versions[0];
@@ -533,7 +533,7 @@ async function initialize() {
     renderAvatars(state.config.avatars || []);
     $('lesson-treatment').textContent = [state.config.animation?.name, state.config.animation?.description].filter(Boolean).join(' · ');
     $('lesson-treatment').hidden = !$('lesson-treatment').textContent;
-    state.generationVersion = recommendedVersion()?.id || state.config.defaults?.generationVersion || 'classic';
+    state.generationVersion = recommendedVersion()?.id || state.config.defaults?.generationVersion || 'quality';
     state.provider = state.config.defaults?.provider || 'local';
     if (openSource()) state.provider = 'local';
     renderGenerationVersion();

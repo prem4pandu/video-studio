@@ -112,7 +112,7 @@ export async function fairServerConfig(env, { fetchImpl = fetch, command = fairC
   const openBlockers = [...openSource.blockers, ...(!piper && !openKokoro && !qwen ? ['Install Qwen3-TTS, Piper or Kokoro for open-source narration.'] : [])];
   return { avatars: FAIR_AVATARS, models, pricing: FAIR_PRICING, voiceOptions,
     generationVersions: [
-      { id: 'quality', name: 'Quality lesson', available: renderAvailable, recommended: true, description: 'Approved proof-derived teaching film with native 1080p composition, narration-anchored focus, enforced learning structure, supported maths visuals, and protected learner response time.' },
+      { id: 'quality', name: 'KooBits-inspired teaching film', available: renderAvailable, recommended: true, description: 'Approved teaching structure: hook, concept, worked example, guided practice and feedback, misconception repair, independent transfer and feedback, recap. Native 1080p animation with protected thinking time.' },
       { id: 'classic', name: 'Classic lesson', available: renderAvailable, description: 'The existing illustrated lessons with HyperFrames animation and your chosen narrator.' },
       { id: 'open-source', name: 'Open-source video', available: openBlockers.length === 0, description: 'Wan2.2 footage with Manim teaching graphics, Qwen planning and local narration. No paid API fallback.', blockers: openBlockers },
     ],
@@ -177,6 +177,7 @@ export function fairCreateServer(store, { env = process.env } = {}) {
         if (input.all === true) topicIds = index.map(item => item.topicId);
         else if (typeof input.unitId === 'string') topicIds = index.filter(item => item.unitId === input.unitId).map(item => item.topicId);
         else if (Array.isArray(input.topicIds)) topicIds = [...new Set(input.topicIds.filter(value => typeof value === 'string'))].slice(0, 200);
+        if (input.all === true || typeof input.unitId === 'string' || topicIds.length > 1) throw Object.assign(new Error('Bulk generation is paused. Select one lesson and review its teaching film first.'), { statusCode: 409 });
         if (input.onlyPending === true) {
           const done = new Set(fairCurriculumCoverage(index, store.list())
             .filter(entry => entry.jobs.some(job => job.status === 'completed'))

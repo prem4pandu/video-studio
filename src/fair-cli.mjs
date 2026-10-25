@@ -7,7 +7,7 @@ import { fairRunPipeline } from './fair-pipeline.mjs';
 import { fairFindTopic, fairLoadCurricula, fairTopicBrief } from './fair-curriculum.mjs';
 
 const args = process.argv.slice(2);
-const usage = 'Usage: npm run generate -- "Grade 5 place value: explain digit value and zero placeholders" [--seconds 300] [--model gpt-oss:20b] [--voice qwentts|piper|kokoro|say] [--version classic|open-source]\n       npm run topic -- s5-pv-rounding [--voice qwentts] [--model gpt-oss:20b]';
+const usage = 'Usage: npm run generate -- "Grade 5 place value: explain digit value and zero placeholders" [--seconds 300] [--model gpt-oss:20b] [--voice qwentts|piper|kokoro|say] [--version quality|classic|open-source]\n       npm run topic -- s5-pv-rounding [--voice qwentts] [--model gpt-oss:20b]';
 
 const flags = {};
 let positional = null;
@@ -31,7 +31,7 @@ if (flags['--topic']) {
 } else {
   input = { text: positional, targetSeconds: Number(flags['--seconds'] || 300) };
 }
-const brief = normalizeBrief({ generationVersion: flags['--version'] || 'classic', provider: flags['--provider'] || 'local', avatar: flags['--avatar'] || 'none', ...input, ...(flags['--seconds'] && flags['--topic'] ? { targetSeconds: Number(flags['--seconds']) } : {}), ...(flags['--model'] ? { model: flags['--model'] } : {}), ...(flags['--voice'] ? { voiceProvider: flags['--voice'] } : {}) });
+const brief = normalizeBrief({ ...input, generationVersion: flags['--version'] || 'quality', provider: flags['--provider'] || 'local', avatar: flags['--avatar'] || 'none', ...(flags['--seconds'] && flags['--topic'] ? { targetSeconds: Number(flags['--seconds']) } : {}), ...(flags['--model'] ? { model: flags['--model'] } : {}), ...(flags['--voice'] ? { voiceProvider: flags['--voice'] } : {}) });
 const appDir = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const directory = join(resolve(process.env.FAIR_DATA_DIR || join(appDir, '.fair-video')), `cli-${randomUUID()}`);
 const controller = new AbortController();

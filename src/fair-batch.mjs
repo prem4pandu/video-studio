@@ -19,11 +19,15 @@ const flag = name => args.includes(`--${name}`);
 const option = (name, fallback) => { const i = args.indexOf(`--${name}`); return i >= 0 && args[i + 1] && !args[i + 1].startsWith('--') ? args[i + 1] : fallback; };
 
 if (flag('help') || flag('h') || !args.length) {
-  console.log(`Video Studio batch generation\n\n  --coverage                 report generation/review status per topic\n  --topic <id>               generate one topic\n  --unit <id>                generate a whole unit\n  --all                      generate every topic in every tree\n  --status                   show the job queue\n  --voice <provider>         qwentts (default), piper, kokoro, say\n  --model <name>             planning model override\n  --seconds <n>              target duration override\n  --version <name>           classic (default) or open-source\n  --only-pending             skip topics that already have a completed job`);
+  console.log(`Video Studio batch generation\n\n  --coverage                 report generation/review status per topic\n  --topic <id>               generate one topic\n  --unit <id>                paused pending single-lesson review\n  --all                      paused pending single-lesson review\n  --status                   show the job queue\n  --voice <provider>         qwentts (default), piper, kokoro, say\n  --model <name>             planning model override\n  --seconds <n>              target duration override\n  --version <name>           quality (default), classic or open-source\n  --only-pending             skip topics that already have a completed job`);
   process.exit(0);
 }
 
 const env = process.env;
+if (flag('all') || option('unit', null)) {
+  console.error('Bulk generation is paused. Use --topic for one lesson and review its teaching film first.');
+  process.exit(1);
+}
 const root = resolve(env.FAIR_DATA_DIR || join(fileURLToPath(new URL('..', import.meta.url)), '.fair-video'));
 await mkdir(root, { recursive: true });
 const store = new FairJobStore(root, { env });
@@ -57,7 +61,7 @@ let topicIds = [];
 if (flag('all')) topicIds = index.map(item => item.topicId);
 else if (option('unit', null)) topicIds = index.filter(item => item.unitId === option('unit')).map(item => item.topicId);
 else if (option('topic', null)) topicIds = [option('topic')];
-if (!topicIds.length) { console.error('Choose --topic, --unit or --all. See --help.'); process.exit(1); }
+if (!topicIds.length) { console.error('Choose --topic. See --help.'); process.exit(1); }
 
 const overrides = {};
 for (const [key, arg] of [['provider', 'provider'], ['model', 'model'], ['voiceProvider', 'voice'], ['generationVersion', 'version'], ['avatar', 'avatar']]) {

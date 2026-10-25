@@ -48,7 +48,7 @@ export class FairJobStore {
   }
   async create(input) {
     if (this.queue.length >= this.maxQueue) throw Object.assign(new Error('The queue is full. Wait for a lesson to finish before adding more.'), { statusCode: 429 });
-    const brief = normalizeBrief(input), now = new Date().toISOString();
+    const brief = normalizeBrief({ ...input, generationVersion: input.generationVersion ?? 'quality' }), now = new Date().toISOString();
     const job = { id: randomUUID(), brief, status: 'queued', stage: 'plan', progress: 0, message: 'Waiting to generate.', createdAt: now, updatedAt: now, events: [], attempts: 0 };
     this.jobs.set(job.id, job);
     await this.save(job);

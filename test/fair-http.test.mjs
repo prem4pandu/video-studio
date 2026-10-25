@@ -56,6 +56,16 @@ after(async () => {
   if (root) await rm(root, { recursive: true, force: true });
 });
 
+test('bulk requests are rejected before creating any jobs', async () => {
+  const count = store.list().length;
+  for (const input of [{ all: true }, { unitId: 's5-place-value' }, { topicIds: ['s5-pv-rounding', 's5-sp-likelihood'] }]) {
+    const response = await http('/api/batch', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(input) });
+    assert.equal(response.status, 409);
+    assert.match(JSON.parse(response.body).error, /Bulk generation is paused/);
+    assert.equal(store.list().length, count);
+  }
+});
+
 test('cross-site top-level navigation serves the studio with browser security headers', async () => {
   const response = await http('/', { headers: { 'sec-fetch-site': 'cross-site', 'sec-fetch-mode': 'navigate', 'sec-fetch-dest': 'document' } });
   assert.equal(response.status, 200);
