@@ -4,76 +4,41 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light">
-  <meta name="description" content="Browse the curriculum tree, generate topic videos in batches, and review every draft before it can be used for teaching.">
+  <meta name="description" content="Track curriculum coverage, generate lessons in batches, and review every video before approval.">
   <title>Curriculum · Video Studio</title>
   <link rel="stylesheet" href="./fair-studio.css">
+  <link rel="stylesheet" href="./fair-curriculum.css">
   <script type="module" src="./fair-curriculum.mjs"></script>
-  <style>
-    .unit{border:1px solid var(--line);border-radius:10px;background:var(--surface);margin-bottom:14px;overflow:hidden}
-    .unit-head{display:flex;align-items:center;gap:14px;padding:14px 18px;cursor:pointer}
-    .unit-head:hover{background:var(--tint)}
-    .unit-head h3{margin:0;font-size:15px;flex:1;min-width:0}
-    .unit-head .strand{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);max-width:280px}
-    .unit-stats{font-size:11px;color:var(--muted);white-space:nowrap}
-    .unit-topics{border-top:1px solid var(--line)}
-    .topic-row{display:grid;grid-template-columns:150px minmax(0,1fr) auto auto;gap:14px;align-items:center;padding:12px 18px;border-top:1px solid var(--line)}
-    .topic-row:first-child{border-top:0}
-    .topic-row .codes{font-size:10px;font-weight:650;color:var(--teal);letter-spacing:.04em}
-    .topic-row .topic-title{font-size:13px;font-weight:600;line-height:1.35}
-    .topic-row .topic-title small{display:block;font-weight:400;color:var(--muted);margin-top:3px;font-size:11px}
-    .chip{display:inline-block;font-size:10px;font-weight:650;padding:4px 9px;border-radius:20px;letter-spacing:.05em;white-space:nowrap}
-    .chip.none{background:var(--tint);color:var(--muted)}
-    .chip.queued,.chip.running{background:var(--warning-bg);color:var(--warning)}
-    .chip.completed{background:#e3efe2;color:#2c6e49}
-    .chip.failed,.chip.interrupted{background:var(--error-bg);color:var(--error)}
-    .chip.approved{background:#1c5c46;color:#fff}
-    .chip.rejected,.chip.needs-changes{background:#6d3226;color:#fff}
-    .gen-btn{min-height:36px;border:1px solid var(--strong-line);border-radius:5px;background:var(--surface);font-size:11px;font-weight:600;padding:6px 14px}
-    .gen-btn:hover{border-color:var(--teal);background:var(--tint)}
-    .summary-bar{display:flex;gap:26px;flex-wrap:wrap;padding:18px 22px;background:var(--surface);border:1px solid var(--line);border-radius:10px;margin-bottom:26px}
-    .summary-bar b{display:block;font-size:26px;font-family:var(--serif);font-weight:400}
-    .summary-bar span{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
-    .queue-now{padding:14px 18px;border:1px dashed var(--strong-line);border-radius:10px;margin-bottom:26px;font-size:12px;color:var(--muted)}
-    .queue-now b{color:var(--ink)}
-    .review-card{border:1px solid var(--line);border-radius:10px;background:var(--surface);margin-bottom:22px;overflow:hidden}
-    .review-card .review-head{padding:16px 20px 6px}
-    .review-card h3{margin:0 0 4px;font-size:16px}
-    .review-card .review-head small{color:var(--muted);font-size:11px}
-    .review-card video{display:block;width:100%;max-height:460px;background:#0e1a17}
-    .review-actions{display:grid;grid-template-columns:minmax(0,1fr) auto auto auto;gap:10px;padding:14px 20px 18px;align-items:center}
-    .review-actions input{border:1px solid var(--strong-line);border-radius:5px;padding:9px 12px;font-size:12px;min-width:0}
-    .review-actions .approve{background:var(--teal);color:#fff;border-radius:5px;padding:9px 16px;font-size:12px;font-weight:650}
-    .review-actions .changes{border:1px solid var(--warning);color:var(--warning);border-radius:5px;padding:9px 14px;font-size:12px;font-weight:600}
-    .review-actions .reject{border:1px solid var(--error);color:var(--error);border-radius:5px;padding:9px 14px;font-size:12px;font-weight:600}
-    .review-state{padding:0 20px 16px;font-size:12px;color:var(--muted)}
-    .review-state b{text-transform:capitalize}
-    .section-heading{display:flex;justify-content:space-between;align-items:baseline;margin:34px 0 16px}
-    .section-heading h2{font-family:var(--serif);font-weight:400;font-size:30px;letter-spacing:-1px;margin:0}
-    .section-heading span{font-size:11px;color:var(--muted)}
-    .empty-note{color:var(--muted);font-size:13px;padding:20px;border:1px dashed var(--line);border-radius:10px}
-    @media(max-width:760px){.topic-row{grid-template-columns:1fr auto;gap:8px}.topic-row .codes{grid-column:1/-1}.review-actions{grid-template-columns:1fr 1fr}.review-actions input{grid-column:1/-1}}
-  </style>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to curriculum</a>
   <aside class="sidebar" aria-label="Studio navigation">
-    <a class="brand" href="./index.html" aria-label="Video Studio home"><span class="brand-mark" aria-hidden="true">v<span>•</span></span><span>video<span class="brand-sub">STUDIO</span></span></a>
-    <a class="new-lesson" href="./index.html" style="display:block;text-decoration:none;color:#fff"><span aria-hidden="true">＋</span> New lesson</a>
-    <div class="library-heading"><h2>Generation queue</h2><button class="icon-button" id="refresh" aria-label="Refresh" type="button">↻</button></div>
+    <a class="brand" href="./index.html" aria-label="Video Studio home"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 5.5h14v13H5zM9 9l6 3-6 3z"/></svg></span><span>Video Studio<span class="brand-sub">LESSON PRODUCTION</span></span></a>
+    <a class="new-lesson" href="./index.html"><span aria-hidden="true">+</span> New lesson</a>
+    <div class="library-heading"><h2>Generation queue</h2><button class="icon-button" id="refresh" aria-label="Refresh queue" type="button"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M20 6v5h-5M4 18v-5h5M18 9a7 7 0 0 0-12-2l-2 4M6 15a7 7 0 0 0 12 2l2-4"/></svg></button></div>
     <div id="queue-list" class="library"><p class="library-empty">Nothing generating.</p></div>
-    <div class="sidebar-footer"><span class="local-dot" aria-hidden="true"></span><span>Local creative workspace</span><p>Every draft waits for<br>a teacher's eyes.</p></div>
+    <div class="sidebar-footer"><span class="local-dot" aria-hidden="true"></span><span>Local production workspace</span><p>Every draft waits for<br>an educator's decision.</p></div>
   </aside>
   <main id="main">
-    <header class="topbar"><span>CURRICULUM COVERAGE</span><a class="workspace-tag" href="./index.html" style="text-decoration:none;color:inherit">Single-lesson studio ↗</a></header>
-    <div class="workspace">
-      <div class="intro"><p class="eyebrow">FROM SYLLABUS TO SCREEN</p><h1>Every topic,<br>one clear <em>video.</em></h1><p class="intro-copy">Pick a unit or topic, generate drafts in the background, then review each video before it counts as done.</p></div>
-      <div id="notice" class="notice" role="status" hidden></div>
-      <div class="summary-bar" id="summary"><div><b id="sum-topics">–</b><span>topics</span></div><div><b id="sum-drafts">–</b><span>drafts made</span></div><div><b id="sum-approved">–</b><span>approved</span></div><div><b id="sum-running">–</b><span>in queue</span></div></div>
-      <div class="queue-now" id="queue-now" hidden></div>
-      <div class="section-heading"><h2>Review queue</h2><span id="review-count"></span></div>
-      <div id="review-list"><p class="empty-note">Rendered drafts waiting for review will appear here.</p></div>
-      <div class="section-heading"><h2>Curriculum tree</h2><span id="tree-label"></span></div>
-      <div id="tree"><p class="empty-note">Loading curriculum…</p></div>
+    <header class="topbar"><span>CURRICULUM PRODUCTION</span><a class="workspace-tag" href="./index.html">Single lesson <span aria-hidden="true">&#8594;</span></a></header>
+    <div class="workspace curriculum-workspace">
+      <div class="intro curriculum-intro"><p class="eyebrow">COVERAGE &amp; REVIEW</p><h1>Curriculum workspace</h1><p class="intro-copy">See what has been produced, review completed drafts, and queue the next topic without losing sight of coverage.</p></div>
+      <div id="notice" class="notice" role="status" aria-live="polite" hidden></div>
+      <dl class="summary-bar" id="summary" aria-label="Curriculum production summary">
+        <div><dd id="sum-topics">–</dd><dt>Topics</dt></div>
+        <div><dd id="sum-drafts">–</dd><dt>Drafts made</dt></div>
+        <div><dd id="sum-approved">–</dd><dt>Approved</dt></div>
+        <div><dd id="sum-running">–</dd><dt>In queue</dt></div>
+      </dl>
+      <div class="queue-now" id="queue-now" role="status" aria-live="polite" hidden></div>
+      <section class="curriculum-section" aria-labelledby="review-heading">
+        <div class="section-heading"><div><p class="section-kicker">EDUCATOR GATE</p><h2 id="review-heading">Review queue</h2></div><span id="review-count"></span></div>
+        <div id="review-list"><p class="empty-note">Rendered drafts waiting for review will appear here.</p></div>
+      </section>
+      <section class="curriculum-section" aria-labelledby="tree-heading">
+        <div class="section-heading"><div><p class="section-kicker">SYLLABUS</p><h2 id="tree-heading">Curriculum tree</h2></div><span id="tree-label"></span></div>
+        <div id="tree"><p class="empty-note">Loading curriculum…</p></div>
+      </section>
     </div>
   </main>
 </body>

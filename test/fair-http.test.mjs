@@ -60,7 +60,7 @@ test('cross-site top-level navigation serves the studio with browser security he
   const response = await http('/', { headers: { 'sec-fetch-site': 'cross-site', 'sec-fetch-mode': 'navigate', 'sec-fetch-dest': 'document' } });
   assert.equal(response.status, 200);
   assert.match(response.headers['content-type'], /^text\/html/);
-  assert.match(response.body.toString(), /Fair Video Studio/);
+  assert.match(response.body.toString(), /Video Studio/);
   assert.equal(response.headers['x-content-type-options'], 'nosniff');
   assert.match(response.headers['content-security-policy'], /frame-ancestors 'none'/);
   assert.equal(response.headers['access-control-allow-origin'], undefined);

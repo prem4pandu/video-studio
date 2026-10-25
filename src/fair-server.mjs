@@ -14,7 +14,7 @@ import { FAIR_OPEN_MODEL, fairOpenEnvironment, fairOpenReadiness } from './fair-
 import { fairLmStudioModels } from './fair-lmstudio.mjs';
 
 const appDir = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const staticFiles = new Map([['/', 'index.html'], ['/index.html', 'index.html'], ['/curriculum.html', 'curriculum.html'], ['/fair-studio.css', 'fair-studio.css'], ['/fair-studio.mjs', 'fair-studio.mjs'], ['/fair-curriculum.mjs', 'fair-curriculum.mjs']]);
+const staticFiles = new Map([['/', 'index.html'], ['/index.html', 'index.html'], ['/curriculum.html', 'curriculum.html'], ['/fair-studio.css', 'fair-studio.css'], ['/fair-curriculum.css', 'fair-curriculum.css'], ['/fair-studio.mjs', 'fair-studio.mjs'], ['/fair-curriculum.mjs', 'fair-curriculum.mjs']]);
 const assetFiles = new Map([
   ['/assets/fair-pip-sprites.png', 'fair-pip-sprites.png'],
   ['/assets/fair-voice-sample.wav', 'fair-voice-sample.wav'],
