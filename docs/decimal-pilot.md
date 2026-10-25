@@ -13,9 +13,9 @@ used for arithmetic validation. The four-second practice pause is preserved.
 Run from the app root, with the existing Qwen models installed:
 
 ```sh
-blender --background --factory-startup --disable-autoexec --python scripts/fair-decimal-blender.py -- .fair-video/decimal-pilot/assets
+blender --background --factory-startup --disable-autoexec --python scripts/decimal-blender.py -- .fair-video/decimal-pilot/assets
 ffmpeg -framerate 24 -i .fair-video/decimal-pilot/assets/motion/robot-%04d.png -c:v libvpx-vp9 -pix_fmt yuva420p -b:v 0 -crf 24 -auto-alt-ref 0 .fair-video/decimal-pilot/assets/robot-intro.webm
-node --env-file-if-exists=.env scripts/fair-decimal-pilot.mjs
+node --env-file-if-exists=.env scripts/decimal-pilot.mjs
 ```
 
 The first run used verified Blender 4.5.11 LTS, temporarily mounted read-only at
@@ -63,7 +63,7 @@ The isolated independent-ASR environment is `.fair-video/decimal-asr-venv/`, wit
 `mlx-whisper==0.4.3`. To repeat its check:
 
 ```sh
-.fair-video/decimal-asr-venv/bin/python scripts/fair-decimal-transcribe.py .fair-video/decimal-pilot
+.fair-video/decimal-asr-venv/bin/python scripts/decimal-transcribe.py .fair-video/decimal-pilot
 ```
 
 The recorded initial duration is 54 seconds, longer than the originally proposed

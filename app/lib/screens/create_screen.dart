@@ -376,7 +376,7 @@ class _CreateScreenState extends ConsumerState<CreateScreen> {
             const SizedBox(height: 10),
             Text('Studio offline', style: Theme.of(context).textTheme.titleMedium),
             const SizedBox(height: 6),
-            const Text('The wizard needs the studio config. Start fair-server and try again.',
+            const Text('The wizard needs the studio config. Start the studio server and try again.',
                 textAlign: TextAlign.center, style: TextStyle(fontSize: 12.5, color: FairColors.muted, height: 1.5)),
             const SizedBox(height: 14),
             OutlinedButton.icon(

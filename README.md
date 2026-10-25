@@ -78,7 +78,7 @@ behaviour so existing jobs render exactly as before.
   and the bed's source are saved in `audio-mix.json`. `lesson-voice.mp4` is kept
   alongside `lesson.mp4` as the music-free cut and the re-mix source.
 - **Transformation engine** — fraction lessons do not reveal a second picture:
-  `src/fair-partition.mjs` cuts the same bar in place (blade, squash, cut lines),
+  `src/partition.mjs` cuts the same bar in place (blade, squash, cut lines),
   counts the pieces and the shaded pieces in order, marks the edge that did not
   move, then writes and annotates the equivalence. The shaded amount is a single
   rectangle that is never resized, so the invariant is structural rather than
@@ -93,7 +93,7 @@ behaviour so existing jobs render exactly as before.
 
 ```bash
 # Once: download and verify the 1.28 GB Apache-2.0 word-alignment model.
-.fair-neural/qwen-venv/bin/python scripts/fair-setup-alignment.py
+.fair-neural/qwen-venv/bin/python scripts/setup-alignment.py
 
 # Generates a real short place-value lesson with the configured planner,
 # a separate qwen3:30b critic, Qwen3-TTS, word alignment, Manim and FFmpeg.

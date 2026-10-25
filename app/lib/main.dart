@@ -10,7 +10,7 @@ import 'screens/review_screen.dart';
 import 'shell.dart';
 import 'theme.dart';
 
-void main() => runApp(const ProviderScope(child: FairStudioApp()));
+void main() => runApp(const ProviderScope(child: StudioApp()));
 
 final _router = GoRouter(
   initialLocation: '/',
@@ -28,12 +28,12 @@ final _router = GoRouter(
   ],
 );
 
-class FairStudioApp extends StatelessWidget {
-  const FairStudioApp({super.key});
+class StudioApp extends StatelessWidget {
+  const StudioApp({super.key});
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      title: 'Fair Video Studio',
+      title: 'Video Studio',
       debugShowCheckedModeBanner: false,
       theme: fairTheme(),
       routerConfig: _router,

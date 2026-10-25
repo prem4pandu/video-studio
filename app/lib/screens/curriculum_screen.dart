@@ -9,7 +9,7 @@ import '../theme.dart';
 
 /// Curriculum workspace — coverage overview, live queue banner and the
 /// expandable unit/topic tree with batch generation. Mirrors
-/// public/fair-curriculum.mjs (summary, queue banner, tree).
+/// public/curriculum.mjs (summary, queue banner, tree).
 class CurriculumScreen extends ConsumerStatefulWidget {
   const CurriculumScreen({super.key});
 

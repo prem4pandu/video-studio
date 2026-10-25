@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-/// Fair Studio design tokens — ported from public/fair-studio.css so the
+/// Fair Studio design tokens — ported from public/studio.css so the
 /// Flutter app and the web studio share one visual language.
 abstract final class FairColors {
   static const canvas = Color(0xFFF4F3EF);

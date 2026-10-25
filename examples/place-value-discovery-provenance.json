@@ -1,0 +1,33 @@
+{
+  "type": "authored-discovery-sample",
+  "modelGenerated": false,
+  "localModelGenerated": false,
+  "contentReviewStatus": "independent-code-and-arithmetic-review-passed; educator-review-pending",
+  "safeToPublish": false,
+  "purpose": "Evaluate progressive base-ten counting, grouping and digit-to-value explanation with a single focused objective; not evidence of unattended generation quality.",
+  "sourceBenchmark": "place-value-film.json",
+  "changes": [
+    "Seven scenes focused on digit value in tens and ones.",
+    "Removed trading, multiplication by ten, zero and hundreds.",
+    "Added explicit count of ten individual cubes and four tens.",
+    "Six seconds of silent thinking before a directly matched explanation."
+  ],
+  "voice": {
+    "provider": "piper",
+    "direction": "Warm, unhurried Indian English using the existing configured local voice; no claim of accent verification before listening."
+  },
+  "validation": {
+    "schemaAndArithmetic": "passed",
+    "independentContentReview": "Code and arithmetic reviewed by separate agent; no educator approval",
+    "modelCritique": "not-run",
+    "render": "Verified separate export5373f8dd-fc3f-48ab-82db-1daceee08a3a,121.3s,1080p",
+    "audioVisualReview": "Timeline snapshots and exported scene frames inspected; browser playback passed. Human listening pending."
+  },
+  "renderRequirements": [
+    "Count ten cubes one at a time at the spoken one-through-ten words before bundling.",
+    "Bundle the two groups in twenty three sequentially and retain the three leftover cubes.",
+    "Keep selected blocks, selected digit and selected value visibly connected.",
+    "Count four rods at the spoken ten, twenty, thirty, forty in the answer scene.",
+    "Keep the worked model large and avoid unrelated columns or simultaneous formulas."
+  ]
+}

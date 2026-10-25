@@ -12,7 +12,7 @@ import '../state.dart';
 import '../theme.dart';
 
 /// Educator review queue — every rendered draft waits here for a human
-/// decision. Mirrors the review section of public/fair-curriculum.mjs.
+/// decision. Mirrors the review section of public/curriculum.mjs.
 class ReviewScreen extends ConsumerWidget {
   const ReviewScreen({super.key});
 

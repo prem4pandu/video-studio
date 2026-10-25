@@ -1,4 +1,4 @@
-/// Models mirroring the fair-server REST contract (src/fair-server.mjs).
+/// Models mirroring the studio server REST contract (src/server.mjs).
 /// Every parser is deliberately tolerant — the server owns the schema and
 /// older jobs in the store may predate newer fields.
 library;

@@ -5,11 +5,11 @@ import 'package:http/http.dart' as http;
 
 import 'models.dart';
 
-/// Thin REST client for fair-server (src/fair-server.mjs).
+/// Thin REST client for fair-server (src/server.mjs).
 ///
 /// The server is localhost-only and rejects cross-origin browser requests.
 /// On native/desktop targets the client talks to FAIR_API (default
-/// http://localhost:4310). On web it must be served by fair-server itself so
+/// http://localhost:4310). On web it must be served by the studio server itself so
 /// requests stay same-origin — hence Uri.base.origin.
 class StudioApi {
   StudioApi({String? baseUrl})

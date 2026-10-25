@@ -2,7 +2,7 @@
 
 Analysis date: 2026-10-22. Basis: full read of `src/`, the 148-test suite
 (147 pass, 1 skipped), a frame-by-frame audit of three rendered lessons, and
-`tools/fair-teaching-metrics.mjs` (added with this document — read-only, run it
+`tools/teaching-metrics.mjs` (added with this document — read-only, run it
 on any `project/` directory).
 
 The short version: **this pipeline's moat is its instructional control system,
@@ -18,7 +18,7 @@ voice said it would.
 
 ```
 brief / curriculum topic
-  → planner        LLM writes lesson JSON against a strict zod + JSON-schema contract  (fair-plan.mjs)
+  → planner        LLM writes lesson JSON against a strict zod + JSON-schema contract  (plan.mjs)
   → validators     schema, arithmetic in a bounded grammar, beat-arc coverage, cue legality
   → critic         a second model reviews the draft; errors force targeted scene repair
   → narration      Qwen3-TTS VoiceDesign (or Piper/Kokoro/say), per-scene WAV + phrase timings
@@ -31,15 +31,15 @@ Two composition paths exist and diverge:
 
 | Path | Used when | Resolution | Animation |
 |---|---|---|---|
-| `fairFilmCompose` (`fair-film.mjs`) | any `base-ten` visual, or `avatar: none` | 1920×1080 | `fairBaseTenAnimation` only; everything else is one fade (`fair-film.mjs:49`) |
-| `fairCompose` (`fair-composition.mjs`) | otherwise | 1280×720 | 14 static templates + bespoke fragments for `fraction-bars`/fraction `comparison` |
-| `fair-open-render.mjs` | `generationVersion: open-source` | Manim | 6 kinds |
+| `fairFilmCompose` (`film.mjs`) | any `base-ten` visual, or `avatar: none` | 1920×1080 | `fairBaseTenAnimation` only; everything else is one fade (`film.mjs:49`) |
+| `fairCompose` (`composition.mjs`) | otherwise | 1280×720 | 14 static templates + bespoke fragments for `fraction-bars`/fraction `comparison` |
+| `open-render.mjs` | `generationVersion: open-source` | Manim | 6 kinds |
 
 What is genuinely strong, and should be protected:
 
 - **The explanation architecture is demanded by the contract**, not hoped for:
   `hook → concept → example → misconception → question → answer → recap` is
-  enforced (`fair-plan.mjs:313`), every objective must be both explained and
+  enforced (`plan.mjs:313`), every objective must be both explained and
   practised (`:312`), questions need ≥3 s of thinking time (`:255`), and answers
   must immediately follow their question (`:253`).
 - **Arithmetic is verified, not trusted** — a bounded expression grammar with
@@ -47,7 +47,7 @@ What is genuinely strong, and should be protected:
   that appears in a title or visual (`:299-306`).
 - **A different model reviews the writer's draft** and blocks the render.
 - **The output is gated on measured artefacts**: streams, duration, non-silence,
-  captions (`fair-pipeline.mjs:86-96`).
+  captions (`pipeline.mjs:86-96`).
 
 That combination is rare and is the reason this project beats a normal
 AI-video tool on *teaching*. Everything below extends it; none of it trades it
@@ -57,7 +57,7 @@ away.
 
 ## 2. The measured ceiling
 
-`tools/fair-teaching-metrics.mjs` reads the composition the pipeline emitted and
+`tools/teaching-metrics.mjs` reads the composition the pipeline emitted and
 counts content changes (excluding mouth/pose/pause chrome) against scene time.
 
 ### The authored fraction benchmark (`outputs/equivalent-fractions-age-9-10-qwen-v3`)
@@ -98,24 +98,24 @@ misconception  base-ten  13.9s   7 changes  last@10.1s gap 7.3s
 ```
 
 `base-ten` is the only visual kind with a state machine
-(`fair-base-ten.mjs` → `fair-discovery.mjs` / `fair-animation.mjs`): objects,
+(`base-ten.mjs` → `discovery.mjs` / `animation.mjs`): objects,
 then a transformation, then notation, each bound to a spoken beat. It is also
-the only kind whose motion is tied to words (`fair-animation.mjs:6`,
-`fair-plan.mjs:137`). The 76 %/82 % numbers are not a renderer limitation — they
+the only kind whose motion is tied to words (`animation.mjs:6`,
+`plan.mjs:137`). The 76 %/82 % numbers are not a renderer limitation — they
 are the cost of the other 13 kinds having no timeline of their own.
 
 ### Three specific defects this produces
 
 1. **Timing is allocated by word count, not by meaning.** Generic reveals are
    spaced `start + 0.25 + i * min(2, speech/(items+1))`
-   (`fair-composition.mjs:161`) — capped at 2 s per element, so long scenes
+   (`composition.mjs:161`) — capped at 2 s per element, so long scenes
    compress every element into the opening seconds and then freeze. The
    repartition "change" is hard-coded to 42 % of narration
-   (`fair-composition.mjs:164`). Measured effect: recap items are on screen
+   (`composition.mjs:164`). Measured effect: recap items are on screen
    **1–4 s before** they are spoken.
 2. **The hook gives the answer away.** Hook narration asks for a prediction at
    ~9.5 s; the ×2 split and the finished `2/4` bar are drawn at **6.6 s**
-   (`fair-composition.mjs:164` again). The 4 s thinking pause then plays over the
+   (`composition.mjs:164` again). The 4 s thinking pause then plays over the
    completed answer. The single most valuable moment in the lesson — a
    child committing to a guess — is spent looking at the solution.
    Frame: `outputs/analysis/hook-answer-at-8s.png` (caption still on
@@ -125,11 +125,11 @@ are the cost of the other 13 kinds having no timeline of their own.
    (`outputs/analysis/recap-all-revealed-at-165s.png`). Consistent across scenes:
    a 2 s-per-element stagger describes the word count, not the argument.
 
-Also unused, already-built capability: `fair-film.mjs:44-45` stores
+Also unused, already-built capability: `film.mjs:44-45` stores
 `visualCues` and `visualProof` (the animation's own before/after evidence) on
 every scene, and nothing ever reads them. Forced alignment is written, cached and
-validated (`fair-alignment.mjs`) but off unless `FAIR_ALIGNMENT_MODEL_DIR` is set
-(`fair-voice.mjs:126`). Only 2 of the 12 job directories on disk used it; every
+validated (`alignment.mjs`) but off unless `FAIR_ALIGNMENT_MODEL_DIR` is set
+(`voice.mjs:126`). Only 2 of the 12 job directories on disk used it; every
 authored-benchmark render — including the one scored against KooBits — carries
 `wordTimingSource: "estimated"`.
 
@@ -168,7 +168,7 @@ Replace "scene = narration + one visual" with "scene = 2–6 beats":
 Rules, all machine-checkable:
 
 - `say` must occur **exactly once** in the scene's narration — this validator
-  already exists as `baseTenCueWordOffsets` (`fair-plan.mjs:137`) and just needs
+  already exists as `baseTenCueWordOffsets` (`plan.mjs:137`) and just needs
   generalising.
 - Beats compile in narration order, with cues carrying a word index (not a
   timestamp).
@@ -179,7 +179,7 @@ Rules, all machine-checkable:
   invariant anchor** on screen while everything else moves. This is the single
   most powerful animation primitive in mathematics teaching — *watch what does
   not change* — and the codebase already has a hint of it in `shade-endpoint`
-  (`fair-composition.mjs:42`, `:165`).
+  (`composition.mjs:42`, `:165`).
 - Pacing budget: ≥1 change per 12 spoken words, never more than 4 s without a
   change, ≤35 words per beat.
 
@@ -192,7 +192,7 @@ rhythm the KooBits comparison scored 9/10.
 ### 3.3 A persistent model and a small op vocabulary
 
 Today the 14 visual kinds are independent templates with no state, no memory
-across scenes, and no shared geometry (`fair-composition.mjs:54-113`). Replace
+across scenes, and no shared geometry (`composition.mjs:54-113`). Replace
 them with one scene graph per lesson and a short op list:
 
 | op | meaning | used by |
@@ -225,21 +225,21 @@ Consequences, all of them things the current output lacks:
 
 - **Continuity.** Props live across scene boundaries, so "paper strip → bar →
   symbols" is one object changing form instead of three disconnected slides.
-  (`fair-film.mjs:43` already fakes this with a `continueObjects` flag — that
+  (`film.mjs:43` already fakes this with a `continueObjects` flag — that
   hack becomes unnecessary.)
 - **Variety without new templates.** `partition` + `align` + `reveal-notation`
   in different framings is visually fresh; five fraction-bar cards in ten scenes
   (current output) is not.
 - **Repair clips.** A wrong multiple-choice option can render its own 2-beat
   repair from the same model, and the interactive session schema
-  (`fair-learning-session.mjs`) can point at it.
+  (`learning-session.mjs`) can point at it.
 
 ### 3.4 Sync by default
 
 Turn forced alignment on for every real render (`FAIR_ALIGNMENT_MODEL_DIR`; the
 1.28 GB Apache-2.0 aligner, setup script, caching and validation already exist).
 Then compile `cue word index → aligned word time → GSAP position` for **all**
-kinds, not just base-ten (`fair-animation.mjs:6`).
+kinds, not just base-ten (`animation.mjs:6`).
 
 Gate: each beat's change must land within ±200 ms of its cue word (p95 ≤250 ms);
 fail the render otherwise. Add a small "sync audit" line to
@@ -267,9 +267,9 @@ These are planner/validator changes, no renderer work:
    a different hook.
 5. **Worked-example fading** — worked → completion → independent. The current arc
    jumps from one worked example to a fully independent transfer question.
-6. **Question cards, not paragraphs.** `fairQuestionCard` (`fair-question-card.mjs:21`)
+6. **Question cards, not paragraphs.** `fairQuestionCard` (`question-card.mjs:21`)
    only fires on one sentence pattern; visual options exist for fraction bars
-   (`fair-composition.mjs:51`) but not generally. Generalise: every question
+   (`composition.mjs:51`) but not generally. Generalise: every question
    renders as a designed prompt with visual answer choices.
 
 ### 3.6 Production multipliers (small effort, large perceived gain)
@@ -278,10 +278,10 @@ These are planner/validator changes, no renderer work:
 |---|---|---|
 | **Audio design**: a −18 dB music bed with side-chain ducking, plus 3–6 designed SFX on change beats | There is currently **zero** non-voice audio. Silence between scenes is the loudest tell of an automated video. Mix with ffmpeg post-render (`amix` + `sidechaincompress`) — deterministic, local, licence-clean. | 3–5 days |
 | **Cut on the beat, not on the clock** | Every scene currently hard-cuts after `speech + pause + 0.7 s`. Cut on a beat boundary and hold 0.3 s. | 1 day |
-| **Two framings per scene** (establish → close-up on the operated region) | `closeup: true` exists in `fair-discovery.mjs:132` and only toggles a CSS class. Real reframing adds energy and signals "look here". | 2–3 days |
+| **Two framings per scene** (establish → close-up on the operated region) | `closeup: true` exists in `discovery.mjs:132` and only toggles a CSS class. Real reframing adds energy and signals "look here". | 2–3 days |
 | **1080p for the classic path** | Output is 1280×720 while the film path is 1920×1080; text is the instruction medium. One composition attribute. | hours |
-| **One identity** | Two diverging composers duplicate timing, caption and audio logic (`fair-composition.mjs` vs `fair-film.mjs`); a fix in one never reaches the other. Consolidate on the film path + archetypes. | with 3.3 |
-| **Guide reacts only at predict / reveal / repair** | Pose logic is energy-driven (`fair-film.mjs:52`); make it event-driven. | 1 day |
+| **One identity** | Two diverging composers duplicate timing, caption and audio logic (`composition.mjs` vs `film.mjs`); a fix in one never reaches the other. Consolidate on the film path + archetypes. | with 3.3 |
+| **Guide reacts only at predict / reveal / repair** | Pose logic is energy-driven (`film.mjs:52`); make it event-driven. | 1 day |
 | **Contact sheet in the report** | 1 frame per beat in `quality-report.json` makes review 10× faster and catches spoilers automatically. | 1 day |
 
 ### 3.7 Close the loop: measure what the review complains about
@@ -290,13 +290,13 @@ The verification stack proves the maths is right and the file plays. It cannot
 currently tell you that the animation failed to show the thing being said.
 Extend it:
 
-1. **Pacing gates** (already implemented in `tools/fair-teaching-metrics.mjs`):
+1. **Pacing gates** (already implemented in `tools/teaching-metrics.mjs`):
    still-picture ≤40 % of runtime, longest frozen interval ≤4 s, zero one-shot
    scenes, ≥8 changes/minute. Wire into `test:pipeline` and
    `quality-report.json`.
 2. **Sync gate**: measured cue error, p50/p95.
 3. **Proof gate**: every `preserves` claim asserted against the rendered state
-   (the `proof` array from `fair-discovery.mjs` is already produced and thrown
+   (the `proof` array from `discovery.mjs` is already produced and thrown
    away — assert it).
 4. **Referent gate**: every noun the narration names in a beat exists in the
    scene graph, and appears at that beat.
@@ -371,13 +371,13 @@ spending the runtime on still frames, and to make the picture move on the words.
 
 Shipped in this repository, on top of the contract described above:
 
-- `src/fair-audio.mjs` — seeded, deterministic sound-effect synthesis; licence-audited
+- `src/audio.mjs` — seeded, deterministic sound-effect synthesis; licence-audited
   bed selection from `assets/audio/music-manifest.json`; one mix graph that
   normalises the voice, ducks the bed under it, thins the bed during answer-free
   pauses, limits and lands a single loudness target.
-- `src/fair-intro.mjs` — beat-aligned title card ("today we'll be able to…") and a
+- `src/intro.mjs` — beat-aligned title card ("today we'll be able to…") and a
   closing rule card. No narration, so they cannot disturb measured speech timing.
-- `src/fair-interaction.mjs` — derives `predict` / `choose` nodes from the lesson
+- `src/interaction.mjs` — derives `predict` / `choose` nodes from the lesson
   itself. Rendered now as option cards plus a countdown ring; the same nodes are
   what a clickable player will consume later.
 - Composer — 1080p output (authored at 1280×720 and scaled, matching the film
@@ -424,7 +424,7 @@ Three caveats, stated so they are not lost:
 The partition archetype is now rendered by a real transformation engine rather
 than a templated reveal.
 
-**`src/fair-partition.mjs`** builds one persistent bar object and performs the
+**`src/partition.mjs`** builds one persistent bar object and performs the
 repartition on it:
 
 | Phase | What the viewer sees |
@@ -441,7 +441,7 @@ Two properties make this trustworthy rather than decorative:
 1. **The shaded amount cannot change.** It is a single rectangle that is only
    ever wiped or pulse-tinted during the cut — never resized or re-positioned.
    The invariant is structural, not an assertion in the narration. A test
-   (`test/fair-partition.test.mjs`) fails if anyone animates its geometry.
+   (`test/partition.test.mjs`) fails if anyone animates its geometry.
 2. **Geometry is derived.** Part positions, cut counts and shade length come from
    the validated fraction and its whole-number factor; the model cannot invent a
    cut in the wrong place.
@@ -495,8 +495,8 @@ keeps sole responsibility for correctness-critical motion. Full decision note:
   Qwen3-ForcedAligner (`qwen-aligner-8bit`, already installed) now runs on every
   real render. Each scene's words carry measured start/end seconds.
 - The aligner can squeeze a fast function word to a zero-length span;
-  `scripts/fair-align-speech.py` now repairs those by borrowing ≤30 ms from a
-  roomy neighbour, keeping the strict validator (`fair-alignment.mjs`)
+  `scripts/align-speech.py` now repairs those by borrowing ≤30 ms from a
+  roomy neighbour, keeping the strict validator (`alignment.mjs`)
   unchanged. Discovered on the very first aligned render — the word "it" in the
   hook arrived as [3.18, 3.18].
 - `fairCaptionChunks` accepts aligned word times: caption chunks now break on
@@ -511,7 +511,7 @@ keeps sole responsibility for correctness-critical motion. Full decision note:
 ### Branch 3 — the QC loop audits itself: shipped
 
 The pacing tool was reading "1 change per scene" on Phase-B output: the
-scene-spanning ambient push merged every interval. `tools/fair-teaching-metrics.mjs`
+scene-spanning ambient push merged every interval. `tools/teaching-metrics.mjs`
 now excludes always-on tweens (scene-root push, presenter breathing) from
 content-change counting, excludes declared thinking-pause windows from
 frozen-time budgets (thinking time is a feature, not a stall), and fixes a CLI

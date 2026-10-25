@@ -1,0 +1,8 @@
+{
+  "name": "Pip",
+  "origin": "Original image generated using the built-in image generation tool, 2026-10-15",
+  "file": "pip-sprites.png",
+  "layout": "4 columns by 2 rows; transparent 1774 by 887 pixel atlas",
+  "creativeBrief": "Original warm amber otter explorer in a teal jacket and coral neck scarf, polished 2D educational cartoon. Eight consistent full-body poses: neutral closed/open mouth, pointing left closed/open mouth, thinking, delighted open palms, blinking, thumbs up. No copied branded character.",
+  "usage": "CSS atlas poses; amplitude-driven mouth pose changes are not phoneme lip sync."
+}
