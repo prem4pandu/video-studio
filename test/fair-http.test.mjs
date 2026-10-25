@@ -66,6 +66,24 @@ test('cross-site top-level navigation serves the studio with browser security he
   assert.equal(response.headers['access-control-allow-origin'], undefined);
 });
 
+test('UI decision templates and their local assets are served without weakening CSP', async () => {
+  const [page, styles, script] = await Promise.all([
+    http('/ui-templates.html'),
+    http('/ui-templates.css'),
+    http('/ui-templates.mjs'),
+  ]);
+  assert.equal(page.status, 200);
+  assert.match(page.headers['content-type'], /^text\/html/);
+  assert.match(page.body.toString(), /Production console/);
+  assert.match(page.body.toString(), /Storyboard canvas/);
+  assert.match(page.body.toString(), /Guided studio/);
+  assert.equal(styles.status, 200);
+  assert.match(styles.headers['content-type'], /^text\/css/);
+  assert.equal(script.status, 200);
+  assert.match(script.headers['content-type'], /javascript/);
+  assert.match(page.headers['content-security-policy'], /style-src 'self'/);
+});
+
 test('cross-site API reads and writes are denied before any work starts', async () => {
   const initialJobs = store.list().length;
   for (const path of ['/api/config', '/api/jobs']) {
