@@ -11,6 +11,7 @@ const pipelineCatalog = {
   footage: { label: 'Generate footage', description: 'Creates a short cinematic establishing shot while exact teaching graphics stay deterministic.', output: 'Wan footage' },
   composition: { label: 'Purposeful animation', description: 'Synchronizes teaching visuals, captions, gestures, and protected learner thinking time.', output: 'Timed composition' },
   render: { label: 'Render', description: 'Combines scenes, narration, captions, and transitions into the final lesson video.', output: 'MP4 export' },
+  audio: { label: 'Sound mix', description: 'Mixes the music bed, teaching sounds, and narration under the voice.', output: 'Mixed audio' },
   verify: { label: 'Quality gates', description: 'Measures the export, checks audio and captions, and verifies objective coverage.', output: 'Quality report' },
   educator: { label: 'Educator review', description: 'A teacher checks subject accuracy, suitability, pacing, and curriculum fit before sharing.', output: 'Human decision', manual: true },
 };
@@ -32,7 +33,11 @@ function safeArtifact(value) {
 async function api(path, options = {}) {
   const response = await fetch(fairUrl(path), { ...options, headers: { 'Content-Type': 'application/json', ...options.headers } });
   const data = await response.json().catch(() => ({}));
-  if (!response.ok) throw new Error(typeof data.error === 'string' ? data.error : data.error?.message || data.message || `Request failed (${response.status}).`);
+  if (!response.ok) {
+    const error = new Error(typeof data.error === 'string' ? data.error : data.error?.message || data.message || `Request failed (${response.status}).`);
+    error.status = response.status;
+    throw error;
+  }
   return data;
 }
 function notice(message) { $('connection-notice').textContent = message; $('connection-notice').hidden = !message; }
@@ -91,22 +96,23 @@ function generationName(job) {
   const id = job.brief?.generationVersion || job.generationVersion || 'classic';
   return generationVersions().find((version) => version.id === id)?.name || (id === 'open-source' ? 'Open source' : 'Classic');
 }
-function pipelineSteps(version, { footage = false } = {}) {
+function pipelineSteps(version, { footage = false, audio = false } = {}) {
   let steps;
   if (Array.isArray(version?.stages) && version.stages.length) {
     steps = version.stages.map((stage, index) => typeof stage === 'string' ? { id: `stage-${index}`, label: stage, description: 'A configured generation stage.', output: 'Reviewable artifact' } : { ...stage, label: stage.label || stage.name || stage.id }).filter(stage => stage.label);
   } else {
+    const mix = audio ? ['audio'] : [];
     const ids = version?.id === 'open-source'
-      ? ['plan', 'review', 'narration', 'footage', 'composition', 'render', 'verify', 'educator']
-      : ['plan', 'review', 'narration', 'composition', 'render', 'verify', 'educator'];
+      ? ['plan', 'review', 'narration', 'footage', 'composition', 'render', ...mix, 'verify', 'educator']
+      : ['plan', 'review', 'narration', 'composition', 'render', ...mix, 'verify', 'educator'];
     steps = ids.map(id => ({ id, ...pipelineCatalog[id] }));
   }
   if (!footage) steps = steps.filter(stage => stage.id !== 'footage');
   if (version?.id === 'classic') {
-    steps[1] = { ...steps[1], label: 'Content check', description: 'Checks the lesson structure, calculations, questions, and answers before production.' };
-    steps[3] = { ...steps[3], label: 'Illustrated animation', description: 'Builds the existing illustrated scenes and aligns them to the narration.' };
+    if (steps[1]) steps[1] = { ...steps[1], label: 'Content check', description: 'Checks the lesson structure, calculations, questions, and answers before production.' };
+    if (steps[3]) steps[3] = { ...steps[3], label: 'Illustrated animation', description: 'Builds the existing illustrated scenes and aligns them to the narration.' };
   } else if (version?.id === 'quality') {
-    steps[3] = { ...steps[3], label: 'Approved proof-derived teaching film', description: 'Uses the confirmed native 1080p lesson canvas, narration-anchored staged reveals, semantic attention targets, captions, and protected learner thinking time.' };
+    if (steps[3]) steps[3] = { ...steps[3], label: 'Approved proof-derived teaching film', description: 'Uses the confirmed native 1080p lesson canvas, narration-anchored staged reveals, semantic attention targets, captions, and protected learner thinking time.' };
   }
   return steps;
 }
@@ -129,7 +135,7 @@ function renderPipelineTransparency() {
   $('pedagogy-summary').textContent = version?.pedagogySummary || (qualityGeneration() ? 'A worked example, protected think time, guided practice, independent transfer, and explicit misconception repair shape the lesson before rendering.' : 'The lesson plan uses objectives, worked examples, learner practice, and an educator review point.');
   $('teaching-pattern').textContent = version?.teachingPattern || (qualityGeneration() ? 'Explain, model, practise, transfer' : 'Objective-led lesson sequence');
   $('quality-target').textContent = version?.qualityTarget || (qualityGeneration() ? 'Pedagogy and export gates' : 'Automated export checks');
-  $('pipeline-preview').replaceChildren(...pipelineSteps(version, { footage: openSource() && $('footage')?.value === 'wan' }).map((stage, index) => {
+  $('pipeline-preview').replaceChildren(...pipelineSteps(version, { footage: openSource() && $('footage')?.value === 'wan', audio: $('audio')?.value === 'music' }).map((stage, index) => {
     const item = el('li');
     item.append(el('span', stage.manual ? 'Review' : String(index + 1).padStart(2, '0'), 'pipeline-number'), el('strong', stage.label), el('p', stage.description), el('span', stage.output, 'pipeline-output'));
     return item;
@@ -333,6 +339,7 @@ async function pollJob() {
     if (active(job)) state.timer = setTimeout(pollJob, 2000);
   } catch (error) {
     if (state.selected !== id) return;
+    if (error.status === 404) { $('job-status').textContent = 'Lesson not found.'; return; }
     $('job-status').textContent = `Connection interrupted. ${error.message} Reconnecting…`;
     state.timer = setTimeout(pollJob, 5000);
   }
@@ -340,7 +347,7 @@ async function pollJob() {
 function jobPipeline(job) {
   const id = job.brief?.generationVersion || job.generationVersion || 'classic';
   const version = generationVersions().find(entry => entry.id === id) || { id };
-  return pipelineSteps(version, { footage: job.brief?.footage === 'wan' || job.stage === 'footage' }).filter(stage => !stage.manual);
+  return pipelineSteps(version, { footage: job.brief?.footage === 'wan' || job.stage === 'footage', audio: job.brief?.audio === 'music' }).filter(stage => !stage.manual);
 }
 function stageEvent(job, id) {
   return (job.events || []).find(event => event.stage === id);
@@ -457,7 +464,7 @@ function renderJob(job) {
       const video = $('video'); video.src = src; video.replaceChildren();
       const captions = safeArtifact(job.artifacts?.captions);
       if (captions) { const track = el('track'); track.kind = 'captions'; track.srclang = 'en'; track.label = 'English (also shown in video)'; track.src = captions; video.append(track); }
-      const names = { video: 'Download video', captions: 'Captions', transcript: 'Transcript', lesson: 'Lesson plan', prompts: 'Generation prompts', composition: 'Composition source', renderPlan: 'Render plan', footage: 'Footage provenance', report: 'Quality report' };
+      const names = { video: 'Download video', captions: 'Captions', transcript: 'Transcript', lesson: 'Lesson plan', prompts: 'Generation prompts', composition: 'Composition source', renderPlan: 'Render plan', footage: 'Footage provenance', report: 'Quality report', manifest: 'Manifest' };
       $('downloads').replaceChildren();
       for (const [key, name] of Object.entries(names)) {
         const href = safeArtifact(job.artifacts?.[key]); if (!href) continue;

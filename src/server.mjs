@@ -44,7 +44,10 @@ async function body(request) {
     if (length > 24_000) throw Object.assign(new Error('The brief is too large.'), { statusCode: 413 });
     chunks.push(chunk);
   }
-  try { return JSON.parse(Buffer.concat(chunks).toString('utf8')); } catch { throw Object.assign(new Error('Invalid JSON.'), { statusCode: 400 }); }
+  let value;
+  try { value = JSON.parse(Buffer.concat(chunks).toString('utf8')); } catch { throw Object.assign(new Error('Invalid JSON.'), { statusCode: 400 }); }
+  if (typeof value !== 'object' || value === null || Array.isArray(value)) throw Object.assign(new Error('Send a JSON object.'), { statusCode: 400 });
+  return value;
 }
 
 export async function fairServerConfig(env, { fetchImpl = fetch, command = fairCommand, fileStat = stat, openReadiness = fairOpenReadiness } = {}) {
@@ -139,11 +142,16 @@ export function fairCreateServer(store, { env = process.env } = {}) {
     try {
       const host = request.headers.host || '';
       if (!/^(?:localhost|127\.0\.0\.1|\[::1\])(?::\d+)?$/.test(host)) return json(response, 403, { error: 'This studio is available on localhost only.' });
+      // The port binds to both stacks, but only loopback peers may use it —
+      // a Host header alone is client-controlled and not an access check.
+      const remote = (request.socket.remoteAddress || '').replace(/^::ffff:/, '');
+      if (!['127.0.0.1', '::1'].includes(remote)) return json(response, 403, { error: 'This studio is available on localhost only.' });
       const url = new URL(request.url, `http://${host}`), route = url.pathname;
-      if (request.method === 'GET' && staticFiles.has(route)) {
+      if (['GET', 'HEAD'].includes(request.method) && staticFiles.has(route)) {
         const file = join(appDir, 'public', staticFiles.get(route));
-        response.writeHead(200, { 'content-type': mimeTypes[extname(file)], 'cache-control': 'no-cache' });
-        return response.end(await readFile(file));
+        const data = await readFile(file);
+        response.writeHead(200, { 'content-type': mimeTypes[extname(file)], 'content-length': data.length, 'cache-control': 'no-cache' });
+        return response.end(request.method === 'HEAD' ? undefined : data);
       }
       if (['GET', 'HEAD'].includes(request.method) && (route === '/app' || route.startsWith('/app/'))) {
         // The Flutter web build is served same-origin so the app's API calls pass
@@ -152,8 +160,14 @@ export function fairCreateServer(store, { env = process.env } = {}) {
         if (/^[\x00-\x1f]|\.{2}|^\.[a-z]/i.test(relative)) return json(response, 404, { error: 'Not found.' });
         let file;
         try { file = await realpath(join(flutterWebDir, decodeURIComponent(relative))); }
-        catch { return json(response, 404, { error: 'Run flutter build web in app/ first.' }); }
-        if (!file.startsWith(flutterWebDir + sep) || !(await stat(file)).isFile()) return json(response, 404, { error: 'Not found.' });
+        catch { file = null; }
+        if (!file || !file.startsWith(flutterWebDir + sep) || !(await stat(file)).isFile()) {
+          // Flutter's router uses path URLs: deep links have no file on disk
+          // and must fall back to the app shell. Real asset misses still 404.
+          if (request.method === 'HEAD' || /\.[a-z0-9]+$/i.test(relative)) return json(response, 404, { error: 'Not found.' });
+          try { file = await realpath(join(flutterWebDir, 'index.html')); }
+          catch { return json(response, 404, { error: 'Run flutter build web in app/ first.' }); }
+        }
         const headers = { 'content-type': mimeTypes[extname(file)] || 'application/octet-stream', 'cache-control': 'no-cache' };
         if (extname(file) === '.html') headers['content-security-policy'] = "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; connect-src 'self'; font-src 'self'; worker-src 'self' blob:; frame-ancestors 'none'; base-uri 'self'; form-action 'self'";
         response.writeHead(200, headers);
@@ -247,7 +261,7 @@ export function fairCreateServer(store, { env = process.env } = {}) {
     } catch (error) {
       if (response.headersSent) return response.destroy();
       const status = error.name === 'ZodError' ? 400 : error.statusCode || (error.code === 'ENOENT' ? 404 : 500);
-      const message = error.name === 'ZodError' ? error.issues.map(issue => `${issue.path.join('.')}: ${issue.message}`).join('; ') : status === 500 ? 'The studio could not complete this request. Check the server log.' : error.message;
+      const message = error.name === 'ZodError' ? error.issues.map(issue => `${issue.path.join('.')}: ${issue.message}`).join('; ') : status === 500 ? 'The studio could not complete this request. Check the server log.' : error.code === 'ENOENT' ? 'Not found.' : error.message;
       if (status === 500) console.error(error);
       return json(response, status, { error: message });
     }

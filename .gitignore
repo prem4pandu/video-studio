@@ -13,3 +13,7 @@ __pycache__/
 
 # Strata local model runtime (config copy + server log)
 .strata/
+
+# Generated render outputs and one-off discovery renders
+outputs/
+.fair-video-discovery/

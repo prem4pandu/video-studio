@@ -106,7 +106,7 @@ export function fairCurriculumCoverage(index, jobs) {
     const topicId = job.brief?.topic?.topicId;
     if (!topicId) continue;
     const entries = byTopic.get(topicId) || [];
-    entries.push({ jobId: job.id, status: job.status, review: job.review?.decision || null, createdAt: job.createdAt, mp4: job.result?.mp4 || null });
+    entries.push({ jobId: job.id, status: job.status, review: job.review?.decision || null, createdAt: job.createdAt });
     byTopic.set(topicId, entries);
   }
   return index.map(entry => ({ ...entry, jobs: (byTopic.get(entry.topicId) || []).sort((a, b) => (b.createdAt || '').localeCompare(a.createdAt || '')) }));

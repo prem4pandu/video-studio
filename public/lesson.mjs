@@ -2,6 +2,9 @@ const $ = id => document.getElementById(id);
 const state = { session: null, phase: 'intro', stepIndex: 0, currentCheck: null, response: null, score: 0, attempts: 0 };
 const lessonId = new URLSearchParams(location.search).get('lesson') === 'equivalent-fractions' ? 'equivalent-fractions' : 'decimal-place-value';
 const recallKey = () => `fair-recall-due:${state.session.id}`;
+// localStorage can throw in private browsing — recall scheduling is optional.
+const recallRead = () => { try { return localStorage.getItem(recallKey()); } catch { return null; } };
+const recallWrite = value => { try { value ? localStorage.setItem(recallKey(), value) : localStorage.removeItem(recallKey()); } catch { /* non-persistent */ } };
 
 function renderModel(model) {
   if (!model) { $('hundred-square').replaceChildren(); $('model-count').textContent = ''; $('model-label').textContent = 'The representation will stay fixed while we compare.'; return; }
@@ -51,7 +54,7 @@ function showCheck(id) {
     const text = document.createElement('span'); text.textContent = option.text; label.append(input, text); return label;
   }));
   $('explanation').value = ''; $('question').hidden = false; $('check').disabled = false; $('feedback').hidden = true; $('continue').hidden = true;
-  setProgress(item.phase === 'readiness' ? '1 of 4 · readiness' : item.phase === 'practice' ? '3 of 4 · practice' : '4 of 4 · transfer');
+  setProgress(item.phase === 'readiness' ? '1 of 4 · readiness' : item.phase === 'practice' ? '3 of 4 · practice' : item.phase === 'transfer' ? '4 of 4 · transfer' : 'Recall check-in');
 }
 
 function showStep(step) {
@@ -62,10 +65,10 @@ function completeSession(fromRecall = false) {
   state.phase = 'complete'; const recap = state.session.steps.find(step => step.id === 'recap-rule'); showStep(recap);
   let message;
   if (fromRecall) {
-    localStorage.removeItem(recallKey());
+    recallWrite(null);
     message = `You returned to the idea and answered ${state.score} of ${state.attempts} first attempts correctly.`;
   } else {
-    const due = new Date(Date.now() + state.session.recallDelayHours * 3_600_000).toISOString(); localStorage.setItem(recallKey(), due);
+    const due = new Date(Date.now() + state.session.recallDelayHours * 3_600_000).toISOString(); recallWrite(due);
     message = `You answered ${state.score} of ${state.attempts} first attempts correctly. A short recall question is scheduled for your next visit after ${new Date(due).toLocaleString()}.`;
   }
   setCopy('LESSON COMPLETE', 'You explained the idea—not just the answer', message);
@@ -98,18 +101,25 @@ function checkAnswer() {
 }
 
 $('continue').addEventListener('click', () => {
-  if (state.response?.repairStepId) { const repair = state.session.steps.find(step => step.id === state.response.repairStepId); state.phase = 'repair'; showStep(repair); $('continue').textContent = 'Continue to the lesson'; return; }
+  if (state.response?.repairStepId) {
+    // Consume the repair pointer so the next Continue reaches advance(); the
+    // repair branch there restores returnPhase and clears the response.
+    const { repairStepId, returnPhase } = state.response;
+    const repair = state.session.steps.find(step => step.id === repairStepId);
+    if (repair) { state.response = { returnPhase }; state.phase = 'repair'; showStep(repair); $('continue').textContent = 'Continue to the lesson'; return; }
+    state.response = null;
+  }
   advance();
 });
 $('check').addEventListener('click', checkAnswer);
-$('restart').addEventListener('click', () => { localStorage.removeItem(recallKey()); location.reload(); });
+$('restart').addEventListener('click', () => { recallWrite(null); location.reload(); });
 
 try {
-  const response = await fetch(`./api/demo/${lessonId}`); if (!response.ok) throw new Error(`HTTP ${response.status}`);
+  const response = await fetch(`/api/demo/${lessonId}`); if (!response.ok) throw new Error(`HTTP ${response.status}`);
   state.session = (await response.json()).session; document.title = `${state.session.title} · Fair Learning Session`; $('lesson-label').textContent = `LEARNING LAB · ${lessonId.replaceAll('-', ' ').toUpperCase()}`;
   $('title').textContent = state.session.title; $('body').textContent = state.session.objective; $('eyebrow').textContent = `AGES ${state.session.ageRange.join('–')} · ABOUT ${state.session.estimatedMinutes} MINUTES`; renderInitialModel();
-  const due = localStorage.getItem(recallKey());
-  if (due && new Date(due).getTime() <= Date.now()) { state.phase = 'recall'; showCheck('recall'); setProgress('Recall · one day later'); }
+  const due = recallRead();
+  if (due && new Date(due).getTime() <= Date.now()) { state.phase = 'recall'; showCheck('recall'); setProgress('Recall · follow-up check'); }
 } catch {
   setCopy('LESSON UNAVAILABLE', 'The learning session could not load', 'Start the local Video Studio server, then open this page again.'); $('continue').disabled = true;
 }

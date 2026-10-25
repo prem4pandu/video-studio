@@ -122,6 +122,23 @@ class LessonBrief {
   String? model;
   String? curriculumSource;
 
+  /// Fresh instance with the same field values — Notifier updates need a new
+  /// object for listeners to fire (identity check on state assignment).
+  LessonBrief clone() => LessonBrief(
+        text: text,
+        audience: audience,
+        generationVersion: generationVersion,
+        footage: footage,
+        provider: provider,
+        voiceProvider: voiceProvider,
+        targetSeconds: targetSeconds,
+        avatar: avatar,
+        intro: intro,
+        audio: audio,
+        model: model,
+        curriculumSource: curriculumSource,
+      );
+
   Map<String, dynamic> toJson() => {
         'text': text.trim(),
         'generationVersion': generationVersion,
@@ -318,7 +335,14 @@ class CoverageEntry {
   factory CoverageEntry.fromJson(Map e) => CoverageEntry(
         topicId: '${e['topicId'] ?? ''}',
         unitId: '${e['unitId'] ?? ''}',
-        jobs: (e['jobs'] as List? ?? const []).whereType<Map>().map((j) => Job.fromJson(j)).toList(),
+        jobs: (e['jobs'] as List? ?? const []).whereType<Map>().map((j) {
+          // Coverage stubs differ from full jobs: they carry `jobId` (not
+          // `id`) and `review` is a bare decision string, not an object.
+          final stub = Map<String, dynamic>.from(j);
+          stub.putIfAbsent('id', () => stub['jobId']);
+          if (stub['review'] is String) stub['review'] = {'decision': stub['review']};
+          return Job.fromJson(stub);
+        }).toList(),
       );
 
   /// Review decision wins over raw job status (matches web topicState()).

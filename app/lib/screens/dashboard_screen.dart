@@ -42,8 +42,11 @@ class _DashboardView extends StatelessWidget {
   static DateTime _stamp(Job job) =>
       job.updatedAt ?? job.createdAt ?? DateTime.fromMillisecondsSinceEpoch(0);
 
-  static String _versionLabel(Job job) =>
-      job.generationVersion == 'open-source' ? 'Open source' : 'Classic';
+  static String _versionLabel(Job job) => switch (job.generationVersion) {
+        'open-source' => 'Open source',
+        'quality' => 'Quality film',
+        _ => 'Classic',
+      };
 
   @override
   Widget build(BuildContext context) {

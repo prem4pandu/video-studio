@@ -49,9 +49,10 @@ document.querySelectorAll('.look-options button').forEach(button => button.addEv
   button.closest('.look-options').querySelectorAll('button').forEach(candidate => candidate.classList.toggle('active', candidate === button));
 }));
 
-document.querySelectorAll('.visual-choices label').forEach(label => label.addEventListener('click', () => {
-  label.closest('.visual-choices').querySelectorAll('label').forEach(candidate => candidate.classList.toggle('selected', candidate === label));
-}));
+document.querySelectorAll('.visual-choices').forEach(group => {
+  const sync = () => group.querySelectorAll('label').forEach(label => label.classList.toggle('selected', Boolean(label.querySelector('input')?.checked)));
+  group.addEventListener('change', sync);
+});
 
 const requested = location.hash.slice(1);
 if (tabs.some(tab => tab.dataset.concept === requested)) activateConcept(requested);

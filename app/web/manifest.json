@@ -1,13 +1,12 @@
 {
-    "name": "fair_studio",
-    "short_name": "fair_studio",
+    "name": "Video Studio",
+    "short_name": "Video Studio",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
-    "orientation": "portrait-primary",
-    "prefer_related_applications": false,
+    "background_color": "#eef2ec",
+    "theme_color": "#285e50",
+    "description": "Plan, generate, and review narrated teaching videos.",
+        "prefer_related_applications": false,
     "icons": [
         {
             "src": "icons/Icon-192.png",

@@ -9,6 +9,8 @@ import { fairFindTopic, fairLoadCurricula, fairTopicBrief } from './curriculum.m
 const args = process.argv.slice(2);
 const usage = 'Usage: npm run generate -- "Grade 5 place value: explain digit value and zero placeholders" [--seconds 300] [--model gpt-oss:20b] [--voice qwentts|piper|kokoro|say] [--version quality|classic|open-source]\n       npm run topic -- s5-pv-rounding [--voice qwentts] [--model gpt-oss:20b]';
 
+if (args.includes('--help') || args.includes('-h')) { console.log(usage); process.exit(0); }
+
 const flags = {};
 let positional = null;
 for (let i = 0; i < args.length; i++) {

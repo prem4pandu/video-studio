@@ -49,9 +49,14 @@ class JobsNotifier extends Notifier<AsyncValue<List<Job>>> {
 final jobProvider = StreamProvider.autoDispose.family<Job, String>((ref, id) async* {
   final api = ref.watch(apiProvider);
   while (true) {
-    final job = await api.job(id);
-    yield job;
-    if (!job.isActive) break;
+    try {
+      final job = await api.job(id);
+      yield job;
+      if (!job.isActive) break;
+    } on StudioApiException catch (e) {
+      if (e.statusCode == 404) rethrow; // job is gone — surface the error
+      // transient failure: keep polling on the same interval
+    }
     await Future<void>.delayed(const Duration(seconds: 2));
   }
 });
@@ -66,8 +71,9 @@ class DraftNotifier extends Notifier<LessonBrief> {
   LessonBrief build() => LessonBrief(text: '');
   void reset() => state = LessonBrief(text: '');
   void update(void Function(LessonBrief) mutate) {
-    mutate(state);
-    state = state; // notify listeners with the mutated instance
+    final next = state.clone();
+    mutate(next);
+    state = next;
   }
 }
 
@@ -80,16 +86,17 @@ const pipelineCatalog = <String, ({String label, String description, String outp
   'footage': (label: 'Generate footage', description: 'Creates a short cinematic establishing shot while exact teaching graphics stay deterministic.', output: 'Wan footage', manual: false),
   'composition': (label: 'Purposeful animation', description: 'Synchronizes teaching visuals, captions, gestures, and protected learner thinking time.', output: 'Timed composition', manual: false),
   'render': (label: 'Render', description: 'Combines scenes, narration, captions, and transitions into the final lesson video.', output: 'MP4 export', manual: false),
+  'audio': (label: 'Sound mix', description: 'Mixes the music bed, teaching sounds, and narration under the voice.', output: 'Mixed audio', manual: false),
   'verify': (label: 'Quality gates', description: 'Measures the export, checks audio and captions, and verifies objective coverage.', output: 'Quality report', manual: false),
   'educator': (label: 'Educator review', description: 'A teacher checks subject accuracy, suitability, pacing, and curriculum fit before sharing.', output: 'Human decision', manual: true),
 };
 
 typedef PipelineStep = ({String id, String label, String description, String output, bool manual});
 
-List<PipelineStep> pipelineStepsFor({required String generationVersion, bool footage = false, bool includeEducator = false}) {
+List<PipelineStep> pipelineStepsFor({required String generationVersion, bool footage = false, bool audio = false, bool includeEducator = false}) {
   final ids = generationVersion == 'open-source'
-      ? ['plan', 'review', 'narration', if (footage) 'footage', 'composition', 'render', 'verify']
-      : const ['plan', 'review', 'narration', 'composition', 'render', 'verify'];
+      ? ['plan', 'review', 'narration', if (footage) 'footage', 'composition', 'render', if (audio) 'audio', 'verify']
+      : ['plan', 'review', 'narration', 'composition', 'render', if (audio) 'audio', 'verify'];
   return [
     for (final id in ids)
       (

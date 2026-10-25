@@ -63,7 +63,8 @@ class _StageTimelineState extends State<StageTimeline> with SingleTickerProvider
   @override
   Widget build(BuildContext context) {
     final job = widget.job;
-    final steps = pipelineStepsFor(generationVersion: job.generationVersion, footage: job.wantsFootage);
+    final steps = pipelineStepsFor(
+        generationVersion: job.generationVersion, footage: job.wantsFootage, audio: job.brief['audio'] == 'music');
     final currentIndex = steps.indexWhere((s) => s.id == job.stage);
     final currentEvent = _stageEvent(job, job.stage);
 

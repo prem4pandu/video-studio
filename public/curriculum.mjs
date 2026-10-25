@@ -43,7 +43,7 @@ function renderQueueSidebar() {
   const active = state.jobs.filter(j => ['queued', 'running'].includes(j.status));
   if (!active.length) {
     const recent = state.jobs.slice(0, 8);
-    list.innerHTML = recent.length ? recent.map(j => `<a class="library-item" href="./index.html"><strong>${esc(j.brief?.topic?.title || j.brief?.text?.slice(0, 60) || 'Lesson')}</strong><small>${esc(j.status)}${j.review ? ` · ${esc(j.review.decision)}` : ''}</small></a>`).join('') : '<p class="library-empty">Nothing generating.</p>';
+    list.innerHTML = recent.length ? recent.map(j => `<a class="library-item" href="./index.html#lesson=${encodeURIComponent(j.id)}"><strong>${esc(j.brief?.topic?.title || j.brief?.text?.slice(0, 60) || 'Lesson')}</strong><small>${esc(j.status)}${j.review ? ` · ${esc(j.review.decision)}` : ''}</small></a>`).join('') : '<p class="library-empty">Nothing generating.</p>';
     return;
   }
   list.innerHTML = active.map(j => `<span class="library-item"><strong>${esc(j.brief?.topic?.title || 'Lesson')}</strong><small>${esc(j.status)} · ${esc(j.message || '')}</small></span>`).join('');
@@ -65,19 +65,26 @@ function renderReviewQueue() {
   const completed = state.jobs.filter(j => j.status === 'completed');
   document.getElementById('review-count').textContent = `${completed.filter(j => j.review?.decision !== 'approved').length} awaiting review`;
   if (!completed.length) { list.innerHTML = '<p class="empty-note">Rendered drafts waiting for review will appear here.</p>'; return; }
+  // Polling re-renders this list; keep open cards and unsaved note text.
+  const openCards = new Set(), draftNotes = new Map();
+  for (const card of list.querySelectorAll('.review-card')) {
+    if (card.querySelector('details')?.open) openCards.add(card.dataset.job);
+    const input = card.querySelector('input');
+    if (input) draftNotes.set(card.dataset.job, input.value);
+  }
   list.innerHTML = completed.map(job => {
     const topic = job.brief?.topic;
-    const video = job.artifacts?.video ? `/api/jobs/${job.id}/artifacts/video` : '';
+    const video = job.artifacts?.video ? `/api/jobs/${encodeURIComponent(job.id)}/artifacts/video` : '';
     const review = job.review;
     const noteId = `review-note-${job.id}`;
-    return `<article class="review-card" data-job="${job.id}"><details>
+    return `<article class="review-card" data-job="${esc(job.id)}"><details${openCards.has(job.id) ? ' open' : ''}>
       <summary><span class="review-head"><h3>${esc(topic?.title || job.brief?.text?.slice(0, 80) || 'Lesson')}</h3>
       <small>${topic ? `${esc(topic.unitId)} · objectives ${esc((topic.objectiveCodes || []).join(', '))} · ` : ''}${esc(job.createdAt?.slice(0, 10) || '')}</small></span></summary>
-      ${video ? `<video controls playsinline preload="metadata" src="${video}"></video>` : ''}
+      ${video ? `<video controls playsinline preload="metadata" src="${esc(video)}"></video>` : ''}
       ${review ? `<p class="review-state">Decision: <b>${esc(review.decision)}</b>${review.note ? ` — ${esc(review.note)}` : ''} (${esc(review.reviewer)}, ${esc((review.at || '').slice(0, 16).replace('T', ' '))})</p>` : ''}
       <div class="review-actions">
-        <label for="${noteId}">Review note for ${esc(topic?.title || 'this lesson')}</label>
-        <input id="${noteId}" type="text" maxlength="2000" placeholder="Add a review note" value="${esc(review?.note || '')}">
+        <label for="${esc(noteId)}">Review note for ${esc(topic?.title || 'this lesson')}</label>
+        <input id="${esc(noteId)}" type="text" maxlength="2000" placeholder="Add a review note" value="${esc(draftNotes.get(job.id) ?? review?.note ?? '')}">
         <button type="button" class="approve" data-decision="approved">Approve</button>
         <button type="button" class="changes" data-decision="needs-changes">Needs changes</button>
         <button type="button" class="reject" data-decision="rejected">Reject</button>
@@ -98,7 +105,7 @@ function renderTree() {
       const status = entry ? topicState(entry) : 'none';
       const job = entry ? latestJob(entry) : null;
       const label = { none: 'not started', queued: 'queued', running: 'generating', completed: 'draft ready', failed: 'failed', interrupted: 'stopped', approved: 'approved', rejected: 'rejected', 'needs-changes': 'needs changes' }[status] || status;
-      const href = job && ['completed', 'failed', 'interrupted'].includes(job.status) ? `./index.html` : '';
+      const href = job && ['completed', 'failed', 'interrupted'].includes(job.status) ? `./index.html#lesson=${encodeURIComponent(job.jobId)}` : '';
       return `<li class="topic-row">
         <span class="codes">${esc(topic.objectives.map(o => o.code).join(' · '))}</span>
         <span class="topic-title">${esc(topic.title)}${href ? `<small><a href="${href}">open draft ↗</a></small>` : `<small>${esc(topic.summary.slice(0, 90))}…</small>`}</span>
@@ -126,9 +133,14 @@ async function load() {
     state.treeInitialized = true;
   }
   renderSummary(); renderQueueSidebar(); renderQueueBanner(); renderReviewQueue(); renderTree();
-  const active = jobs.some(j => ['queued', 'running'].includes(j.status));
+}
+
+// Poll while work is in flight; a failed refresh still reschedules so one
+// transient error does not silently stop live progress updates.
+async function tick() {
+  try { await load(); } catch (error) { notice(error.message); }
   clearTimeout(state.timer);
-  if (active) state.timer = setTimeout(() => load().catch(() => {}), 3000);
+  if (state.jobs.some(j => ['queued', 'running'].includes(j.status))) state.timer = setTimeout(tick, 3000);
 }
 
 async function generate(payload) {
@@ -136,11 +148,11 @@ async function generate(payload) {
   try {
     const result = await api('/api/batch', { method: 'POST', body: JSON.stringify(payload) });
     notice(result.count ? `${result.count} topic(s) queued.${result.errors.length ? ` ${result.errors.length} skipped.` : ''}` : `Nothing queued: ${result.errors.map(e => e.error).join('; ') || 'unknown reason'}`);
-    await load();
+    await tick();
   } catch (error) { notice(error.message); }
 }
 
-document.getElementById('refresh').addEventListener('click', () => load().catch(error => notice(error.message)));
+document.getElementById('refresh').addEventListener('click', () => tick());
 document.getElementById('tree').addEventListener('click', event => {
   const topicBtn = event.target.closest('[data-topic]');
   if (topicBtn) { generate({ topicIds: [topicBtn.dataset.topic] }); return; }
@@ -163,8 +175,8 @@ document.getElementById('review-list').addEventListener('click', async event => 
   button.disabled = true;
   try {
     await api(`/api/jobs/${encodeURIComponent(jobId)}/review`, { method: 'POST', body: JSON.stringify({ decision: button.dataset.decision, note, reviewer: 'educator' }) });
-    await load();
+    await tick();
   } catch (error) { notice(error.message); button.disabled = false; }
 });
 
-load().catch(error => { notice(error.message); document.getElementById('tree').innerHTML = `<p class="empty-note">${esc(error.message)}</p>`; });
+tick().catch(() => {});
