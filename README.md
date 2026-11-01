@@ -38,6 +38,57 @@ npm start              # studio UI → http://127.0.0.1:4310
   Cambridge Primary Mathematics Stage 5 tree, generate per topic or unit, and
   work the review queue.
 
+## Studio V2 — OpenMontage prompt-to-video
+
+Open **Studio V2** in the app navigation, or `/app/#/studio-v2`. V2 is a
+separate local workflow for learning videos, social explainers, and illustrated
+stories. Enter a prompt, choose landscape or portrait, and generate a narrated
+1080p video with animation, original quiet music, burned-in captions, WebVTT,
+a transcript, publishing metadata, and a quality report. The requested duration
+is a target; measured narration is preserved. All results remain drafts for
+human review. The first release draws diagrams and a bounded set of original
+illustrations; it does not generate arbitrary cinematic footage.
+
+```bash
+npm run setup:studio-v2           # pinned external OpenMontage + Python 3.12 venv
+ollama pull qwen3:30b             # planner
+ollama pull gpt-oss:20b           # different-model critic
+# Configure the installed local Qwen teacher using docs/voices.md; V2 defaults to qwentts.
+cd app && flutter build web --base-href /app/ && cd ..
+npm start
+npm run test:studio-v2
+```
+
+The readiness panel checks planning, narration and rendering. V2 uses Ollama by
+default, or LM Studio with `STUDIO_V2_PLANNER=lmstudio` and the exact loaded model
+ID in `STUDIO_V2_MODEL`. A second critique pass validates the generated script;
+the default critic is `gpt-oss:20b`, separate from the `qwen3:30b` planner.
+Override `STUDIO_V2_REVIEW_MODEL` to select another installed critic. Equalities and scene quantities also receive deterministic checks. Fraction quiz
+questions and their direct answers are constructed from a validated quantity,
+so the thinking pause contains givens without revealing the answer.
+Generated factual claims are **not** independently researched.
+
+V2 uses the local Qwen3 VoiceDesign teacher, synthesizing each scene continuously
+to avoid restarting the voice at sentence boundaries. Readiness checks its
+profile, model assets and MLX runtime. `STUDIO_V2_VOICE=kokoro` or `piper` selects
+an alternative explicitly; missing Qwen setup never silently changes the voice.
+The updated voice has same-text ASR and delivery measurements, not a human
+listening endorsement; see [voice configuration and evaluation](docs/voices.md).
+
+Jobs are persisted under `.fair-video/studio-v2` (override
+`STUDIO_V2_DATA_DIR`), run one at a time, and can be cancelled and retried.
+After restart, interrupted jobs await explicit retry. Verified script and audio
+checkpoints are reused; completion is recorded only after rendering and quality
+checks. Download the MP4, captions, transcript, plan, report and metadata from the
+production page. No automatic social posting or paid generation is performed.
+
+V2 invokes the actual OpenMontage `HyperFramesCompose.render_existing` tool in
+an isolated process. The pinned external source is **AGPL-3.0**, stored in the
+ignored `.openmontage` directory; see `studio-v2/worker/README.md` for provenance
+and compatibility adjustments. Review its licence obligations before distributing
+or hosting this integration. Original graphics and synthesized music do not by
+themselves establish platform monetization eligibility or rights for user prompts.
+
 ## CLI
 
 ```bash
@@ -124,6 +175,18 @@ To test actual Wan inference separately, start the installed worker with
 `npm run start:comfy`, then run `npm run test:wan` after the lesson finishes.
 This creates a small 512×288, 17-frame verification clip and records its actual
 runtime and metadata. It is not a production-quality video benchmark.
+
+For a local-only H3/LTX 2.5/Wan comparison, use the same worker and prompt:
+
+```sh
+npm run start:comfy
+npm run test:video-models
+```
+
+The comparison runs sequentially at a deliberately small 256×256 and writes MP4s plus `report.json`
+under `outputs/local-model-tests/`. H3 uses the downloaded FP16 video VAE on
+Apple Silicon. LTX uses a one-stage low-resolution graph, so its optional
+latent upscaler and prompt-enhancer checkpoints are not required.
 
 ## Curriculum data
 

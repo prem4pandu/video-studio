@@ -12,7 +12,9 @@ import '../state.dart';
 import '../theme.dart';
 
 /// Educator review queue — every rendered draft waits here for a human
-/// decision. Mirrors the review section of public/curriculum.mjs.
+/// decision. Awaiting jobs get an inline preview, a note field and the three
+/// review actions; decided jobs collapse into a dimmer ledger. Mirrors the
+/// review section of public/curriculum.mjs.
 class ReviewScreen extends ConsumerWidget {
   const ReviewScreen({super.key});
 
@@ -21,70 +23,144 @@ class ReviewScreen extends ConsumerWidget {
     final jobs = ref.watch(jobsProvider);
     return SafeArea(
       child: jobs.when(
-        loading: () => const Center(child: CircularProgressIndicator(color: FairColors.accent)),
-        error: (error, _) => Center(
-          child: Padding(
-            padding: const EdgeInsets.all(28),
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 560),
-              child: _QueueMessage(
-                icon: Icons.cloud_off_outlined,
-                title: 'The review queue is unavailable',
-                detail: '$error',
-                actionLabel: 'Retry',
-                onAction: () => unawaited(ref.read(jobsProvider.notifier).refresh()),
+        loading: () => const Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox(
+                width: 26,
+                height: 26,
+                child: CircularProgressIndicator(strokeWidth: 2.4, color: FairColors.accent),
               ),
-            ),
+              SizedBox(height: 14),
+              Text('Loading review queue…', style: TextStyle(fontSize: 12.5, color: FairColors.muted)),
+            ],
           ),
         ),
-        data: (list) {
-          final ready = list.where((j) => j.isReady).toList();
-          final awaiting = ready.where((j) => j.review == null).toList();
-          final reviewed = ready.where((j) => j.review != null).toList();
-          final queue = [...awaiting, ...reviewed];
-          return SingleChildScrollView(
-            padding: const EdgeInsets.fromLTRB(28, 26, 28, 44),
-            child: Center(
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: FairDimens.contentMax),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Kicker('EDUCATOR GATE'),
-                    const SizedBox(height: 6),
-                    Text('Review queue', style: Theme.of(context).textTheme.headlineMedium),
-                    const SizedBox(height: 4),
-                    const Text('Every rendered draft waits for a human decision.',
-                        style: TextStyle(fontSize: 13, color: FairColors.muted)),
-                    const SizedBox(height: 10),
-                    Text('${awaiting.length} awaiting review',
-                        style: const TextStyle(fontSize: 12.5, fontWeight: FontWeight.w700, color: FairColors.accent)),
-                    const SizedBox(height: 20),
-                    if (queue.isEmpty)
-                      const _QueueMessage(
-                        icon: Icons.fact_check_outlined,
-                        title: 'Nothing waiting',
-                        detail: 'Rendered drafts waiting for review will appear here.',
-                      )
-                    else
-                      for (final job in queue)
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 16),
-                          child: _ReviewCard(key: ValueKey(job.id), job: job),
-                        ),
-                  ],
-                ),
-              ),
-            ),
-          );
-        },
+        error: (error, _) => EmptyState(
+          icon: Icons.cloud_off_outlined,
+          title: 'Review queue unavailable',
+          body: '$error',
+          action: OutlinedButton.icon(
+            onPressed: () => unawaited(ref.read(jobsProvider.notifier).refresh()),
+            icon: const Icon(Icons.refresh, size: 16),
+            label: const Text('Retry'),
+          ),
+        ),
+        data: (list) => _QueueView(jobs: list),
       ),
     );
   }
 }
 
-/// One rendered draft: title/meta, lazy inline video preview, note field and
-/// the three review actions — or the recorded decision banner once reviewed.
+/// Scrollable queue: header, the awaiting-decision cards, then the decided
+/// ledger.
+class _QueueView extends StatelessWidget {
+  const _QueueView({required this.jobs});
+
+  final List<Job> jobs;
+
+  @override
+  Widget build(BuildContext context) {
+    final ready = jobs.where((j) => j.isReady).toList();
+    final awaiting = ready.where((j) => j.review == null).toList();
+    final decided = ready.where((j) => j.review != null).toList();
+
+    return SingleChildScrollView(
+      padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 36),
+      child: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: FairDimens.contentMax),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Kicker('REVIEW QUEUE'),
+                  const SizedBox(height: 10),
+                  Text('Educator review', style: display(26)),
+                  const SizedBox(height: 7),
+                  const Text(
+                    'Every rendered draft waits for a human decision.',
+                    style: TextStyle(fontSize: 13.5, color: FairColors.muted, height: 1.45),
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    '${awaiting.length} awaiting decision',
+                    style: mono(11.5, FairColors.amber, FontWeight.w600),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 30),
+              if (awaiting.isEmpty && decided.isEmpty)
+                const EmptyState(
+                  icon: Icons.fact_check_outlined,
+                  title: 'Queue is clear',
+                  body: 'Rendered drafts wait here for an educator decision.',
+                )
+              else ...[
+                if (awaiting.isNotEmpty) ...[
+                  _SectionLabel(kicker: 'AWAITING DECISION', trailing: '${awaiting.length}'),
+                  const SizedBox(height: 14),
+                  for (final job in awaiting)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: FairDimens.gap),
+                      child: _ReviewCard(key: ValueKey(job.id), job: job),
+                    ),
+                ],
+                if (decided.isNotEmpty) ...[
+                  SizedBox(height: awaiting.isEmpty ? 0 : 20),
+                  _SectionLabel(kicker: 'DECIDED', trailing: '${decided.length}'),
+                  const SizedBox(height: 14),
+                  Container(
+                    decoration: fairCard(color: FairColors.surfaceSoft),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(FairDimens.radius),
+                      child: Material(
+                        type: MaterialType.transparency,
+                        child: Column(
+                          children: [
+                            for (var i = 0; i < decided.length; i++) ...[
+                              if (i > 0) const Divider(height: 1),
+                              _DecidedRow(job: decided[i]),
+                            ],
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ],
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Kicker + right-aligned count above a queue section.
+class _SectionLabel extends StatelessWidget {
+  const _SectionLabel({required this.kicker, required this.trailing});
+
+  final String kicker;
+  final String trailing;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Kicker(kicker, color: FairColors.muted),
+        const Spacer(),
+        Text(trailing, style: mono(10.5, FairColors.muted)),
+      ],
+    );
+  }
+}
+
+/// One rendered draft awaiting a decision: title + StatusChip, mono meta row,
+/// letterboxed inline video preview, note field and the three review actions.
 class _ReviewCard extends ConsumerStatefulWidget {
   const _ReviewCard({required this.job, super.key});
 
@@ -138,15 +214,9 @@ class _ReviewCardState extends ConsumerState<_ReviewCard> {
   @override
   Widget build(BuildContext context) {
     final job = widget.job;
-    final review = job.review;
     final api = ref.read(apiProvider);
     final videoPath = job.artifacts['video'];
     final created = job.createdAt;
-
-    final meta = <String>[
-      if (created != null) _date.format(created.toLocal()),
-      '${job.generationVersion} generation',
-    ].join(' · ');
 
     String? topicLine;
     final topic = job.brief['topic'];
@@ -163,9 +233,15 @@ class _ReviewCardState extends ConsumerState<_ReviewCard> {
       if (parts.isNotEmpty) topicLine = parts.join(' · ');
     }
 
+    final meta = <String>[
+      if (created != null) _date.format(created.toLocal()),
+      '${job.generationVersion} generation',
+      ?topicLine,
+    ].join(' · ');
+
     return Container(
       decoration: fairCard(),
-      padding: const EdgeInsets.all(18),
+      padding: const EdgeInsets.fromLTRB(20, 18, 16, 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -177,10 +253,15 @@ class _ReviewCardState extends ConsumerState<_ReviewCard> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(job.title, style: Theme.of(context).textTheme.titleMedium),
-                    const SizedBox(height: 4),
-                    Text(meta, style: const TextStyle(fontSize: 11.5, color: FairColors.muted)),
+                    const SizedBox(height: 6),
+                    Text(meta, style: mono(10.5, FairColors.muted)),
                   ],
                 ),
+              ),
+              const SizedBox(width: 12),
+              Padding(
+                padding: const EdgeInsets.only(top: 2),
+                child: StatusChip(job.status == 'authored-benchmark' ? 'completed' : job.status),
               ),
               if (videoPath != null)
                 IconButton(
@@ -195,92 +276,108 @@ class _ReviewCardState extends ConsumerState<_ReviewCard> {
               ),
             ],
           ),
-          if (topicLine != null) ...[
-            const SizedBox(height: 6),
-            Text(topicLine.toUpperCase(),
-                style: const TextStyle(fontSize: 9.5, fontWeight: FontWeight.w700, letterSpacing: 1.1, color: FairColors.accent)),
-          ],
-          const SizedBox(height: 12),
+          const SizedBox(height: 14),
           _InlineVideo(videoUrl: videoPath == null ? null : api.artifactUrl(videoPath)),
-          if (review != null) ...[
-            const SizedBox(height: 12),
-            _DecisionBanner(review: review),
-          ] else ...[
-            const SizedBox(height: 14),
-            TextField(
-              controller: _note,
-              maxLength: 2000,
-              maxLines: 1,
-              decoration: const InputDecoration(
-                labelText: 'Review note',
-                hintText: 'Add a note for the next revision',
-                counterText: '',
+          const SizedBox(height: 14),
+          TextField(
+            controller: _note,
+            maxLength: 2000,
+            maxLines: 1,
+            decoration: const InputDecoration(
+              labelText: 'Review note',
+              hintText: 'Add a note for the next revision',
+              counterText: '',
+            ),
+          ),
+          const SizedBox(height: 12),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: [
+              FilledButton.icon(
+                onPressed: _busy ? null : () => unawaited(_decide('approved')),
+                icon: const Icon(Icons.check_rounded, size: 17),
+                label: const Text('Approve'),
               ),
-            ),
-            const SizedBox(height: 12),
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: [
-                FilledButton(
-                  onPressed: _busy ? null : () => unawaited(_decide('approved')),
-                  child: const Text('Approve'),
+              OutlinedButton.icon(
+                style: OutlinedButton.styleFrom(foregroundColor: FairColors.amber),
+                onPressed: _busy ? null : () => unawaited(_decide('needs-changes')),
+                icon: const Icon(Icons.edit_note_outlined, size: 17),
+                label: const Text('Needs changes'),
+              ),
+              OutlinedButton.icon(
+                style: OutlinedButton.styleFrom(foregroundColor: FairColors.error),
+                onPressed: _busy ? null : () => unawaited(_decide('rejected')),
+                icon: const Icon(Icons.close_rounded, size: 17),
+                label: const Text('Reject'),
+              ),
+              if (_busy)
+                const SizedBox(
+                  width: 18,
+                  height: 18,
+                  child: CircularProgressIndicator(strokeWidth: 2, color: FairColors.accent),
                 ),
-                OutlinedButton(
-                  style: OutlinedButton.styleFrom(foregroundColor: FairColors.amber),
-                  onPressed: _busy ? null : () => unawaited(_decide('needs-changes')),
-                  child: const Text('Needs changes'),
-                ),
-                OutlinedButton(
-                  style: OutlinedButton.styleFrom(foregroundColor: FairColors.error),
-                  onPressed: _busy ? null : () => unawaited(_decide('rejected')),
-                  child: const Text('Reject'),
-                ),
-              ],
-            ),
-          ],
+            ],
+          ),
         ],
       ),
     );
   }
 }
 
-/// Recorded review decision, tinted with the decision's StatusChip color.
-class _DecisionBanner extends StatelessWidget {
-  const _DecisionBanner({required this.review});
+/// Dimmer ledger row for a decided job — StatusChip, title, note excerpt and
+/// a mono timestamp. Taps through to the job detail.
+class _DecidedRow extends StatelessWidget {
+  const _DecidedRow({required this.job});
 
-  final Review review;
+  final Job job;
 
   static final _date = DateFormat('d MMM y, HH:mm');
 
   @override
   Widget build(BuildContext context) {
-    final style = StatusChip.style(review.decision);
-    final icon = switch (review.decision) {
-      'approved' => Icons.check_circle_outline,
-      'needs-changes' => Icons.edit_note_outlined,
-      'rejected' => Icons.cancel_outlined,
-      _ => Icons.flag_outlined,
-    };
-    final parts = <String>[
-      style.label,
-      if (review.note.isNotEmpty) review.note,
-      if (review.reviewer.isNotEmpty) review.reviewer,
-      if (review.at != null) _date.format(review.at!.toLocal()),
-    ];
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-      decoration: BoxDecoration(color: style.bg, borderRadius: BorderRadius.circular(FairDimens.radiusSm)),
-      child: Row(
-        children: [
-          Icon(icon, size: 16, color: style.fg),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Text(parts.join(' · '),
-                style: TextStyle(fontSize: 12.5, fontWeight: FontWeight.w500, color: style.fg, height: 1.4)),
-          ),
-        ],
+    final review = job.review!;
+    final stamp = review.at ?? job.updatedAt ?? job.createdAt;
+    final excerpt =
+        review.note.isNotEmpty ? review.note : (review.reviewer.isNotEmpty ? 'by ${review.reviewer}' : '');
+    return InkWell(
+      onTap: () => context.go('/jobs/${job.id}'),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
+        child: Row(
+          children: [
+            StatusChip(review.decision),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    job.title,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: FairColors.inkSoft),
+                  ),
+                  if (excerpt.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 3),
+                      child: Text(
+                        excerpt,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(fontSize: 11.5, color: FairColors.muted, fontStyle: FontStyle.italic),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 14),
+            if (stamp != null) Text(_date.format(stamp.toLocal()), style: mono(10, FairColors.muted)),
+            const SizedBox(width: 6),
+            const Icon(Icons.chevron_right, size: 16, color: FairColors.faint),
+          ],
+        ),
       ),
     );
   }
@@ -382,7 +479,7 @@ class _InlineVideoState extends State<_InlineVideo> {
                 child: SizedBox(
                   width: 26,
                   height: 26,
-                  child: CircularProgressIndicator(strokeWidth: 2, color: FairColors.sidebarMuted),
+                  child: CircularProgressIndicator(strokeWidth: 2, color: FairColors.muted),
                 ),
               )
             : const _VideoPlaceholder(icon: Icons.play_circle_outline, label: 'Load preview'),
@@ -450,43 +547,9 @@ class _VideoPlaceholder extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 40, color: FairColors.sidebarMuted),
+          Icon(icon, size: 40, color: FairColors.muted),
           const SizedBox(height: 8),
-          Text(label, style: const TextStyle(fontSize: 12, color: FairColors.sidebarMuted)),
-        ],
-      ),
-    );
-  }
-}
-
-/// Shared empty / error card for the queue states.
-class _QueueMessage extends StatelessWidget {
-  const _QueueMessage({required this.icon, required this.title, required this.detail, this.actionLabel, this.onAction});
-
-  final IconData icon;
-  final String title;
-  final String detail;
-  final String? actionLabel;
-  final VoidCallback? onAction;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      decoration: fairCard(),
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 30, color: FairColors.muted),
-          const SizedBox(height: 12),
-          Text(title, style: Theme.of(context).textTheme.titleMedium, textAlign: TextAlign.center),
-          const SizedBox(height: 6),
-          Text(detail, style: const TextStyle(fontSize: 12.5, color: FairColors.muted, height: 1.45), textAlign: TextAlign.center),
-          if (onAction != null) ...[
-            const SizedBox(height: 16),
-            OutlinedButton(onPressed: onAction, child: Text(actionLabel ?? 'Retry')),
-          ],
+          Text(label, style: const TextStyle(fontSize: 12, color: FairColors.muted)),
         ],
       ),
     );

@@ -3,7 +3,7 @@ import { join } from 'node:path';
 import { fairCommand, fairFileHash, fairHash, fairReadJson, fairWriteJson } from './utils.mjs';
 import { fairCloudSpeech } from './cloud-speech.mjs';
 import { fairElevenLabsSpeech, fairLocalNeuralSpeech, fairEstimatedWords, fairNeuralPaths, fairPiperPaths, fairPiperSpeech } from './neural-voice.mjs';
-import { fairQwenPaths, fairQwenSpeech } from './qwen-voice.mjs';
+import { fairQwenPaths, fairQwenSpeech, fairQwenProfile } from './qwen-voice.mjs';
 import { fairAlignSpeech } from './alignment.mjs';
 
 export const FAIR_AVATARS = [
@@ -26,7 +26,9 @@ export function fairVoiceConfig(env = process.env, brief = {}) {
     return { provider, model: 'Kokoro-82M-v1.0', voice: env.FAIR_KOKORO_VOICE || 'bf_emma', speed, ...(env.FAIR_KOKORO_URL ? { url: env.FAIR_KOKORO_URL } : fairNeuralPaths(env)) };
   }
   if (provider === 'qwentts') {
-    return { provider, voice: 'teacher', model: 'Qwen3-TTS-12Hz-1.7B-VoiceDesign-8bit', modelId: 'mlx-community/Qwen3-TTS-12Hz-1.7B-VoiceDesign-8bit', ...fairQwenPaths(env) };
+    const synthesisUnit = env.FAIR_QWEN_SYNTHESIS_UNIT || 'scene';
+    if (!['scene', 'phrase'].includes(synthesisUnit)) throw new Error('FAIR_QWEN_SYNTHESIS_UNIT must be scene or phrase.');
+    return { provider, voice: 'teacher', synthesisUnit, model: 'Qwen3-TTS-12Hz-1.7B-VoiceDesign-8bit', modelId: 'mlx-community/Qwen3-TTS-12Hz-1.7B-VoiceDesign-8bit', ...fairQwenPaths(env) };
   }
   if (provider === 'piper') {
     const lengthScale = Number(env.FAIR_PIPER_LENGTH_SCALE || 1.08);
@@ -69,6 +71,7 @@ export function fairAudioEnvelope(wav) {
 export async function fairNarrate(lesson, directory, { signal, env = process.env, brief = {}, onProgress = () => {} } = {}) {
   await mkdir(join(directory, 'audio'), { recursive: true });
   const voice = fairVoiceConfig(env, brief);
+  if (voice.provider === 'qwentts') voice.profile = await fairQwenProfile(env);
   if (voice.provider === 'openai' && !env.OPENAI_API_KEY) throw new Error('Set OPENAI_API_KEY on the server to use paid narration.');
   if (voice.provider === 'say' && process.platform !== 'darwin') throw new Error('The say voice needs macOS. Configure FAIR_TTS_PROVIDER=kokoro on this system.');
   const tracks = [];

@@ -13,11 +13,12 @@
     "test": "node --test test/*.test.mjs",
     "test:pipeline": "node --env-file-if-exists=.env scripts/smoke.mjs",
     "test:wan": "node --env-file-if-exists=.env scripts/smoke-wan.mjs",
+    "test:video-models": "node --env-file-if-exists=.env scripts/smoke-video-models.mjs",
     "generate": "node --env-file-if-exists=.env src/cli.mjs",
     "topic": "node --env-file-if-exists=.env src/cli.mjs --topic",
     "batch": "node --env-file-if-exists=.env src/batch.mjs",
     "coverage": "node --env-file-if-exists=.env src/batch.mjs --coverage",
-    "check": "fail=0; for f in src/*.mjs public/*.mjs scripts/*.mjs tools/*.mjs test/*.mjs; do node --check \"$f\" || fail=1; done; exit $fail",
+    "check": "fail=0; for f in src/*.mjs studio-v2/*.mjs studio-v2/render/*.mjs studio-v2/worker/*.mjs public/*.mjs scripts/*.mjs tools/*.mjs test/*.mjs; do node --check \"$f\" || fail=1; done; exit $fail",
     "render:discovery": "node --env-file-if-exists=.env scripts/render-discovery.mjs",
     "check:open": "node --env-file-if-exists=.env scripts/check-open.mjs",
     "check:proof": "node --env-file-if-exists=.env src/proof-quality.mjs proofs/place-value-machine/out.mp4 60",
@@ -26,7 +27,9 @@
     "start:comfy": "node scripts/start-comfy.mjs",
     "metrics": "node tools/teaching-metrics.mjs",
     "recompose": "node --env-file-if-exists=.env scripts/recompose.mjs",
-    "render:phase-a": "node --env-file-if-exists=.env scripts/fraction-phase-a.mjs"
+    "render:phase-a": "node --env-file-if-exists=.env scripts/fraction-phase-a.mjs",
+    "setup:studio-v2": "node scripts/setup-studio-v2.mjs",
+    "test:studio-v2": "node --test test/v2-*.test.mjs"
   },
   "dependencies": {
     "gsap": "3.14.2",

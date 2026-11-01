@@ -116,7 +116,7 @@ $('restart').addEventListener('click', () => { recallWrite(null); location.reloa
 
 try {
   const response = await fetch(`/api/demo/${lessonId}`); if (!response.ok) throw new Error(`HTTP ${response.status}`);
-  state.session = (await response.json()).session; document.title = `${state.session.title} · Fair Learning Session`; $('lesson-label').textContent = `LEARNING LAB · ${lessonId.replaceAll('-', ' ').toUpperCase()}`;
+  state.session = (await response.json()).session; document.title = `${state.session.title} · Learning Session`; $('lesson-label').textContent = `LEARNING LAB · ${lessonId.replaceAll('-', ' ').toUpperCase()}`;
   $('title').textContent = state.session.title; $('body').textContent = state.session.objective; $('eyebrow').textContent = `AGES ${state.session.ageRange.join('–')} · ABOUT ${state.session.estimatedMinutes} MINUTES`; renderInitialModel();
   const due = recallRead();
   if (due && new Date(due).getTime() <= Date.now()) { state.phase = 'recall'; showCheck('recall'); setProgress('Recall · follow-up check'); }

@@ -16,10 +16,12 @@ class StudioShell extends ConsumerWidget {
     (path: '/create', icon: Icons.add_circle_outline, label: 'Create'),
     (path: '/review', icon: Icons.fact_check_outlined, label: 'Review'),
     (path: '/curriculum', icon: Icons.account_tree_outlined, label: 'Curriculum'),
+    (path: '/studio-v2', icon: Icons.movie_creation_outlined, label: 'Studio V2'),
   ];
 
   int _selectedIndex(BuildContext context) {
     final location = GoRouterState.of(context).uri.path;
+    if (location.startsWith('/studio-v2')) return 4;
     if (location.startsWith('/create')) return 1;
     if (location.startsWith('/review')) return 2;
     if (location.startsWith('/curriculum')) return 3;
@@ -29,6 +31,23 @@ class StudioShell extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final selected = _selectedIndex(context);
+    if (selected == 4) {
+      return Scaffold(
+        appBar: AppBar(
+          toolbarHeight: 72,
+          backgroundColor: FairColors.canvas,
+          surfaceTintColor: Colors.transparent,
+          titleSpacing: MediaQuery.sizeOf(context).width < 600 ? 18 : 32,
+          title: TextButton.icon(
+            onPressed: () => context.go('/studio-v2'),
+            icon: const Icon(Icons.play_circle_outline, size: 25),
+            label: const Text('Video Studio', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: FairColors.ink)),
+          ),
+          actions: [TextButton(onPressed: () => context.go('/'), child: const Text('Classic studio')), const SizedBox(width: 18)],
+        ),
+        body: SafeArea(child: child),
+      );
+    }
     final jobs = ref.watch(jobsProvider);
     final generating = jobs.asData?.value.where((j) => j.isActive).length ?? 0;
     final awaiting = jobs.asData?.value.where((j) => j.isReady && j.review == null).length ?? 0;
@@ -58,10 +77,9 @@ class StudioShell extends ConsumerWidget {
                     ),
                   const Spacer(),
                   const _ServiceStatus(),
-                  const Padding(
-                    padding: EdgeInsets.fromLTRB(20, 10, 20, 18),
-                    child: Text('Local production workspace',
-                        style: TextStyle(color: FairColors.sidebarMuted, fontSize: 10.5, height: 1.5)),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 10, 20, 18),
+                    child: Text('LOCAL · NO PAID APIS', style: mono(8.5, FairColors.faint).copyWith(letterSpacing: 1.4)),
                   ),
                 ],
               ),
@@ -86,16 +104,20 @@ class _Brand extends StatelessWidget {
           Container(
             width: 38,
             height: 38,
-            decoration: BoxDecoration(color: FairColors.accent, borderRadius: BorderRadius.circular(10)),
-            child: const Icon(Icons.play_arrow_rounded, color: Colors.white, size: 22),
+            decoration: BoxDecoration(
+              color: FairColors.accentSoft,
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(color: FairColors.accentDark),
+            ),
+            child: const Center(child: Text('VS', style: TextStyle(fontFamily: 'SpaceGrotesk', color: FairColors.accent, fontSize: 15, fontWeight: FontWeight.w700, letterSpacing: 0.5))),
           ),
           const SizedBox(width: 12),
-          const Column(
+          Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Video Studio', style: TextStyle(color: FairColors.sidebarInk, fontSize: 15, fontWeight: FontWeight.w700, letterSpacing: -0.3)),
-              SizedBox(height: 2),
-              Text('LESSON PRODUCTION', style: TextStyle(color: FairColors.sidebarMuted, fontSize: 8.5, fontWeight: FontWeight.w700, letterSpacing: 1.6)),
+              Text('Video Studio', style: display(15, FairColors.sidebarInk, FontWeight.w700)),
+              const SizedBox(height: 2),
+              Text('LESSON PRODUCTION', style: mono(8, FairColors.sidebarMuted).copyWith(letterSpacing: 1.8)),
             ],
           ),
         ],
@@ -158,7 +180,7 @@ class _ServiceStatus extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Divider(color: FairColors.sidebarLine, height: 24),
-          const Text('SERVICES', style: TextStyle(color: FairColors.sidebarMuted, fontSize: 8.5, fontWeight: FontWeight.w700, letterSpacing: 1.6)),
+          Text('SERVICES', style: mono(8, FairColors.sidebarMuted).copyWith(letterSpacing: 1.8)),
           const SizedBox(height: 8),
           ...config.when(
             data: (c) => [

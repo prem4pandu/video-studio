@@ -222,7 +222,7 @@ function evaluate(expression) {
   return value;
 }
 
-function checkClaim(left, right, context) {
+export function checkClaim(left, right, context) {
   const a = evaluate(left), b = evaluate(right);
   if (a[0] * b[1] !== b[0] * a[1]) throw new Error(`${context}: incorrect arithmetic ${left} = ${right}`);
 }

@@ -2,13 +2,14 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../models.dart';
 import '../state.dart';
 import '../theme.dart';
 
-/// Curriculum workspace — coverage overview, live queue banner and the
-/// expandable unit/topic tree with batch generation. Mirrors
+/// Curriculum workspace — coverage metrics, the live generation banner and
+/// the expandable unit/topic tree with batch generation. Mirrors
 /// public/curriculum.mjs (summary, queue banner, tree).
 class CurriculumScreen extends ConsumerStatefulWidget {
   const CurriculumScreen({super.key});
@@ -68,31 +69,40 @@ class _CurriculumScreenState extends ConsumerState<CurriculumScreen> {
 
     return SafeArea(
       child: curriculum.when(
-        loading: () => const Center(child: CircularProgressIndicator(color: FairColors.accent)),
-        error: (error, _) => Center(
-          child: Padding(
-            padding: const EdgeInsets.all(28),
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 560),
-              child: _MessageCard(
-                icon: Icons.cloud_off_outlined,
-                title: 'Curriculum data is unavailable',
-                detail: '$error',
-                actionLabel: 'Retry',
-                onAction: () => ref.invalidate(curriculumProvider),
+        loading: () => const Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox(
+                width: 26,
+                height: 26,
+                child: CircularProgressIndicator(strokeWidth: 2.4, color: FairColors.accent),
               ),
-            ),
+              SizedBox(height: 14),
+              Text('Loading curriculum…', style: TextStyle(fontSize: 12.5, color: FairColors.muted)),
+            ],
+          ),
+        ),
+        error: (error, _) => EmptyState(
+          icon: Icons.cloud_off_outlined,
+          title: 'Curriculum unavailable',
+          body: '$error',
+          action: OutlinedButton.icon(
+            onPressed: () => ref.invalidate(curriculumProvider),
+            icon: const Icon(Icons.refresh, size: 16),
+            label: const Text('Retry'),
           ),
         ),
         data: (data) {
           _seedExpansion(data);
+          final title = data.trees.length == 1 ? data.trees.first.title : 'Curriculum';
           return SingleChildScrollView(
-            padding: const EdgeInsets.fromLTRB(28, 26, 28, 44),
+            padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 36),
             child: Center(
               child: ConstrainedBox(
                 constraints: const BoxConstraints(maxWidth: FairDimens.contentMax),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -101,41 +111,63 @@ class _CurriculumScreenState extends ConsumerState<CurriculumScreen> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Kicker('COVERAGE & REVIEW'),
-                              const SizedBox(height: 6),
-                              Text('Curriculum workspace', style: Theme.of(context).textTheme.headlineMedium),
-                              const SizedBox(height: 4),
-                              const Text('Track topic coverage and queue lesson generation, unit by unit.',
-                                  style: TextStyle(fontSize: 13, color: FairColors.muted)),
+                              const Kicker('CURRICULUM'),
+                              const SizedBox(height: 10),
+                              Text(title, style: display(26)),
+                              const SizedBox(height: 7),
+                              const Text(
+                                'Track topic coverage and queue lesson generation, unit by unit.',
+                                style: TextStyle(fontSize: 13.5, color: FairColors.muted, height: 1.45),
+                              ),
                             ],
                           ),
                         ),
-                        const SizedBox(width: 16),
-                        OutlinedButton.icon(
-                          icon: const Icon(Icons.bolt_rounded, size: 16),
-                          label: const Text('Generate pending'),
-                          onPressed:
-                              _busy.contains('all') ? null : () => unawaited(_generate(const {'all': true, 'onlyPending': true}, 'all')),
+                        const SizedBox(width: 24),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 26),
+                          child: Row(
+                            children: [
+                              OutlinedButton.icon(
+                                onPressed: () {
+                                  ref.invalidate(curriculumProvider);
+                                  unawaited(ref.read(jobsProvider.notifier).refresh());
+                                },
+                                icon: const Icon(Icons.refresh, size: 16),
+                                label: const Text('Refresh'),
+                              ),
+                              const SizedBox(width: 10),
+                              OutlinedButton.icon(
+                                icon: const Icon(Icons.bolt_rounded, size: 16),
+                                label: const Text('Generate pending'),
+                                onPressed: _busy.contains('all')
+                                    ? null
+                                    : () => unawaited(
+                                        _generate(const {'all': true, 'onlyPending': true}, 'all')),
+                              ),
+                            ],
+                          ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 20),
-                    _SummaryBar(data: data, inQueue: active.length),
+                    const SizedBox(height: 30),
+                    _MetricStrip(data: data, generating: active.length),
                     if (active.isNotEmpty) ...[
-                      const SizedBox(height: 12),
+                      const SizedBox(height: FairDimens.gap),
                       _QueueBanner(active: active),
                     ],
-                    const SizedBox(height: 24),
+                    const SizedBox(height: 34),
                     if (data.trees.isEmpty)
-                      const _MessageCard(
+                      const EmptyState(
                         icon: Icons.account_tree_outlined,
-                        title: 'No curriculum trees found',
-                        detail: 'Add a curriculum source under curriculum/ to plan generation.',
+                        title: 'No curriculum trees',
+                        body: 'Add a curriculum source under curriculum/ to plan generation.',
                       )
                     else
                       for (final tree in data.trees) ...[
-                        Kicker(tree.title, color: FairColors.muted),
-                        const SizedBox(height: 10),
+                        if (data.trees.length > 1) ...[
+                          Kicker(tree.title, color: FairColors.muted),
+                          const SizedBox(height: 12),
+                        ],
                         for (final unit in tree.units)
                           Padding(
                             padding: const EdgeInsets.only(bottom: 12),
@@ -165,59 +197,87 @@ class _CurriculumScreenState extends ConsumerState<CurriculumScreen> {
   }
 }
 
-/// Four-metric coverage read-out across the whole curriculum.
-class _SummaryBar extends StatelessWidget {
-  const _SummaryBar({required this.data, required this.inQueue});
+/// Four-tile coverage read-out across the whole curriculum; collapses to a
+/// 2×2 grid on narrow widths.
+class _MetricStrip extends StatelessWidget {
+  const _MetricStrip({required this.data, required this.generating});
 
   final CurriculumData data;
-  final int inQueue;
+  final int generating;
 
   @override
   Widget build(BuildContext context) {
     final drafts = data.coverage.where((e) => e.jobs.firstOrNull?.status == 'completed').length;
     final approved = data.coverage.where((e) => e.state == 'approved').length;
+    final tiles = [
+      _MetricTile(label: 'TOPICS', value: '${data.coverage.length}'),
+      _MetricTile(label: 'DRAFTS', value: '$drafts'),
+      _MetricTile(label: 'APPROVED', value: '$approved'),
+      _MetricTile(label: 'GENERATING', value: '$generating', highlight: generating > 0),
+    ];
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        if (constraints.maxWidth < 700) {
+          return Column(
+            children: [
+              Row(children: [
+                Expanded(child: tiles[0]),
+                const SizedBox(width: FairDimens.gap),
+                Expanded(child: tiles[1]),
+              ]),
+              const SizedBox(height: FairDimens.gap),
+              Row(children: [
+                Expanded(child: tiles[2]),
+                const SizedBox(width: FairDimens.gap),
+                Expanded(child: tiles[3]),
+              ]),
+            ],
+          );
+        }
+        return Row(
+          children: [
+            for (var i = 0; i < tiles.length; i++) ...[
+              if (i > 0) const SizedBox(width: FairDimens.gap),
+              Expanded(child: tiles[i]),
+            ],
+          ],
+        );
+      },
+    );
+  }
+}
+
+/// Single metric tile — Kicker label over a display numeral.
+class _MetricTile extends StatelessWidget {
+  const _MetricTile({required this.label, required this.value, this.highlight = false});
+
+  final String label;
+  final String value;
+  final bool highlight;
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       decoration: fairCard(),
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-      child: IntrinsicHeight(
-        child: Row(
-          children: [
-            Expanded(child: _Metric(value: '${data.coverage.length}', label: 'TOPICS')),
-            const VerticalDivider(width: 24, color: FairColors.line),
-            Expanded(child: _Metric(value: '$drafts', label: 'DRAFTS')),
-            const VerticalDivider(width: 24, color: FairColors.line),
-            Expanded(child: _Metric(value: '$approved', label: 'APPROVED')),
-            const VerticalDivider(width: 24, color: FairColors.line),
-            Expanded(child: _Metric(value: '$inQueue', label: 'IN QUEUE')),
-          ],
-        ),
+      padding: const EdgeInsets.fromLTRB(20, 16, 20, 18),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Kicker(label, color: FairColors.muted),
+          const SizedBox(height: 10),
+          Text(
+            value,
+            style: display(28, highlight ? FairColors.amber : FairColors.ink),
+          ),
+        ],
       ),
     );
   }
 }
 
-class _Metric extends StatelessWidget {
-  const _Metric({required this.value, required this.label});
-
-  final String value;
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(value,
-            style: const TextStyle(
-                fontSize: 26, fontWeight: FontWeight.w700, color: FairColors.ink, fontFeatures: [FontFeature.tabularFigures()])),
-        const SizedBox(height: 3),
-        Kicker(label, color: FairColors.muted),
-      ],
-    );
-  }
-}
-
-/// Warning-tinted card shown while generation is running or queued.
+/// Amber banner shown while generation is running or queued — mono status
+/// line over a MeterBar tracking the running job's progress.
 class _QueueBanner extends StatelessWidget {
   const _QueueBanner({required this.active});
 
@@ -227,24 +287,34 @@ class _QueueBanner extends StatelessWidget {
   Widget build(BuildContext context) {
     final running = active.where((j) => j.status == 'running').firstOrNull;
     final queued = active.where((j) => j.status == 'queued').length;
-    final text = running != null
+    final message = running != null
         ? 'Now generating: ${running.title}'
             '${running.message.isNotEmpty ? ' — ${running.message}' : ''}'
             '${queued > 0 ? ' $queued more in queue.' : ''}'
         : '$queued topic${queued == 1 ? '' : 's'} queued, starting…';
+    final progress = running == null ? 0.0 : running.progress.clamp(0, 100) / 100;
     return Container(
-      decoration: fairCard(color: FairColors.warningBg),
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-      child: Row(
+      decoration: fairCard(color: FairColors.amberSoft),
+      padding: const EdgeInsets.fromLTRB(16, 14, 16, 15),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const Icon(Icons.bolt_rounded, size: 18, color: FairColors.warning),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Text(text,
-                maxLines: 3,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(fontSize: 12.5, color: FairColors.inkSoft, height: 1.4)),
+          Row(
+            children: [
+              const Icon(Icons.bolt_rounded, size: 16, color: FairColors.amber),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  message,
+                  maxLines: 3,
+                  overflow: TextOverflow.ellipsis,
+                  style: mono(11.5, FairColors.inkSoft),
+                ),
+              ),
+            ],
           ),
+          const SizedBox(height: 12),
+          MeterBar(value: progress, color: FairColors.amber),
         ],
       ),
     );
@@ -252,7 +322,7 @@ class _QueueBanner extends StatelessWidget {
 }
 
 /// One curriculum unit: tappable header (title, strand, approval counter,
-/// Generate unit action) plus the expanded topic rows.
+/// Generate unit action, disclosure chevron) plus the expanded topic rows.
 class _UnitCard extends StatelessWidget {
   const _UnitCard({
     required this.unit,
@@ -288,11 +358,9 @@ class _UnitCard extends StatelessWidget {
               child: InkWell(
                 onTap: onToggle,
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(14, 13, 14, 13),
+                  padding: const EdgeInsets.fromLTRB(18, 14, 14, 14),
                   child: Row(
                     children: [
-                      Icon(expanded ? Icons.expand_more : Icons.chevron_right, size: 18, color: FairColors.muted),
-                      const SizedBox(width: 8),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -300,21 +368,22 @@ class _UnitCard extends StatelessWidget {
                             Text(unit.title, style: Theme.of(context).textTheme.titleMedium),
                             if (unit.strand.isNotEmpty)
                               Padding(
-                                padding: const EdgeInsets.only(top: 2),
-                                child: Text(unit.strand, style: const TextStyle(fontSize: 11.5, color: FairColors.muted)),
+                                padding: const EdgeInsets.only(top: 3),
+                                child: Text(unit.strand, style: mono(10.5, FairColors.muted)),
                               ),
                           ],
                         ),
                       ),
-                      const SizedBox(width: 10),
-                      Text('$approved/${unit.topics.length} approved',
-                          style: const TextStyle(
-                              fontSize: 11,
-                              fontWeight: FontWeight.w600,
-                              color: FairColors.muted,
-                              fontFeatures: [FontFeature.tabularFigures()])),
-                      const SizedBox(width: 10),
+                      const SizedBox(width: 12),
+                      Text('$approved/${unit.topics.length} approved', style: mono(10.5, FairColors.muted)),
+                      const SizedBox(width: 12),
                       _SmallAction(label: 'Generate unit', onPressed: generating ? null : onGenerateUnit),
+                      const SizedBox(width: 4),
+                      Icon(
+                        expanded ? Icons.expand_more : Icons.chevron_right,
+                        size: 18,
+                        color: FairColors.muted,
+                      ),
                     ],
                   ),
                 ),
@@ -324,7 +393,7 @@ class _UnitCard extends StatelessWidget {
               const Divider(height: 1),
               if (unit.topics.isEmpty)
                 const Padding(
-                  padding: EdgeInsets.all(16),
+                  padding: EdgeInsets.all(18),
                   child: Text('No topics in this unit.', style: TextStyle(fontSize: 12, color: FairColors.muted)),
                 )
               else
@@ -335,7 +404,7 @@ class _UnitCard extends StatelessWidget {
                     busy: busyTopics.contains(unit.topics[i].id),
                     onGenerate: () => onGenerateTopic(unit.topics[i].id),
                   ),
-                  if (i < unit.topics.length - 1) const Divider(height: 1, indent: 16, endIndent: 14),
+                  if (i < unit.topics.length - 1) const Divider(height: 1, indent: 18, endIndent: 14),
                 ],
             ],
           ],
@@ -346,7 +415,8 @@ class _UnitCard extends StatelessWidget {
 }
 
 /// One topic row: objective codes, title + truncated summary, coverage
-/// StatusChip and the Generate/Regenerate action.
+/// StatusChip, the Generate/Regenerate action and an "open draft" deep link
+/// to the latest job when coverage has one.
 class _TopicRow extends StatelessWidget {
   const _TopicRow({required this.topic, required this.entry, required this.busy, required this.onGenerate});
 
@@ -359,8 +429,10 @@ class _TopicRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final state = entry?.state ?? 'none';
     final locked = busy || state == 'queued' || state == 'running';
+    final jobId = entry?.jobs.firstOrNull?.id;
+    final hasJob = jobId != null && jobId.isNotEmpty && jobId != 'null';
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 11, 14, 11),
+      padding: const EdgeInsets.fromLTRB(18, 12, 14, 12),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -371,25 +443,48 @@ class _TopicRow extends StatelessWidget {
                 if (topic.codes.isNotEmpty)
                   Padding(
                     padding: const EdgeInsets.only(bottom: 3),
-                    child: Text(topic.codes.join(' · ').toUpperCase(),
-                        style: const TextStyle(fontSize: 9.5, fontWeight: FontWeight.w700, letterSpacing: 1.1, color: FairColors.accent)),
+                    child: Text(
+                      topic.codes.join(' · ').toUpperCase(),
+                      style: mono(9.5, FairColors.muted).copyWith(letterSpacing: 1.1),
+                    ),
                   ),
-                Text(topic.title, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: FairColors.ink)),
+                Text(
+                  topic.title,
+                  style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: FairColors.ink),
+                ),
                 if (topic.summary.isNotEmpty)
                   Padding(
                     padding: const EdgeInsets.only(top: 2),
-                    child: Text(topic.summary,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(fontSize: 11.5, color: FairColors.muted, height: 1.4)),
+                    child: Text(
+                      topic.summary,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(fontSize: 11.5, color: FairColors.muted, height: 1.4),
+                    ),
                   ),
               ],
             ),
           ),
           const SizedBox(width: 12),
           Padding(padding: const EdgeInsets.only(top: 2), child: StatusChip(state)),
-          const SizedBox(width: 8),
-          _SmallAction(label: state == 'none' ? 'Generate' : 'Regenerate', onPressed: locked ? null : onGenerate),
+          const SizedBox(width: 10),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              _SmallAction(label: state == 'none' ? 'Generate' : 'Regenerate', onPressed: locked ? null : onGenerate),
+              if (hasJob)
+                TextButton(
+                  onPressed: () => context.go('/jobs/$jobId'),
+                  style: TextButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                    minimumSize: const Size(0, 24),
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    textStyle: mono(10, FairColors.accent, FontWeight.w600),
+                  ),
+                  child: const Text('open draft'),
+                ),
+            ],
+          ),
         ],
       ),
     );
@@ -415,40 +510,6 @@ class _SmallAction extends StatelessWidget {
         textStyle: const TextStyle(fontSize: 11.5, fontWeight: FontWeight.w600),
       ),
       child: Text(label),
-    );
-  }
-}
-
-/// Shared empty / error card.
-class _MessageCard extends StatelessWidget {
-  const _MessageCard({required this.icon, required this.title, required this.detail, this.actionLabel, this.onAction});
-
-  final IconData icon;
-  final String title;
-  final String detail;
-  final String? actionLabel;
-  final VoidCallback? onAction;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      decoration: fairCard(),
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 30, color: FairColors.muted),
-          const SizedBox(height: 12),
-          Text(title, style: Theme.of(context).textTheme.titleMedium, textAlign: TextAlign.center),
-          const SizedBox(height: 6),
-          Text(detail, style: const TextStyle(fontSize: 12.5, color: FairColors.muted, height: 1.45), textAlign: TextAlign.center),
-          if (onAction != null) ...[
-            const SizedBox(height: 16),
-            OutlinedButton(onPressed: onAction, child: Text(actionLabel ?? 'Retry')),
-          ],
-        ],
-      ),
     );
   }
 }

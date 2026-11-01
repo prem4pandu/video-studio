@@ -108,7 +108,7 @@ class _JobScreenState extends ConsumerState<JobScreen> {
     final jobAsync = ref.watch(jobProvider(widget.jobId));
     return jobAsync.when(
       data: (job) => _buildMonitor(context, job),
-      loading: () => const Center(child: CircularProgressIndicator(color: FairColors.accent)),
+      loading: () => _buildLoading(context),
       error: (error, _) => _buildError(context, error),
     );
   }
@@ -158,30 +158,42 @@ class _JobScreenState extends ConsumerState<JobScreen> {
     );
   }
 
-  Widget _buildError(BuildContext context, Object error) {
-    return Center(
-      child: Container(
-        margin: const EdgeInsets.all(24),
-        padding: const EdgeInsets.all(24),
-        constraints: const BoxConstraints(maxWidth: 460),
-        decoration: fairCard(),
+  Widget _buildLoading(BuildContext context) {
+    return const Center(
+      child: SizedBox(
+        width: 240,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.cloud_off_outlined, size: 34, color: FairColors.error),
-            const SizedBox(height: 12),
-            Text('Could not load this job', style: Theme.of(context).textTheme.titleMedium),
-            const SizedBox(height: 6),
-            Text('$error', textAlign: TextAlign.center, style: const TextStyle(fontSize: 12.5, color: FairColors.muted)),
-            const SizedBox(height: 16),
-            Wrap(
-              spacing: 10,
-              children: [
-                OutlinedButton(onPressed: () => context.go('/'), child: const Text('Dashboard')),
-                FilledButton(onPressed: () => ref.invalidate(jobProvider(widget.jobId)), child: const Text('Retry')),
-              ],
+            ClipRRect(
+              borderRadius: BorderRadius.all(Radius.circular(2)),
+              child: LinearProgressIndicator(minHeight: 3),
             ),
+            SizedBox(height: 14),
+            Text('Loading production monitor…',
+                style: TextStyle(fontSize: 12.5, color: FairColors.muted, letterSpacing: 0.2)),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildError(BuildContext context, Object error) {
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 520),
+        child: EmptyState(
+          icon: Icons.cloud_off_outlined,
+          title: 'Could not load this job',
+          body: '$error',
+          action: Wrap(
+            spacing: 10,
+            runSpacing: 8,
+            children: [
+              OutlinedButton(onPressed: () => context.go('/'), child: const Text('Dashboard')),
+              FilledButton(onPressed: () => ref.invalidate(jobProvider(widget.jobId)), child: const Text('Retry')),
+            ],
+          ),
         ),
       ),
     );
@@ -200,7 +212,7 @@ class _JobScreenState extends ConsumerState<JobScreen> {
       children: [
         const Kicker('PRODUCTION MONITOR'),
         const SizedBox(height: 8),
-        Text(job.title, style: Theme.of(context).textTheme.headlineMedium, maxLines: 3, overflow: TextOverflow.ellipsis),
+        Text(job.title, style: display(26), maxLines: 3, overflow: TextOverflow.ellipsis),
         if (excerpt != null) ...[
           const SizedBox(height: 6),
           Text(excerpt,
@@ -244,7 +256,7 @@ class _JobScreenState extends ConsumerState<JobScreen> {
           StageTimeline(job: job),
           if (job.error != null && job.error!.isNotEmpty) ...[
             const SizedBox(height: 14),
-            _noticeBox(
+            _NoticeBox(
               icon: Icons.error_outline,
               color: FairColors.error,
               bg: FairColors.errorBg,
@@ -307,11 +319,11 @@ class _JobScreenState extends ConsumerState<JobScreen> {
           if (hasVideo)
             _VideoPanel(url: api.artifactUrl(videoPath))
           else
-            _noticeBox(
+            const _NoticeBox(
               icon: Icons.videocam_off_outlined,
-              color: FairColors.warning,
-              bg: FairColors.warningBg,
-              lines: const ['No video artifact was produced — check the quality report and generation activity below.'],
+              color: FairColors.amber,
+              bg: FairColors.amberSoft,
+              lines: ['No video artifact was produced — check the quality report and generation activity below.'],
             ),
           const SizedBox(height: 14),
           Wrap(
@@ -328,7 +340,7 @@ class _JobScreenState extends ConsumerState<JobScreen> {
                 OutlinedButton.icon(
                   onPressed: () => _open(api.artifactUrl(artifact.value)),
                   icon: const Icon(Icons.description_outlined, size: 15),
-                  label: Text(StudioApi.artifactLabel(artifact.key)),
+                  label: Text(StudioApi.artifactLabel(artifact.key), style: mono(11, FairColors.inkSoft)),
                 ),
             ],
           ),
@@ -394,11 +406,7 @@ class _JobScreenState extends ConsumerState<JobScreen> {
     ].where((s) => s.isNotEmpty).join(' — ');
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-      decoration: BoxDecoration(
-        color: FairColors.surfaceSoft,
-        borderRadius: BorderRadius.circular(FairDimens.radiusSm),
-        border: Border.all(color: FairColors.line),
-      ),
+      decoration: fairWell(),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -451,22 +459,18 @@ class _JobScreenState extends ConsumerState<JobScreen> {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _noticeBox(
+          const _NoticeBox(
             icon: Icons.hourglass_top_outlined,
-            color: FairColors.warning,
-            bg: FairColors.warningBg,
-            lines: const ['Prompts appear after export completes.'],
+            color: FairColors.amber,
+            bg: FairColors.amberSoft,
+            lines: ['Prompts appear after export completes.'],
           ),
           if (briefText is String && briefText.trim().isNotEmpty) ...[
             _sectionLabel('SOURCE BRIEF'),
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: FairColors.surfaceSoft,
-                borderRadius: BorderRadius.circular(FairDimens.radiusSm),
-                border: Border.all(color: FairColors.line),
-              ),
+              decoration: fairWell(),
               child: Text(briefText.trim(), style: const TextStyle(fontSize: 12.5, color: FairColors.muted, height: 1.5)),
             ),
           ],
@@ -478,7 +482,7 @@ class _JobScreenState extends ConsumerState<JobScreen> {
       future: _promptsFuture,
       builder: (context, snapshot) {
         if (snapshot.hasError) {
-          return _noticeBox(
+          return _NoticeBox(
             icon: Icons.error_outline,
             color: FairColors.error,
             bg: FairColors.errorBg,
@@ -508,11 +512,7 @@ class _JobScreenState extends ConsumerState<JobScreen> {
     final text = '${prompt['text'] ?? ''}';
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
-      decoration: BoxDecoration(
-        color: FairColors.surfaceSoft,
-        borderRadius: BorderRadius.circular(FairDimens.radiusSm),
-        border: Border.all(color: FairColors.line),
-      ),
+      decoration: fairWell(),
       clipBehavior: Clip.antiAlias,
       child: ExpansionTile(
         shape: const RoundedRectangleBorder(),
@@ -528,7 +528,7 @@ class _JobScreenState extends ConsumerState<JobScreen> {
             Expanded(
               child: Text(
                 file,
-                style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: FairColors.inkSoft),
+                style: mono(11, FairColors.inkSoft, FontWeight.w600),
                 overflow: TextOverflow.ellipsis,
               ),
             ),
@@ -539,13 +539,7 @@ class _JobScreenState extends ConsumerState<JobScreen> {
             alignment: Alignment.centerLeft,
             child: SelectableText(
               text.isEmpty ? '(empty prompt)' : text,
-              style: const TextStyle(
-                fontSize: 11,
-                height: 1.5,
-                color: FairColors.inkSoft,
-                fontFamily: 'Menlo',
-                fontFamilyFallback: ['Roboto Mono', 'Courier New', 'monospace'],
-              ),
+              style: mono(11, FairColors.inkSoft, FontWeight.w400),
             ),
           ),
         ],
@@ -584,7 +578,7 @@ class _JobScreenState extends ConsumerState<JobScreen> {
           ),
           if (report.origin != null && report.origin!.isNotEmpty) ...[
             const SizedBox(height: 3),
-            Text('Checked by ${report.origin}', style: const TextStyle(fontSize: 11, color: FairColors.muted)),
+            Text('Checked by ${report.origin}', style: mono(10.5, FairColors.muted, FontWeight.w400)),
           ],
           if (total > 0) ...[
             const SizedBox(height: 14),
@@ -606,10 +600,10 @@ class _JobScreenState extends ConsumerState<JobScreen> {
           ],
           if (report.warnings.isNotEmpty) ...[
             _sectionLabel('WARNINGS'),
-            _noticeBox(
+            _NoticeBox(
               icon: Icons.warning_amber_outlined,
-              color: FairColors.warning,
-              bg: FairColors.warningBg,
+              color: FairColors.amber,
+              bg: FairColors.amberSoft,
               lines: report.warnings,
             ),
           ],
@@ -619,19 +613,18 @@ class _JobScreenState extends ConsumerState<JobScreen> {
   }
 
   Widget _gateCard(GateCheck check) {
-    final color = check.passed ? FairColors.success : FairColors.amber;
+    final color = check.passed ? FairColors.accent : FairColors.error;
     return Container(
       padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: FairColors.surfaceSoft,
-        borderRadius: BorderRadius.circular(FairDimens.radiusSm),
-        border: Border.all(color: FairColors.line),
-      ),
+      decoration: fairWell(),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(check.passed ? Icons.check_circle : Icons.warning_amber, size: 16, color: color),
-          const SizedBox(width: 8),
+          Padding(
+            padding: const EdgeInsets.only(top: 1),
+            child: Icon(check.passed ? Icons.check_circle : Icons.error, size: 15, color: color),
+          ),
+          const SizedBox(width: 9),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -639,8 +632,8 @@ class _JobScreenState extends ConsumerState<JobScreen> {
                 Text(check.name, style: const TextStyle(fontSize: 12.5, fontWeight: FontWeight.w600)),
                 if (check.detail.isNotEmpty)
                   Padding(
-                    padding: const EdgeInsets.only(top: 2),
-                    child: Text(check.detail, style: const TextStyle(fontSize: 11, color: FairColors.muted, height: 1.4)),
+                    padding: const EdgeInsets.only(top: 3),
+                    child: Text(check.detail, style: mono(10.5, FairColors.muted, FontWeight.w400)),
                   ),
               ],
             ),
@@ -661,12 +654,12 @@ class _JobScreenState extends ConsumerState<JobScreen> {
           Padding(
             padding: const EdgeInsets.only(top: 1),
             child: Icon(met ? Icons.check_circle_outline : Icons.radio_button_unchecked,
-                size: 14, color: met ? FairColors.success : FairColors.muted),
+                size: 14, color: met ? FairColors.accent : FairColors.muted),
           ),
           const SizedBox(width: 8),
           Expanded(child: Text(coverage.text, style: const TextStyle(fontSize: 12.5, color: FairColors.inkSoft, height: 1.4))),
           const SizedBox(width: 8),
-          Text(summary, style: TextStyle(fontSize: 10.5, fontWeight: FontWeight.w600, color: met ? FairColors.success : FairColors.amber)),
+          Text(summary, style: mono(9.5, met ? FairColors.accent : FairColors.amber, FontWeight.w600)),
         ],
       ),
     );
@@ -683,24 +676,33 @@ class _JobScreenState extends ConsumerState<JobScreen> {
         shape: const RoundedRectangleBorder(),
         collapsedShape: const RoundedRectangleBorder(),
         tilePadding: const EdgeInsets.symmetric(horizontal: 20),
-        childrenPadding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
+        childrenPadding: const EdgeInsets.fromLTRB(20, 2, 20, 16),
         iconColor: FairColors.muted,
         collapsedIconColor: FairColors.muted,
-        leading: const Icon(Icons.history, size: 18, color: FairColors.muted),
+        leading: const Icon(Icons.terminal, size: 16, color: FairColors.muted),
         title: const Text('Generation activity', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
         subtitle: Text('${events.length} event${events.length == 1 ? '' : 's'} recorded',
-            style: const TextStyle(fontSize: 11.5, color: FairColors.muted)),
+            style: mono(10.5, FairColors.muted, FontWeight.w400)),
         children: [
-          if (events.isEmpty)
-            const Padding(
-              padding: EdgeInsets.symmetric(vertical: 8),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text('No events yet.', style: TextStyle(fontSize: 12, color: FairColors.muted)),
-              ),
-            )
-          else
-            for (final event in events) _eventRow(event),
+          Container(
+            constraints: const BoxConstraints(maxHeight: 320),
+            decoration: fairWell(),
+            child: events.isEmpty
+                ? const Padding(
+                    padding: EdgeInsets.all(14),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text('No events yet.', style: TextStyle(fontSize: 12, color: FairColors.muted)),
+                    ),
+                  )
+                : ListView.builder(
+                    reverse: true,
+                    shrinkWrap: true,
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                    itemCount: events.length,
+                    itemBuilder: (context, index) => _eventRow(events[events.length - 1 - index]),
+                  ),
+          ),
         ],
       ),
     );
@@ -708,26 +710,26 @@ class _JobScreenState extends ConsumerState<JobScreen> {
 
   Widget _eventRow(JobEvent event) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
+      padding: const EdgeInsets.symmetric(vertical: 3.5),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(
-            width: 62,
+            width: 46,
             child: Text(
-              event.at != null ? DateFormat('HH:mm:ss').format(event.at!.toLocal()) : '—',
-              style: const TextStyle(fontSize: 11, color: FairColors.muted, fontFeatures: [FontFeature.tabularFigures()]),
+              event.at != null ? DateFormat('HH:mm').format(event.at!.toLocal()) : '--:--',
+              style: mono(10.5, FairColors.faint, FontWeight.w400),
             ),
           ),
           SizedBox(
-            width: 84,
+            width: 88,
             child: Text(
-              event.stage,
-              style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: FairColors.accent),
+              event.stage.toUpperCase(),
+              style: mono(9.5, FairColors.accent, FontWeight.w600).copyWith(letterSpacing: 0.6),
               overflow: TextOverflow.ellipsis,
             ),
           ),
-          Expanded(child: Text(event.message, style: const TextStyle(fontSize: 11.5, color: FairColors.inkSoft, height: 1.4))),
+          Expanded(child: Text(event.message, style: mono(11, FairColors.inkSoft, FontWeight.w400))),
         ],
       ),
     );
@@ -744,17 +746,13 @@ class _JobScreenState extends ConsumerState<JobScreen> {
   Widget _metaChip(IconData icon, String label) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      decoration: BoxDecoration(
-        color: FairColors.surface,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: FairColors.line),
-      ),
+      decoration: fairWell(radius: 20),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(icon, size: 12, color: FairColors.muted),
           const SizedBox(width: 5),
-          Text(label, style: const TextStyle(fontSize: 10.5, fontWeight: FontWeight.w600, color: FairColors.inkSoft)),
+          Text(label, style: mono(10, FairColors.inkSoft)),
         ],
       ),
     );
@@ -773,26 +771,46 @@ class _JobScreenState extends ConsumerState<JobScreen> {
         children: [
           Icon(icon, size: 10, color: color),
           const SizedBox(width: 4),
-          Text(label, style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w700, color: color, letterSpacing: 0.2)),
+          Text(label, style: mono(9, color, FontWeight.w600).copyWith(letterSpacing: 0.4)),
         ],
       ),
     );
   }
+}
 
-  Widget _noticeBox({required IconData icon, required Color color, required Color bg, required List<String> lines}) {
+/// Padded subsection heading used inside cards.
+Widget _sectionLabel(String label) {
+  return Padding(
+    padding: const EdgeInsets.only(top: 16, bottom: 7),
+    child: Kicker(label, color: FairColors.muted),
+  );
+}
+
+/// Consistent notice surface — icon + colored copy on a soft tinted panel.
+class _NoticeBox extends StatelessWidget {
+  const _NoticeBox({required this.icon, required this.color, required this.bg, required this.lines});
+  final IconData icon;
+  final Color color, bg;
+  final List<String> lines;
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       decoration: BoxDecoration(
         color: bg,
         borderRadius: BorderRadius.circular(FairDimens.radiusSm),
-        border: Border.all(color: color.withValues(alpha: 0.35)),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, size: 16, color: color),
-          const SizedBox(width: 8),
+          Padding(
+            padding: const EdgeInsets.only(top: 1),
+            child: Icon(icon, size: 15, color: color),
+          ),
+          const SizedBox(width: 9),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -811,14 +829,6 @@ class _JobScreenState extends ConsumerState<JobScreen> {
   }
 }
 
-/// Padded subsection heading used inside cards.
-Widget _sectionLabel(String label) {
-  return Padding(
-    padding: const EdgeInsets.only(top: 16, bottom: 7),
-    child: Kicker(label, color: FairColors.muted),
-  );
-}
-
 /// Segmented control for the inspector — avoids a DefaultTabController so the
 /// selected tab can drive lazy loading (prompts) in the parent state.
 class _SegmentedTabs extends StatelessWidget {
@@ -831,11 +841,7 @@ class _SegmentedTabs extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(3),
-      decoration: BoxDecoration(
-        color: FairColors.surfaceSoft,
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: FairColors.line),
-      ),
+      decoration: fairWell(radius: 10),
       child: Row(
         children: [
           for (var i = 0; i < labels.length; i++)
@@ -844,13 +850,13 @@ class _SegmentedTabs extends StatelessWidget {
                 onTap: () => onSelect(i),
                 borderRadius: BorderRadius.circular(8),
                 child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 180),
+                  duration: const Duration(milliseconds: 160),
                   curve: Curves.easeOut,
                   padding: const EdgeInsets.symmetric(vertical: 8),
                   decoration: BoxDecoration(
-                    color: i == selected ? FairColors.surface : Colors.transparent,
+                    color: i == selected ? FairColors.surfaceRaised : Colors.transparent,
                     borderRadius: BorderRadius.circular(8),
-                    border: i == selected ? Border.all(color: FairColors.strongLine) : null,
+                    border: Border.all(color: i == selected ? FairColors.strongLine : Colors.transparent),
                   ),
                   child: Text(
                     labels[i],
@@ -859,7 +865,7 @@ class _SegmentedTabs extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 12.5,
                       fontWeight: i == selected ? FontWeight.w700 : FontWeight.w500,
-                      color: i == selected ? FairColors.accent : FairColors.muted,
+                      color: i == selected ? FairColors.ink : FairColors.muted,
                     ),
                   ),
                 ),
@@ -895,7 +901,12 @@ class _PlanTab extends StatelessWidget {
         ],
         if (lesson.warnings.isNotEmpty) ...[
           _sectionLabel('WARNINGS'),
-          _WarningsBox(warnings: lesson.warnings),
+          _NoticeBox(
+            icon: Icons.warning_amber_outlined,
+            color: FairColors.amber,
+            bg: FairColors.amberSoft,
+            lines: lesson.warnings,
+          ),
         ],
         if (lesson.scenes.isNotEmpty) ...[
           _sectionLabel('SCENES (${lesson.scenes.length})'),
@@ -922,11 +933,7 @@ class _PlanTab extends StatelessWidget {
     final heading = '${scene.beat.isNotEmpty ? '${scene.beat} · ' : ''}${scene.title.isNotEmpty ? scene.title : 'Scene ${index + 1}'}';
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
-      decoration: BoxDecoration(
-        color: FairColors.surfaceSoft,
-        borderRadius: BorderRadius.circular(FairDimens.radiusSm),
-        border: Border.all(color: FairColors.line),
-      ),
+      decoration: fairWell(),
       clipBehavior: Clip.antiAlias,
       child: ExpansionTile(
         shape: const RoundedRectangleBorder(),
@@ -1001,7 +1008,7 @@ class _PlanTab extends StatelessWidget {
         children: [
           Icon(icon, size: 10, color: color),
           const SizedBox(width: 3),
-          Text(label, style: TextStyle(fontSize: 9.5, fontWeight: FontWeight.w600, color: color)),
+          Text(label, style: mono(9, color, FontWeight.w600)),
         ],
       ),
     );
@@ -1015,46 +1022,9 @@ Widget _numBadge(int index) {
     height: 26,
     decoration: const BoxDecoration(color: FairColors.accentSoft, shape: BoxShape.circle),
     child: Center(
-      child: Text('${index + 1}', style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: FairColors.accentDark)),
+      child: Text('${index + 1}', style: mono(11, FairColors.accent, FontWeight.w700)),
     ),
   );
-}
-
-class _WarningsBox extends StatelessWidget {
-  const _WarningsBox({required this.warnings});
-  final List<String> warnings;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-      decoration: BoxDecoration(
-        color: FairColors.warningBg,
-        borderRadius: BorderRadius.circular(FairDimens.radiusSm),
-        border: Border.all(color: FairColors.warning.withValues(alpha: 0.35)),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Icon(Icons.warning_amber_outlined, size: 16, color: FairColors.warning),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                for (var i = 0; i < warnings.length; i++)
-                  Padding(
-                    padding: EdgeInsets.only(bottom: i == warnings.length - 1 ? 0 : 3),
-                    child: Text(warnings[i], style: const TextStyle(fontSize: 12, color: FairColors.warning, height: 1.45)),
-                  ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 }
 
 /// Narration script tab: every scene as a numbered card.
@@ -1080,11 +1050,7 @@ class _ScriptTab extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
       padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: FairColors.surfaceSoft,
-        borderRadius: BorderRadius.circular(FairDimens.radiusSm),
-        border: Border.all(color: FairColors.line),
-      ),
+      decoration: fairWell(),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -1129,8 +1095,9 @@ class _ScriptTab extends StatelessWidget {
   }
 }
 
-/// Preview monitor for the exported MP4 — loads lazily once the job is ready,
-/// tap-to-toggle playback, scrubbable progress bar, position/duration readout.
+/// Preview monitor for the exported MP4 — a letterboxed 16:9 stage on the
+/// near-black monitor surface. Loads lazily once the job is ready, tap-to-toggle
+/// playback, scrubbable progress bar, position/duration readout.
 class _VideoPanel extends StatefulWidget {
   const _VideoPanel({required this.url});
   final String url;
@@ -1198,7 +1165,11 @@ class _VideoPanelState extends State<_VideoPanel> {
     final controller = _controller;
     final ready = controller != null && controller.value.isInitialized;
     return Container(
-      decoration: BoxDecoration(color: FairColors.monitor, borderRadius: BorderRadius.circular(FairDimens.radiusSm)),
+      decoration: BoxDecoration(
+        color: FairColors.monitor,
+        borderRadius: BorderRadius.circular(FairDimens.radius),
+        border: Border.all(color: FairColors.line),
+      ),
       clipBehavior: Clip.antiAlias,
       child: _failed
           ? _playerMessage(Icons.error_outline, 'Could not load the video preview${_error != null ? '\n$_error' : ''}')
@@ -1217,11 +1188,16 @@ class _VideoPanelState extends State<_VideoPanel> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         AspectRatio(
-                          aspectRatio: aspect,
+                          aspectRatio: 16 / 9,
                           child: Stack(
                             fit: StackFit.expand,
                             children: [
-                              VideoPlayer(controller),
+                              Center(
+                                child: AspectRatio(
+                                  aspectRatio: aspect,
+                                  child: VideoPlayer(controller),
+                                ),
+                              ),
                               Positioned.fill(
                                 child: GestureDetector(
                                   behavior: HitTestBehavior.opaque,
@@ -1251,7 +1227,10 @@ class _VideoPanelState extends State<_VideoPanel> {
   }
 
   Widget _controls(VideoPlayerController controller, VideoPlayerValue value) {
-    return Padding(
+    return Container(
+      decoration: const BoxDecoration(
+        border: Border(top: BorderSide(color: FairColors.line)),
+      ),
       padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
       child: Row(
         children: [
@@ -1263,7 +1242,7 @@ class _VideoPanelState extends State<_VideoPanel> {
           ),
           Text(
             '${_fmt(value.position)} / ${_fmt(value.duration)}',
-            style: const TextStyle(color: Colors.white70, fontSize: 11, fontFeatures: [FontFeature.tabularFigures()]),
+            style: mono(10.5, FairColors.inkSoft, FontWeight.w400),
           ),
           const SizedBox(width: 10),
           Expanded(

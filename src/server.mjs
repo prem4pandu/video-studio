@@ -4,6 +4,8 @@ import { readFile, realpath, stat, mkdir, open, unlink } from 'node:fs/promises'
 import { dirname, extname, join, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { FairJobStore, fairJobArtifacts } from './jobs.mjs';
+import { ProductionStore } from '../studio-v2/jobs.mjs';
+import { createV2Handler } from '../studio-v2/http.mjs';
 import { FAIR_AVATARS, fairVoiceConfig } from './voice.mjs';
 import { fairNeuralPaths, fairPiperPaths } from './neural-voice.mjs';
 import { fairQwenPaths } from './qwen-voice.mjs';
@@ -133,7 +135,8 @@ export async function fairServerConfig(env, { fetchImpl = fetch, command = fairC
     } };
 }
 
-export function fairCreateServer(store, { env = process.env } = {}) {
+export function fairCreateServer(store, { env = process.env, v2Store } = {}) {
+  const v2Handler = v2Store ? createV2Handler(v2Store, { env, json, body, byteRange: fairByteRange }) : null;
   let cachedConfig, configTime = 0;
   return createServer(async (request, response) => {
     response.setHeader('x-content-type-options', 'nosniff');
@@ -170,6 +173,15 @@ export function fairCreateServer(store, { env = process.env } = {}) {
         }
         const headers = { 'content-type': mimeTypes[extname(file)] || 'application/octet-stream', 'cache-control': 'no-cache' };
         if (extname(file) === '.html') headers['content-security-policy'] = "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self'; connect-src 'self'; font-src 'self'; worker-src 'self' blob:; frame-ancestors 'none'; base-uri 'self'; form-action 'self'";
+        if (file.endsWith('flutter_bootstrap.js')) {
+          // Flutter's generated bootstrap fetches canvaskit from the gstatic
+          // CDN unless useLocalCanvasKit is set — the CSP forbids CDN access,
+          // so pin it to the bundled local copy for every build.
+          const source = await readFile(file, 'utf8');
+          const patched = source.replace('"engineRevision":', '"useLocalCanvasKit":true,"engineRevision":');
+          response.writeHead(200, { ...headers, 'content-length': Buffer.byteLength(patched) });
+          return response.end(request.method === 'HEAD' ? undefined : patched);
+        }
         response.writeHead(200, headers);
         if (request.method === 'HEAD') return response.end();
         const stream = createReadStream(file);
@@ -188,6 +200,7 @@ export function fairCreateServer(store, { env = process.env } = {}) {
         response.on('close', () => stream.destroy()); stream.on('error', () => response.destroy()); stream.pipe(response); return;
       }
       if (request.headers['sec-fetch-site'] === 'cross-site' || (request.headers.origin && request.headers.origin !== `http://${host}`)) return json(response, 403, { error: 'Cross-origin access is not allowed.' });
+      if (v2Handler && await v2Handler(request, response, route)) return;
       if (request.method === 'GET' && route === '/api/config') {
         if (!cachedConfig || Date.now() - configTime > 15_000) { cachedConfig = await fairServerConfig(env); configTime = Date.now(); }
         return json(response, 200, cachedConfig);
@@ -286,9 +299,10 @@ async function main() {
   }
   await lock.writeFile(String(process.pid)); await lock.close();
   const store = new FairJobStore(root); await store.init();
-  const server = fairCreateServer(store);
+  const v2Store = new ProductionStore(resolve(process.env.STUDIO_V2_DATA_DIR || join(root, 'studio-v2'))); await v2Store.init();
+  const server = fairCreateServer(store, { v2Store });
   server.requestTimeout = 30_000; server.headersTimeout = 10_000;
-  const stop = async () => { await store.stop(); await unlink(lockFile).catch(() => {}); server.close(() => process.exit(0)); setTimeout(() => process.exit(0), 4000).unref(); };
+  const stop = async () => { await Promise.all([store.stop(), v2Store.stop()]); await unlink(lockFile).catch(() => {}); server.close(() => process.exit(0)); setTimeout(() => process.exit(0), 4000).unref(); };
   process.once('SIGINT', stop); process.once('SIGTERM', stop);
   server.on('error', async error => { await unlink(lockFile).catch(() => {}); console.error(error.message); process.exitCode = 1; });
   server.listen(port, '::', () => console.log(`Video Studio → http://localhost:${port}\nProjects: ${root}`));

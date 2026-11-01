@@ -9,6 +9,8 @@ import 'screens/job_screen.dart';
 import 'screens/review_screen.dart';
 import 'shell.dart';
 import 'theme.dart';
+import 'v2/studio_screen.dart';
+import 'v2/job_screen.dart';
 
 void main() => runApp(const ProviderScope(child: StudioApp()));
 
@@ -18,6 +20,8 @@ final _router = GoRouter(
     ShellRoute(
       builder: (context, state, child) => StudioShell(child: child),
       routes: [
+        GoRoute(path: '/studio-v2', builder: (context, state) => const V2StudioScreen()),
+        GoRoute(path: '/studio-v2/jobs/:id', builder: (context, state) => V2JobScreen(jobId: state.pathParameters['id']!)),
         GoRoute(path: '/', builder: (context, state) => const DashboardScreen()),
         GoRoute(path: '/create', builder: (context, state) => const CreateScreen()),
         GoRoute(path: '/jobs/:id', builder: (context, state) => JobScreen(jobId: state.pathParameters['id']!)),

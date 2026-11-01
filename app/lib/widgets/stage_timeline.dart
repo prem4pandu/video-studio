@@ -171,7 +171,7 @@ class _StageTile extends StatelessWidget {
                             : failed
                                 ? const Icon(Icons.priority_high, size: 14, color: Colors.white)
                                 : Text('${index + 1}'.padLeft(2, '0'),
-                                    style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700, color: current ? Colors.white : FairColors.muted)),
+                                    style: mono(10, current ? const Color(0xFF3A2408) : FairColors.muted, FontWeight.w500)),
                       ),
                     );
                   },
@@ -219,8 +219,8 @@ class _StageTile extends StatelessWidget {
                         if (event?.at != null) ...[
                           const SizedBox(width: 10),
                           Text(
-                            _time(event!.at!) + (elapsed != null ? ' · $elapsed elapsed' : ''),
-                            style: const TextStyle(fontSize: 10.5, color: FairColors.muted, fontFeatures: [FontFeature.tabularFigures()]),
+                            _time(event!.at!) + (elapsed != null ? ' · ${elapsed!} elapsed' : ''),
+                            style: mono(10, FairColors.muted),
                           ),
                         ],
                       ],
@@ -254,7 +254,7 @@ class _StageTile extends StatelessWidget {
               child: CircularProgressIndicator(strokeWidth: 1.6, color: color),
             ),
           ),
-        Text(label, style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: color, letterSpacing: 0.3)),
+        Text(label, style: mono(9.5, color, FontWeight.w500).copyWith(letterSpacing: 0.6)),
       ],
     );
   }
@@ -282,7 +282,7 @@ class JobProgressBar extends StatelessWidget {
             Expanded(child: Text(job.isReady ? 'Ready for review' : (job.message.isNotEmpty ? job.message : 'Working…'),
                 style: const TextStyle(fontSize: 12.5, color: FairColors.inkSoft), maxLines: 2, overflow: TextOverflow.ellipsis)),
             const SizedBox(width: 10),
-            Text('$pct%', style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700, fontFeatures: [FontFeature.tabularFigures()])),
+            Text('$pct%', style: display(15, FairColors.ink, FontWeight.w700)),
           ],
         ),
         const SizedBox(height: 8),

@@ -17,3 +17,6 @@ __pycache__/
 # Generated render outputs and one-off discovery renders
 outputs/
 .fair-video-discovery/
+
+# Pinned OpenMontage source and isolated Python runtime
+.openmontage/

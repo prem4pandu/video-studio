@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Video Studio · Theme preview</title>
+<style>
+  @font-face{font-family:Inter;src:url(assets/fonts/Inter-Regular.ttf);font-weight:400}
+  @font-face{font-family:Inter;src:url(assets/fonts/Inter-Medium.ttf);font-weight:500}
+  @font-face{font-family:Inter;src:url(assets/fonts/Inter-SemiBold.ttf);font-weight:600}
+  @font-face{font-family:SpaceGrotesk;src:url(assets/fonts/SpaceGrotesk-Bold.ttf);font-weight:700}
+  @font-face{font-family:JetBrainsMono;src:url(assets/fonts/JetBrainsMono-Regular.ttf);font-weight:400}
+  *{margin:0;box-sizing:border-box}
+  body{font-family:Inter,system-ui,sans-serif;background:#111;color:#eee}
+  .switcher{position:sticky;top:0;z-index:10;display:flex;gap:8px;padding:14px 20px;background:#111;border-bottom:1px solid #2a2a2a}
+  .switcher button{padding:8px 16px;border-radius:8px;border:1px solid #3a3a3a;background:transparent;color:#bbb;font:600 12.5px Inter;cursor:pointer}
+  .switcher button.on{background:#eee;color:#111;border-color:#eee}
+  .frame{display:none}
+  .frame.on{display:block}
+
+  /* ============ shared mock layout ============ */
+  .app{display:flex;min-height:calc(100vh - 58px)}
+  .rail{width:196px;flex-shrink:0;padding:20px 12px;border-right:1px solid var(--line);background:var(--rail)}
+  .brand{display:flex;align-items:center;gap:10px;margin-bottom:26px;padding:0 8px}
+  .logo{width:34px;height:34px;border-radius:9px;background:var(--accsoft);border:1px solid var(--accdark);display:grid;place-items:center;font:700 14px SpaceGrotesk;color:var(--acc)}
+  .brand b{display:block;font:700 14px SpaceGrotesk;color:var(--ink);letter-spacing:-.2px}
+  .brand small{font:400 7.5px JetBrainsMono;letter-spacing:1.6px;color:var(--muted)}
+  .nav{display:flex;align-items:center;gap:9px;padding:9px 10px;border-radius:8px;font:500 12.5px Inter;color:var(--muted);margin-bottom:2px}
+  .nav.on{background:var(--raised);color:var(--ink)}
+  .nav i{width:7px;height:7px;border-radius:50%;background:var(--faint)}
+  .nav.on i{background:var(--acc)}
+  .main{flex:1;padding:34px 38px;background:var(--canvas)}
+  .kick{font:400 9px JetBrainsMono;letter-spacing:1.8px;color:var(--amber);margin-bottom:8px}
+  h1{font:700 26px SpaceGrotesk;color:var(--ink);letter-spacing:-.6px}
+  .btn{float:right;margin-top:-30px;padding:10px 18px;border-radius:8px;background:var(--acc);color:var(--accon);font:700 13px Inter;border:0;cursor:pointer}
+  .tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:26px 0 30px}
+  .tile{padding:16px;border-radius:10px;background:var(--surface);border:1px solid var(--line)}
+  .tile small{display:block;font:400 8.5px JetBrainsMono;letter-spacing:1.4px;color:var(--muted);margin-bottom:10px}
+  .tile b{font:700 24px SpaceGrotesk;color:var(--ink)}
+  .tile span{display:block;margin-top:4px;font:400 11px Inter;color:var(--muted)}
+  .list{border:1px solid var(--line);border-radius:10px;background:var(--surface);overflow:hidden}
+  .row{display:flex;align-items:center;gap:14px;padding:14px 16px;border-bottom:1px solid var(--line)}
+  .row:last-child{border:0}
+  .row:hover{background:var(--raised)}
+  .row b{flex:1;font:600 13px Inter;color:var(--ink)}
+  .meta{font:400 10.5px JetBrainsMono;color:var(--muted)}
+  .chip{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:20px;font:600 9.5px Inter}
+  .chip i{width:5px;height:5px;border-radius:50%}
+  .ok{background:var(--accsoft);color:var(--acc)}.ok i{background:var(--acc)}
+  .warn{background:var(--ambsoft);color:var(--amber)}.warn i{background:var(--amber)}
+  .err{background:var(--errbg);color:var(--err)}.err i{background:var(--err)}
+  .meter{height:5px;border-radius:3px;background:var(--line);margin-top:8px;overflow:hidden}
+  .meter div{height:100%;background:var(--acc)}
+  .timeline{margin-top:26px;padding:18px;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+  .stage{display:flex;align-items:center;gap:10px;padding:7px 0;font:500 12px Inter;color:var(--ink)}
+  .stage .n{width:20px;height:20px;border-radius:50%;display:grid;place-items:center;font:500 9px JetBrainsMono;background:var(--raised);color:var(--muted)}
+  .stage.done .n{background:var(--accsoft);color:var(--acc)}
+  .stage.cur .n{background:var(--ambsoft);color:var(--amber)}
+  .stage.pend{color:var(--muted)}
+  .stage small{margin-left:auto;font:400 9.5px JetBrainsMono;color:var(--muted)}
+
+  /* ============ theme A: graphite + blue ============ */
+  .a{--canvas:#0A0A0A;--rail:#0E0E0E;--surface:#141414;--raised:#1D1D1D;--line:#242424;--ink:#F5F5F5;--muted:#8A8A8A;--faint:#4A4A4A;--acc:#3B82F6;--accdark:#2563EB;--accsoft:#132F5C;--accon:#fff;--amber:#F59E0B;--ambsoft:#3A2C10;--err:#F87171;--errbg:#3A1F1F}
+  /* ============ theme B: warm dark + amber ============ */
+  .b{--canvas:#151010;--rail:#1A1312;--surface:#1F1715;--raised:#2A1F1C;--line:#33261F;--ink:#F2E8DD;--muted:#9C8A7C;--faint:#5F4F43;--acc:#E8A54B;--accdark:#B87A28;--accsoft:#3D2C15;--accon:#241505;--amber:#E8A54B;--ambsoft:#3D2C15;--err:#E4746B;--errbg:#3A211E}
+  /* ============ theme C: midnight navy + cyan ============ */
+  .c{--canvas:#080D1A;--rail:#0A1120;--surface:#0F1830;--raised:#172240;--line:#1E2B4A;--ink:#E5EDF7;--muted:#7E8FB0;--faint:#44547A;--acc:#22D3EE;--accdark:#0891B2;--accsoft:#0E3448;--accon:#05202B;--amber:#F0B860;--ambsoft:#3D3018;--err:#F87171;--errbg:#3A1F28}
+  /* ============ theme D: light refined ============ */
+  .d{--canvas:#F4F3EF;--rail:#FFFFFF;--surface:#FFFFFF;--raised:#F0EFEA;--line:#E2E1DA;--ink:#202421;--muted:#6B726B;--faint:#B7BDB6;--acc:#16705B;--accdark:#0F5646;--accsoft:#E3F0EB;--accon:#fff;--amber:#B86524;--ambsoft:#F6E9DB;--err:#A33B32;--errbg:#F8E8E5}
+  .d .rail{border-right-color:var(--line)}
+</style>
+</head>
+<body>
+<nav class="switcher">
+  <button class="on" data-t="a">A · Graphite + blue</button>
+  <button data-t="b">B · Warm dark + amber</button>
+  <button data-t="c">C · Midnight navy + cyan</button>
+  <button data-t="d">D · Light refined</button>
+</nav>
+
+<!-- One mock rendered four times -->
+<template id="mock">
+<div class="app">
+  <aside class="rail">
+    <div class="brand"><span class="logo">VS</span><div><b>Video Studio</b><small>LESSON PRODUCTION</small></div></div>
+    <div class="nav on"><i></i>Dashboard</div>
+    <div class="nav"><i></i>Create</div>
+    <div class="nav"><i></i>Review</div>
+    <div class="nav"><i></i>Curriculum</div>
+  </aside>
+  <main class="main">
+    <div class="kick">WORKSPACE</div>
+    <h1>Lesson library</h1>
+    <button class="btn">+ New lesson</button>
+    <div class="tiles">
+      <div class="tile"><small>DRAFTS AWAITING REVIEW</small><b>1</b><span>educator decision pending</span></div>
+      <div class="tile"><small>GENERATING</small><b>1</b><span>job in flight</span></div>
+      <div class="tile"><small>APPROVED</small><b>4</b><span>cleared to share</span></div>
+      <div class="tile"><small>TOTAL LESSONS</small><b>9</b><span>briefs, drafts and exports</span></div>
+    </div>
+    <div class="kick">LIBRARY</div>
+    <div class="list">
+      <div class="row"><b>Teach place value to Grade 5 learners</b><span class="meta">Quality film · Oct 26 · 3:00</span><span class="chip ok"><i></i>Approved</span></div>
+      <div class="row"><b>Equivalent fractions with bar models</b><span class="meta">Classic · Oct 25 · 4:12</span><span class="chip warn"><i></i>Needs changes</span></div>
+      <div class="row"><b>Rounding to the nearest ten</b><span class="meta">Quality film · Oct 24 · 2:48</span><span class="chip err"><i></i>Failed</span></div>
+      <div class="row"><b>Tens and ones: grouping challenge</b><span class="meta">Open source · Oct 24 · 3:31</span><span class="chip warn"><i></i>Generating · 62%<div class="meter" style="width:70px;display:inline-block;vertical-align:middle;margin:0 0 0 8px"><div style="width:62%"></div></div></span></div>
+    </div>
+    <div class="timeline">
+      <div class="kick">PRODUCTION PIPELINE</div>
+      <div class="stage done"><span class="n">✓</span>Teaching plan<small>done · 1m 12s</small></div>
+      <div class="stage done"><span class="n">✓</span>Pedagogy critique<small>done · 48s</small></div>
+      <div class="stage cur"><span class="n">03</span>Narration<small>running · 14s</small></div>
+      <div class="stage pend"><span class="n">04</span>Purposeful animation<small>queued</small></div>
+      <div class="stage pend"><span class="n">05</span>Render<small>queued</small></div>
+      <div class="stage pend"><span class="n">06</span>Quality gates<small>queued</small></div>
+    </div>
+  </main>
+</div>
+</template>
+
+<div class="frame a on" id="fa"></div>
+<div class="frame b" id="fb"></div>
+<div class="frame c" id="fc"></div>
+<div class="frame d" id="fd"></div>
+
+<script src="theme-preview.js"></script>
+</body>
+</html>

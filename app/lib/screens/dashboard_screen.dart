@@ -10,8 +10,8 @@ import '../widgets/stage_timeline.dart';
 
 /// Production dashboard — the studio home.
 ///
-/// Queue health at a glance (stat strip), the live generation queue with
-/// per-stage progress, and the recent lesson list. Everything is fed by
+/// Queue health at a glance (metric strip), the live generation queue with
+/// per-stage progress, and the lesson library. Everything is fed by
 /// [jobsProvider], which keeps polling while work is in flight.
 class DashboardScreen extends ConsumerWidget {
   const DashboardScreen({super.key});
@@ -64,18 +64,18 @@ class _DashboardView extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const _Header(),
-              const SizedBox(height: 30),
+              const SizedBox(height: 28),
               if (jobs.isEmpty)
                 const _EmptyState()
               else ...[
-                _StatRow(
+                _MetricStrip(
                   total: jobs.length,
                   generating: active.length,
                   awaiting: awaiting,
                   approved: approved,
                 ),
                 if (active.isNotEmpty) ...[
-                  const SizedBox(height: 34),
+                  const SizedBox(height: 32),
                   _SectionHeader(
                     kicker: 'LIVE QUEUE',
                     title: 'Now generating',
@@ -87,10 +87,10 @@ class _DashboardView extends StatelessWidget {
                     const SizedBox(height: FairDimens.gap),
                   ],
                 ],
-                const SizedBox(height: 34),
+                const SizedBox(height: 32),
                 const _SectionHeader(kicker: 'LIBRARY', title: 'Recent lessons'),
                 const SizedBox(height: 14),
-                _RecentList(jobs: recent.take(10).toList()),
+                _LibraryList(jobs: recent.take(10).toList()),
               ],
             ],
           ),
@@ -100,40 +100,30 @@ class _DashboardView extends StatelessWidget {
   }
 }
 
-/// Kicker + headline + subtitle on the left, primary action on the right.
+/// Kicker + display headline on the left, primary action on the right.
 class _Header extends StatelessWidget {
   const _Header();
 
   @override
   Widget build(BuildContext context) {
     return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Kicker('OVERVIEW'),
+              const Kicker('WORKSPACE'),
               const SizedBox(height: 10),
-              Text('Production dashboard',
-                  style: Theme.of(context).textTheme.headlineMedium),
-              const SizedBox(height: 7),
-              const Text(
-                'Every lesson from brief to reviewed export.',
-                style: TextStyle(
-                    fontSize: 13.5, color: FairColors.muted, height: 1.45),
-              ),
+              Text('Lesson library', style: display(26)),
             ],
           ),
         ),
         const SizedBox(width: 24),
-        Padding(
-          padding: const EdgeInsets.only(top: 26),
-          child: FilledButton.icon(
-            onPressed: () => context.go('/create'),
-            icon: const Icon(Icons.add, size: 18),
-            label: const Text('New lesson'),
-          ),
+        FilledButton.icon(
+          onPressed: () => context.go('/create'),
+          icon: const Icon(Icons.add, size: 18),
+          label: const Text('New lesson'),
         ),
       ],
     );
@@ -172,9 +162,9 @@ class _SectionHeader extends StatelessWidget {
   }
 }
 
-/// Row of four stat cards; collapses to a 2×2 grid on narrow widths.
-class _StatRow extends StatelessWidget {
-  const _StatRow({
+/// Strip of four metric tiles; collapses to a 2×2 grid on narrow widths.
+class _MetricStrip extends StatelessWidget {
+  const _MetricStrip({
     required this.total,
     required this.generating,
     required this.awaiting,
@@ -187,16 +177,29 @@ class _StatRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cards = [
-      _StatCard(label: 'Lessons', value: total),
-      _StatCard(label: 'Generating', value: generating),
-      _StatCard(
-        label: 'Awaiting review',
+    final tiles = [
+      _MetricTile(
+        label: 'Drafts awaiting review',
         value: awaiting,
+        caption: 'educator decision pending',
         highlight: awaiting > 0,
         onTap: () => context.go('/review'),
       ),
-      _StatCard(label: 'Approved', value: approved),
+      _MetricTile(
+        label: 'Generating',
+        value: generating,
+        caption: 'jobs in flight',
+      ),
+      _MetricTile(
+        label: 'Approved',
+        value: approved,
+        caption: 'cleared to share',
+      ),
+      _MetricTile(
+        label: 'Total lessons',
+        value: total,
+        caption: 'briefs, drafts and exports',
+      ),
     ];
 
     return LayoutBuilder(
@@ -205,24 +208,24 @@ class _StatRow extends StatelessWidget {
           return Column(
             children: [
               Row(children: [
-                Expanded(child: cards[0]),
+                Expanded(child: tiles[0]),
                 const SizedBox(width: FairDimens.gap),
-                Expanded(child: cards[1]),
+                Expanded(child: tiles[1]),
               ]),
               const SizedBox(height: FairDimens.gap),
               Row(children: [
-                Expanded(child: cards[2]),
+                Expanded(child: tiles[2]),
                 const SizedBox(width: FairDimens.gap),
-                Expanded(child: cards[3]),
+                Expanded(child: tiles[3]),
               ]),
             ],
           );
         }
         return Row(
           children: [
-            for (var i = 0; i < cards.length; i++) ...[
+            for (var i = 0; i < tiles.length; i++) ...[
               if (i > 0) const SizedBox(width: FairDimens.gap),
-              Expanded(child: cards[i]),
+              Expanded(child: tiles[i]),
             ],
           ],
         );
@@ -231,17 +234,20 @@ class _StatRow extends StatelessWidget {
   }
 }
 
-/// Big-numeral metric card. [highlight] switches the numeral to amber
-/// (used for the awaiting-review count); [onTap] makes the card a target.
-class _StatCard extends StatelessWidget {
-  const _StatCard({
+/// Compact stat tile — kicker label, display numeral, muted caption.
+/// [highlight] switches the numeral to amber (used for the awaiting-review
+/// count); [onTap] makes the tile a target.
+class _MetricTile extends StatelessWidget {
+  const _MetricTile({
     required this.label,
     required this.value,
+    required this.caption,
     this.highlight = false,
     this.onTap,
   });
   final String label;
   final int value;
+  final String caption;
   final bool highlight;
   final VoidCallback? onTap;
 
@@ -256,37 +262,39 @@ class _StatCard extends StatelessWidget {
           type: MaterialType.transparency,
           child: InkWell(
             onTap: onTap,
+            hoverColor: FairColors.surfaceRaised,
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(20, 18, 20, 16),
+              padding: const EdgeInsets.fromLTRB(20, 16, 20, 15),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
-                    crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      AnimatedSwitcher(
-                        duration: const Duration(milliseconds: 200),
-                        child: Text(
-                          '$value',
-                          key: ValueKey(value),
-                          style: TextStyle(
-                            fontSize: 30,
-                            fontWeight: FontWeight.w700,
-                            letterSpacing: -1,
-                            height: 1,
-                            color: numeralColor,
-                            fontFeatures: const [FontFeature.tabularFigures()],
-                          ),
-                        ),
-                      ),
-                      const Spacer(),
-                      if (onTap != null)
+                      Expanded(child: Kicker(label, color: FairColors.muted)),
+                      if (onTap != null) ...[
+                        const SizedBox(width: 8),
                         const Icon(Icons.arrow_forward,
-                            size: 15, color: FairColors.muted),
+                            size: 14, color: FairColors.muted),
+                      ],
                     ],
                   ),
-                  const SizedBox(height: 9),
-                  Kicker(label, color: FairColors.muted),
+                  const SizedBox(height: 12),
+                  AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 200),
+                    child: Text(
+                      '$value',
+                      key: ValueKey(value),
+                      style: display(24, numeralColor),
+                    ),
+                  ),
+                  const SizedBox(height: 5),
+                  Text(
+                    caption,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                        fontSize: 11.5, color: FairColors.muted),
+                  ),
                 ],
               ),
             ),
@@ -305,6 +313,7 @@ class _ActiveJobCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final pct = job.isReady ? 100 : job.progress.clamp(0, 100);
     return Container(
       decoration: fairCard(),
       child: ClipRRect(
@@ -313,6 +322,7 @@ class _ActiveJobCard extends StatelessWidget {
           type: MaterialType.transparency,
           child: InkWell(
             onTap: () => context.go('/jobs/${job.id}'),
+            hoverColor: FairColors.surfaceRaised,
             child: Padding(
               padding: const EdgeInsets.fromLTRB(22, 18, 22, 20),
               child: Column(
@@ -330,8 +340,7 @@ class _ActiveJobCard extends StatelessWidget {
                       ),
                       const SizedBox(width: 12),
                       Text(versionLabel,
-                          style: const TextStyle(
-                              fontSize: 11, color: FairColors.muted)),
+                          style: mono(10.5, FairColors.muted)),
                       const SizedBox(width: 10),
                       StatusChip(job.status),
                     ],
@@ -339,7 +348,35 @@ class _ActiveJobCard extends StatelessWidget {
                   const SizedBox(height: 14),
                   StageTimeline(job: job, compact: true),
                   const SizedBox(height: 14),
-                  JobProgressBar(job: job),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          job.isReady
+                              ? 'Ready for review'
+                              : (job.message.isNotEmpty
+                                  ? job.message
+                                  : 'Working…'),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                              fontSize: 12, color: FairColors.inkSoft),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Text('$pct%',
+                          style: mono(11.5, FairColors.ink, FontWeight.w700)),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  MeterBar(
+                    value: pct / 100,
+                    color: job.status == 'failed'
+                        ? FairColors.error
+                        : job.isReady
+                            ? FairColors.accent
+                            : FairColors.amber,
+                  ),
                 ],
               ),
             ),
@@ -350,9 +387,9 @@ class _ActiveJobCard extends StatelessWidget {
   }
 }
 
-/// One rounded card holding the recent-lesson rows, separated by dividers.
-class _RecentList extends StatelessWidget {
-  const _RecentList({required this.jobs});
+/// One flat panel holding the dense lesson rows, separated by dividers.
+class _LibraryList extends StatelessWidget {
+  const _LibraryList({required this.jobs});
   final List<Job> jobs;
 
   @override
@@ -367,7 +404,7 @@ class _RecentList extends StatelessWidget {
             children: [
               for (var i = 0; i < jobs.length; i++) ...[
                 if (i > 0) const Divider(height: 1),
-                _RecentRow(job: jobs[i]),
+                _LibraryRow(job: jobs[i]),
               ],
             ],
           ),
@@ -377,49 +414,59 @@ class _RecentList extends StatelessWidget {
   }
 }
 
-class _RecentRow extends StatelessWidget {
-  const _RecentRow({required this.job});
+/// A dense, table-like library row — title left, right-aligned mono metadata,
+/// status chip and chevron. Hover lifts the row to `surfaceRaised`.
+class _LibraryRow extends StatelessWidget {
+  const _LibraryRow({required this.job});
   final Job job;
+
+  /// Target runtime from the brief, formatted `m:ss` — null when absent.
+  static String? _targetDuration(Job job) {
+    final t = job.brief['targetSeconds'];
+    if (t is! num || t <= 0) return null;
+    final seconds = t.round();
+    return '${seconds ~/ 60}:${(seconds % 60).toString().padLeft(2, '0')}';
+  }
 
   @override
   Widget build(BuildContext context) {
     final decision = job.review?.decision;
     final chip = (decision != null && decision.isNotEmpty) ? decision : job.status;
     final date = job.updatedAt ?? job.createdAt;
-    final version =
-        job.generationVersion == 'open-source' ? 'Open source' : 'Classic';
-    final meta =
-        '$version${date == null ? '' : ' · ${DateFormat.MMMd().format(date.toLocal())}'}';
+    final dateLabel =
+        date == null ? null : DateFormat.MMMd().format(date.toLocal());
+    final meta = [
+      _DashboardView._versionLabel(job),
+      ?dateLabel,
+      ?_targetDuration(job),
+    ].join(' · ');
 
     return InkWell(
       onTap: () => context.go('/jobs/${job.id}'),
+      hoverColor: FairColors.surfaceRaised,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 13),
         child: Row(
           children: [
             Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    job.title,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                        fontSize: 13.5,
-                        fontWeight: FontWeight.w600,
-                        color: FairColors.ink),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(meta,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                          fontSize: 11.5, color: FairColors.muted)),
-                ],
+              child: Text(
+                job.title,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                    fontSize: 13.5,
+                    fontWeight: FontWeight.w600,
+                    color: FairColors.ink),
               ),
             ),
             const SizedBox(width: 16),
+            Text(
+              meta,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: mono(10.5, FairColors.muted),
+            ),
+            const SizedBox(width: 14),
             StatusChip(chip),
             const SizedBox(width: 6),
             const Icon(Icons.chevron_right, size: 18, color: FairColors.muted),
@@ -439,61 +486,53 @@ class _EmptyState extends StatelessWidget {
     return Container(
       width: double.infinity,
       decoration: fairCard(),
-      padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 64),
-      child: Column(
-        children: [
-          Container(
-            width: 60,
-            height: 60,
-            decoration: const BoxDecoration(
-                color: FairColors.accentSoft, shape: BoxShape.circle),
-            child: const Icon(Icons.movie_creation_outlined,
-                size: 27, color: FairColors.accent),
-          ),
-          const SizedBox(height: 18),
-          Text('No lessons yet', style: Theme.of(context).textTheme.titleLarge),
-          const SizedBox(height: 8),
-          ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 430),
-            child: const Text(
-              'Write a teaching brief and the pipeline takes it from plan to '
-              'narration, render and quality gates — ready for educator review.',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                  fontSize: 12.5, color: FairColors.muted, height: 1.55),
-            ),
-          ),
-          const SizedBox(height: 22),
-          FilledButton.icon(
-            onPressed: () => context.go('/create'),
-            icon: const Icon(Icons.add, size: 18),
-            label: const Text('Create your first lesson'),
-          ),
-        ],
+      child: EmptyState(
+        icon: Icons.movie_creation_outlined,
+        title: 'No lessons yet',
+        body:
+            'Describe a lesson and the studio will plan, narrate, animate and '
+            'render a draft for review.',
+        action: FilledButton.icon(
+          onPressed: () => context.go('/create'),
+          icon: const Icon(Icons.add, size: 18),
+          label: const Text('Create the first lesson'),
+        ),
       ),
     );
   }
 }
 
+/// Loading placeholder — a console panel with a live progress trace rather
+/// than a bare spinner.
 class _LoadingState extends StatelessWidget {
   const _LoadingState({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          SizedBox(
-            width: 26,
-            height: 26,
-            child: CircularProgressIndicator(
-                strokeWidth: 2.4, color: FairColors.accent),
-          ),
-          SizedBox(height: 14),
-          Text('Loading studio…',
-              style: TextStyle(fontSize: 12.5, color: FairColors.muted)),
-        ],
+    return Center(
+      child: Container(
+        width: 420,
+        margin: const EdgeInsets.symmetric(horizontal: 24),
+        padding: const EdgeInsets.fromLTRB(24, 22, 24, 24),
+        decoration: fairCard(),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Kicker('WORKSPACE'),
+            const SizedBox(height: 14),
+            Text('Loading lesson library…',
+                style: display(18, FairColors.ink, FontWeight.w600)),
+            const SizedBox(height: 6),
+            const Text('Fetching jobs from the studio.',
+                style: TextStyle(fontSize: 12, color: FairColors.muted)),
+            const SizedBox(height: 18),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(2),
+              child: const LinearProgressIndicator(minHeight: 4),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -507,39 +546,16 @@ class _ErrorState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 400),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: 52,
-              height: 52,
-              decoration: const BoxDecoration(
-                  color: FairColors.errorBg, shape: BoxShape.circle),
-              child: const Icon(Icons.cloud_off_outlined,
-                  size: 24, color: FairColors.error),
-            ),
-            const SizedBox(height: 16),
-            Text('Studio unreachable',
-                style: Theme.of(context).textTheme.titleLarge),
-            const SizedBox(height: 8),
-            Text(
-              '$error',
-              textAlign: TextAlign.center,
-              maxLines: 3,
-              overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
-                  fontSize: 12.5, color: FairColors.muted, height: 1.5),
-            ),
-            const SizedBox(height: 20),
-            FilledButton.icon(
-              onPressed: onRetry,
-              icon: const Icon(Icons.refresh, size: 17),
-              label: const Text('Try again'),
-            ),
-          ],
+    return Padding(
+      padding: const EdgeInsets.all(24),
+      child: EmptyState(
+        icon: Icons.cloud_off_outlined,
+        title: 'Studio unreachable',
+        body: '$error',
+        action: FilledButton.icon(
+          onPressed: onRetry,
+          icon: const Icon(Icons.refresh, size: 17),
+          label: const Text('Try again'),
         ),
       ),
     );

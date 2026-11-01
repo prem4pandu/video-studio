@@ -30,16 +30,15 @@ export async function fairQwenProfile(env = process.env) {
   return { id: profile.id || 'teacher', instruct: profile.instruct.trim(), seed };
 }
 
-// Qwen3-TTS VoiceDesign runs locally through MLX on Apple Silicon. Each phrase
-// is synthesized separately with a re-seeded generator for a consistent speaker;
-// phrase boundaries are measured, word positions are estimated.
+// Keep a scene continuous so sentence joins do not reset the speaker and prosody.
+// Phrase synthesis remains an explicit compatibility option; word timing is estimated.
 export async function fairQwenSpeech(text, voice, source, { env = process.env, signal } = {}) {
   const paths = fairQwenPaths(env);
   try { await access(paths.python); await access(join(paths.modelDir, 'config.json')); }
   catch { throw new Error('Qwen3-TTS VoiceDesign is not installed. Run scripts/setup-voice.mjs --check, or set FAIR_QWEN_PYTHON and FAIR_QWEN_MODEL_DIR.'); }
-  const profile = await fairQwenProfile(env);
+  const profile = voice.profile || await fairQwenProfile(env);
   const requestFile = `${source}.request.json`, timingFile = `${source}.timing.json`;
-  await writeFile(requestFile, JSON.stringify({ ...paths, phrases: fairSpeechPhrases(text), instruct: profile.instruct, seed: profile.seed, output: source, timing: timingFile }));
+  await writeFile(requestFile, JSON.stringify({ ...paths, phrases: voice.synthesisUnit === 'phrase' ? fairSpeechPhrases(text) : [text], instruct: profile.instruct, seed: profile.seed, output: source, timing: timingFile }));
   const python = `import json,sys,numpy as np,soundfile as sf
 import mlx.core as mx
 from mlx_audio.tts.utils import load_model
