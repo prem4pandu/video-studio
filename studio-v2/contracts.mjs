@@ -29,6 +29,7 @@ export function validatePlan(raw,brief) {
   if(s.kind!=='question'&&s.pauseSeconds>1)throw new Error('Long thinking pauses are only for questions.');
  }
  if(plan.mode==='learning'&&!plan.scenes.some(s=>s.kind==='question'))throw new Error('Learning videos need a concrete question followed by an explained answer.');
+ for(const s of plan.scenes)if(['flow','comparison','orbit'].includes(s.kind)&&s.labels.length<2)throw new Error(`${s.kind} ${s.id} needs 2–4 short labels describing the visual steps; empty labels leave an empty diagram.`);
  if(plan.mode!=='story'&&new Set(plan.scenes.map(s=>s.kind)).size<3)throw new Error('Use at least three meaningful visual kinds.');
  for(const c of plan.mathClaims)checkClaim(c.left,c.right,'Video plan');
  const wordCount=plan.scenes.reduce((n,s)=>n+s.narration.split(/\s+/).length,0);
