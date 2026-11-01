@@ -56,14 +56,47 @@ after(async () => {
   if (root) await rm(root, { recursive: true, force: true });
 });
 
+test('bulk requests are rejected before creating any jobs', async () => {
+  const count = store.list().length;
+  for (const input of [{ all: true }, { unitId: 's5-place-value' }, { topicIds: ['s5-pv-rounding', 's5-sp-likelihood'] }]) {
+    const response = await http('/api/batch', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(input) });
+    assert.equal(response.status, 409);
+    assert.match(JSON.parse(response.body).error, /Bulk generation is paused/);
+    assert.equal(store.list().length, count);
+  }
+});
+
 test('cross-site top-level navigation serves the studio with browser security headers', async () => {
   const response = await http('/', { headers: { 'sec-fetch-site': 'cross-site', 'sec-fetch-mode': 'navigate', 'sec-fetch-dest': 'document' } });
   assert.equal(response.status, 200);
   assert.match(response.headers['content-type'], /^text\/html/);
   assert.match(response.body.toString(), /Video Studio/);
+  assert.match(response.body.toString(), /\/app\/assets\/studio\.js/);
+  const bundle = await http('/app/assets/studio.js');
+  assert.equal(bundle.status, 200);
+  assert.match(bundle.headers['content-type'], /^text\/javascript/);
+  assert.match(bundle.body.toString(), /Create a lesson film/);
   assert.equal(response.headers['x-content-type-options'], 'nosniff');
   assert.match(response.headers['content-security-policy'], /frame-ancestors 'none'/);
   assert.equal(response.headers['access-control-allow-origin'], undefined);
+});
+
+test('UI decision templates and their local assets are served without weakening CSP', async () => {
+  const [page, styles, script] = await Promise.all([
+    http('/ui-templates.html'),
+    http('/ui-templates.css'),
+    http('/ui-templates.mjs'),
+  ]);
+  assert.equal(page.status, 200);
+  assert.match(page.headers['content-type'], /^text\/html/);
+  assert.match(page.body.toString(), /Production console/);
+  assert.match(page.body.toString(), /Storyboard canvas/);
+  assert.match(page.body.toString(), /Guided studio/);
+  assert.equal(styles.status, 200);
+  assert.match(styles.headers['content-type'], /^text\/css/);
+  assert.equal(script.status, 200);
+  assert.match(script.headers['content-type'], /javascript/);
+  assert.match(page.headers['content-security-policy'], /style-src 'self'/);
 });
 
 test('cross-site API reads and writes are denied before any work starts', async () => {
@@ -203,7 +236,8 @@ test('planning remains available when local voice dependencies are missing; paid
     command: async () => ({ stdout: '', stderr: '' }), fileStat: async () => { throw new Error('Fixture files absent'); },
   });
   assert.equal(value.providers.find(option => option.id === 'local').available, true);
-  assert.equal(value.defaults.voiceProvider, 'qwentts');
+  assert.equal(value.defaults.voiceProvider, 'say');
+  assert.equal(value.capabilities.narration.available, true);
   assert.equal(value.voiceOptions.find(option => option.id === 'qwentts').available, false);
   assert.equal(value.voiceOptions.find(option => option.id === 'piper').available, false);
   assert.equal(value.voiceOptions.find(option => option.id === 'kokoro').available, false);

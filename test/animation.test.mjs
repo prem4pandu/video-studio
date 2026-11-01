@@ -107,3 +107,35 @@ test('film composition registers matching subscene timelines, isolates question 
     assert.ok(composition.captions.every(caption => caption.end > caption.start));
   } finally { await rm(directory, { recursive: true, force: true }); }
 });
+
+test('quality mode always uses the approved teaching-film treatment for non-base-ten scenes', async () => {
+  const directory = await mkdtemp(join(tmpdir(), 'fair-quality-film-'));
+  try {
+    const qualityScene = {
+      id: 'quality-step', title: 'Focus on the clue', beat: 'concept',
+      narration: 'Look at the clue and connect it to the main idea.', pauseSeconds: 0,
+      visual: { kind: 'steps', label: 'One visible teaching action', items: ['Connect the clue to the idea.'] },
+    };
+    const qualityTrack = { sceneId: qualityScene.id, file: 'audio/quality.wav', durationSeconds: 4, envelope: [] };
+    const composition = await fairCompose(
+      { title: 'Quality film', audience: 'Primary', scenes: [qualityScene] },
+      [qualityTrack],
+      { avatar: 'mira', generationVersion: 'quality' },
+      directory,
+    );
+
+    assert.equal(composition.animation.type, 'koobits-approved-v2');
+    assert.equal(composition.animation.source, 'approved proof port');
+    assert.equal(composition.qualityProof.treatment, 'approved-proof-port-v2');
+    assert.equal(composition.qualityProof.nativeCanvas, '1920x1080');
+    assert.equal(composition.qualityProof.semanticTargets, true);
+    assert.equal(composition.qualityProof.progressiveReveal, true);
+    const child = await readFile(join(directory, 'scenes', 'quality-step.html'), 'utf8');
+    assert.match(child, /class="film-frame quality-film/);
+    assert.match(child, /class="attention-pointer"/);
+    assert.match(child, /LEARNING GOAL/);
+    assert.match(child, /data-quality-target/);
+    assert.match(child, /getBoundingClientRect/);
+    assert.match(child, /width:1920px;height:1080px;transform:none/);
+  } finally { await rm(directory, { recursive: true, force: true }); }
+});

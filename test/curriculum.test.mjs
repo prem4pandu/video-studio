@@ -44,6 +44,8 @@ test('topic compilation produces a scoped, reviewable brief', async () => {
   assert.match(brief.text, /Scope:/);
   assert.match(brief.curriculumSource, /cambridgeinternational\.org/);
   assert.equal(brief.targetSeconds, 260);
+  assert.equal(brief.generationVersion, 'quality');
+  assert.equal(fairTopicBrief(found, { generationVersion: 'classic' }).generationVersion, 'classic');
 });
 
 test('loader rejects malformed trees and unknown prerequisites', async t => {

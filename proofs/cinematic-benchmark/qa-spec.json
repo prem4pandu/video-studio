@@ -1,0 +1,53 @@
+{
+  "revision": 1,
+  "durationSeconds": 5,
+  "durationToleranceSeconds": 0.1,
+  "allowedFrameRates": [24, 30],
+  "minimumWidth": 1280,
+  "minimumHeight": 704,
+  "requireAudio": false,
+  "maximumFreezeSeconds": 0.125,
+  "maximumBlackSeconds": 0.0834,
+  "referenceImage": "assets/reference/mira-brass-workshop-v1.png",
+  "identity": {
+    "medianCosineMinimum": 0.55,
+    "fifthPercentileMinimum": 0.45,
+    "singleFrameMinimum": 0.4,
+    "maximumConsecutiveDrop": 0.12
+  },
+  "continuity": {
+    "maximumLandmarkTravelFrameDiagonal": 0.15,
+    "maximumBoneLengthCoefficientVariation": 0.12,
+    "minimumRequiredHandDetectionRate": 0.9
+  },
+  "generatedText": {
+    "allowed": []
+  },
+  "immediateReject": [
+    "face, costume, or age drift",
+    "visible extra or missing fingers",
+    "fused hand and lever",
+    "sliding feet",
+    "object appearance or disappearance without cause",
+    "background geometry warping",
+    "generated words or numerals",
+    "random camera movement",
+    "unmotivated lighting change",
+    "visible flicker",
+    "teaching action obscured"
+  ],
+  "humanMinimumsOutOfFive": {
+    "approvedIdentity": 5,
+    "faceHandsBodyAnatomy": 5,
+    "physicalAction": 4,
+    "contact": 4,
+    "expression": 4,
+    "camera": 4,
+    "focalHierarchy": 4,
+    "lighting": 4,
+    "subjectSeparation": 4,
+    "artDirection": 4,
+    "publishableAnimatedShort": 5
+  },
+  "minimumNormalizedHumanScore": 85
+}

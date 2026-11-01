@@ -10,7 +10,6 @@ node_modules/
 .fair-open
 __pycache__/
 *.pyc
-
 # Strata local model runtime (config copy + server log)
 .strata/
 
@@ -20,3 +19,8 @@ outputs/
 
 # Pinned OpenMontage source and isolated Python runtime
 .openmontage/
+
+# HyperFrames build state and generated workspaces
+.hyperframes/
+**/.hyperframes/
+**/work-*/

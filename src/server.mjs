@@ -17,7 +17,15 @@ import { fairLmStudioModels } from './lmstudio.mjs';
 import { fairLoadDemoLearningSession } from './learning-session.mjs';
 
 const appDir = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const staticFiles = new Map([['/', 'index.html'], ['/index.html', 'index.html'], ['/curriculum.html', 'curriculum.html'], ['/lesson.html', 'lesson.html'], ['/ui-templates.html', 'ui-templates.html'], ['/studio.css', 'studio.css'], ['/studio.mjs', 'studio.mjs'], ['/curriculum.css', 'curriculum.css'], ['/curriculum.mjs', 'curriculum.mjs'], ['/ui-templates.css', 'ui-templates.css'], ['/ui-templates.mjs', 'ui-templates.mjs'], ['/lesson.css', 'lesson.css'], ['/fraction.css', 'fraction.css'], ['/lesson.mjs', 'lesson.mjs']]);
+const staticFiles = new Map([
+  ['/', 'app/index.html'], ['/index.html', 'app/index.html'], ['/legacy.html', 'index.html'],
+  ['/app/assets/studio.js', 'app/assets/studio.js'], ['/app/assets/studio.css', 'app/assets/studio.css'],
+  ['/curriculum.html', 'curriculum.html'], ['/lesson.html', 'lesson.html'], ['/ui-templates.html', 'ui-templates.html'],
+  ['/studio.css', 'studio.css'], ['/studio.mjs', 'studio.mjs'], ['/fair-studio.mjs', 'fair-studio.mjs'], ['/curriculum.css', 'curriculum.css'],
+  ['/curriculum.mjs', 'curriculum.mjs'], ['/ui-templates.css', 'ui-templates.css'], ['/ui-templates.mjs', 'ui-templates.mjs'],
+  ['/lesson.css', 'lesson.css'], ['/fraction.css', 'fraction.css'], ['/lesson.mjs', 'lesson.mjs'],
+  ['/fair-studio.css', 'fair-studio.css'], ['/fair-curriculum.css', 'fair-curriculum.css'],
+]);
 const assetFiles = new Map([
   ['/assets/pip-sprites.png', 'pip-sprites.png'],
   ['/assets/voice-sample.wav', 'voice-sample.wav'],
@@ -109,7 +117,10 @@ export async function fairServerConfig(env, { fetchImpl = fetch, command = fairC
       description: env.OPENAI_API_KEY ? 'API key configured; account access is verified during generation. Narration is sent to OpenAI.' : 'Set OPENAI_API_KEY for paid narration.' },
     { id: 'say', name: 'System voice · draft', quality: 'system', available: process.platform === 'darwin', description: 'macOS system speech for drafts. Word timing is estimated.' },
   ];
-  const voiceProvider = env.FAIR_TTS_PROVIDER || 'qwentts', selectedVoice = voiceOptions.find(option => option.id === voiceProvider);
+  const requestedVoiceProvider = env.FAIR_TTS_PROVIDER || 'qwentts';
+  const requestedVoice = voiceOptions.find(option => option.id === requestedVoiceProvider);
+  const selectedVoice = requestedVoice?.available ? requestedVoice : voiceOptions.find(option => ['qwentts', 'piper', 'kokoro', 'say'].includes(option.id) && option.available) || requestedVoice;
+  const voiceProvider = selectedVoice?.id || requestedVoiceProvider;
   let openKokoro = kokoro;
   try { fairOpenEnvironment(env, { voiceProvider: 'kokoro' }); } catch { openKokoro = false; }
   for (const voice of voiceOptions) voice.openSourceAvailable = voice.id === 'piper' ? piper : voice.id === 'kokoro' ? openKokoro : voice.id === 'qwentts' ? qwen : false;
@@ -221,6 +232,7 @@ export function fairCreateServer(store, { env = process.env, v2Store } = {}) {
         if (input.all === true) topicIds = index.map(item => item.topicId);
         else if (typeof input.unitId === 'string') topicIds = index.filter(item => item.unitId === input.unitId).map(item => item.topicId);
         else if (Array.isArray(input.topicIds)) topicIds = [...new Set(input.topicIds.filter(value => typeof value === 'string'))].slice(0, 200);
+        if (input.all === true || typeof input.unitId === 'string' || topicIds.length > 1) throw Object.assign(new Error('Bulk generation is paused. Select one lesson and review its teaching film first.'), { statusCode: 409 });
         if (input.onlyPending === true) {
           const done = new Set(fairCurriculumCoverage(index, store.list())
             .filter(entry => entry.jobs.some(job => job.status === 'completed'))

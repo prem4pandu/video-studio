@@ -1,7 +1,7 @@
 const $ = (id) => document.getElementById(id);
 const fairWorkspace = new URL('.', import.meta.url);
 const fairUrl = (path) => new URL(path.replace(/^\//, ''), fairWorkspace).href;
-const state = { jobs: [], selected: null, config: null, timer: null, revision: '', resultKey: '', capabilityWarning: '', generationVersion: 'classic', provider: 'local', voiceProvider: '', providerModels: {}, promptCache: new Map(), promptLoading: new Set() };
+const state = { jobs: [], selected: null, config: null, timer: null, revision: '', resultKey: '', capabilityWarning: '', generationVersion: 'quality', provider: 'local', voiceProvider: '', providerModels: {}, promptCache: new Map(), promptLoading: new Set() };
 let playbackAttempt = 0, playerFeedbackActive = false;
 const stages = [['plan', 'Plan'], ['review', 'Check content'], ['narration', 'Narrate'], ['composition', 'Animate'], ['render', 'Render'], ['verify', 'Verify export']];
 const pipelineCatalog = {
@@ -11,7 +11,6 @@ const pipelineCatalog = {
   footage: { label: 'Generate footage', description: 'Creates a short cinematic establishing shot while exact teaching graphics stay deterministic.', output: 'Wan footage' },
   composition: { label: 'Purposeful animation', description: 'Synchronizes teaching visuals, captions, gestures, and protected learner thinking time.', output: 'Timed composition' },
   render: { label: 'Render', description: 'Combines scenes, narration, captions, and transitions into the final lesson video.', output: 'MP4 export' },
-  audio: { label: 'Sound mix', description: 'Mixes the music bed, teaching sounds, and narration under the voice.', output: 'Mixed audio' },
   verify: { label: 'Quality gates', description: 'Measures the export, checks audio and captions, and verifies objective coverage.', output: 'Quality report' },
   educator: { label: 'Educator review', description: 'A teacher checks subject accuracy, suitability, pacing, and curriculum fit before sharing.', output: 'Human decision', manual: true },
 };
@@ -33,11 +32,7 @@ function safeArtifact(value) {
 async function api(path, options = {}) {
   const response = await fetch(fairUrl(path), { ...options, headers: { 'Content-Type': 'application/json', ...options.headers } });
   const data = await response.json().catch(() => ({}));
-  if (!response.ok) {
-    const error = new Error(typeof data.error === 'string' ? data.error : data.error?.message || data.message || `Request failed (${response.status}).`);
-    error.status = response.status;
-    throw error;
-  }
+  if (!response.ok) throw new Error(typeof data.error === 'string' ? data.error : data.error?.message || data.message || `Request failed (${response.status}).`);
   return data;
 }
 function notice(message) { $('connection-notice').textContent = message; $('connection-notice').hidden = !message; }
@@ -87,7 +82,7 @@ const openSource = () => state.generationVersion === 'open-source';
 const qualityGeneration = () => state.generationVersion === 'quality';
 const localPlanner = () => ['local', 'lmstudio'].includes(state.provider);
 const modelKey = () => `${state.generationVersion}:${state.provider}`;
-function generationVersions() { return state.config?.generationVersions || [{ id: 'classic', name: 'Classic · illustrated lessons', available: true, description: 'Illustrated lessons with the existing animation studio.' }]; }
+function generationVersions() { return state.config?.generationVersions || [{ id: 'quality', name: 'KooBits-inspired teaching film', available: false, description: 'Waiting for pipeline readiness checks.' }]; }
 function recommendedVersion() {
   const versions = generationVersions();
   return versions.find((version) => version.recommended) || versions.find((version) => version.id === 'quality') || versions.find((version) => version.id === state.config?.defaults?.generationVersion) || versions.find((version) => version.available !== false) || versions[0];
@@ -96,23 +91,17 @@ function generationName(job) {
   const id = job.brief?.generationVersion || job.generationVersion || 'classic';
   return generationVersions().find((version) => version.id === id)?.name || (id === 'open-source' ? 'Open source' : 'Classic');
 }
-function pipelineSteps(version, { footage = false, audio = false } = {}) {
-  let steps;
-  if (Array.isArray(version?.stages) && version.stages.length) {
-    steps = version.stages.map((stage, index) => typeof stage === 'string' ? { id: `stage-${index}`, label: stage, description: 'A configured generation stage.', output: 'Reviewable artifact' } : { ...stage, label: stage.label || stage.name || stage.id }).filter(stage => stage.label);
-  } else {
-    const mix = audio ? ['audio'] : [];
-    const ids = version?.id === 'open-source'
-      ? ['plan', 'review', 'narration', 'footage', 'composition', 'render', ...mix, 'verify', 'educator']
-      : ['plan', 'review', 'narration', 'composition', 'render', ...mix, 'verify', 'educator'];
-    steps = ids.map(id => ({ id, ...pipelineCatalog[id] }));
-  }
-  if (!footage) steps = steps.filter(stage => stage.id !== 'footage');
+function pipelineSteps(version) {
+  if (Array.isArray(version?.stages) && version.stages.length) return version.stages.map((stage, index) => typeof stage === 'string' ? { id: `stage-${index}`, label: stage, description: 'A configured generation stage.', output: 'Reviewable artifact' } : { ...stage, label: stage.label || stage.name || stage.id }).filter(stage => stage.label);
+  const ids = version?.id === 'open-source'
+    ? ['plan', 'review', 'narration', 'footage', 'composition', 'render', 'verify', 'educator']
+    : ['plan', 'review', 'narration', 'composition', 'render', 'verify', 'educator'];
+  const steps = ids.map(id => ({ id, ...pipelineCatalog[id] }));
   if (version?.id === 'classic') {
-    if (steps[1]) steps[1] = { ...steps[1], label: 'Content check', description: 'Checks the lesson structure, calculations, questions, and answers before production.' };
-    if (steps[3]) steps[3] = { ...steps[3], label: 'Illustrated animation', description: 'Builds the existing illustrated scenes and aligns them to the narration.' };
+    steps[1] = { ...steps[1], label: 'Content check', description: 'Checks the lesson structure, calculations, questions, and answers before production.' };
+    steps[3] = { ...steps[3], label: 'Illustrated animation', description: 'Builds the existing illustrated scenes and aligns them to the narration.' };
   } else if (version?.id === 'quality') {
-    if (steps[3]) steps[3] = { ...steps[3], label: 'Approved proof-derived teaching film', description: 'Uses the confirmed native 1080p lesson canvas, narration-anchored staged reveals, semantic attention targets, captions, and protected learner thinking time.' };
+    steps[3] = { ...steps[3], label: 'Approved proof-derived teaching film', description: 'Uses the confirmed native 1080p lesson canvas, narration-anchored staged reveals, semantic attention targets, captions, and protected learner thinking time.' };
   }
   return steps;
 }
@@ -135,7 +124,7 @@ function renderPipelineTransparency() {
   $('pedagogy-summary').textContent = version?.pedagogySummary || (qualityGeneration() ? 'A worked example, protected think time, guided practice, independent transfer, and explicit misconception repair shape the lesson before rendering.' : 'The lesson plan uses objectives, worked examples, learner practice, and an educator review point.');
   $('teaching-pattern').textContent = version?.teachingPattern || (qualityGeneration() ? 'Explain, model, practise, transfer' : 'Objective-led lesson sequence');
   $('quality-target').textContent = version?.qualityTarget || (qualityGeneration() ? 'Pedagogy and export gates' : 'Automated export checks');
-  $('pipeline-preview').replaceChildren(...pipelineSteps(version, { footage: openSource() && $('footage')?.value === 'wan', audio: $('audio')?.value === 'music' }).map((stage, index) => {
+  $('pipeline-preview').replaceChildren(...pipelineSteps(version).map((stage, index) => {
     const item = el('li');
     item.append(el('span', stage.manual ? 'Review' : String(index + 1).padStart(2, '0'), 'pipeline-number'), el('strong', stage.label), el('p', stage.description), el('span', stage.output, 'pipeline-output'));
     return item;
@@ -145,7 +134,7 @@ function renderPipelineTransparency() {
   const voice = selectedVoice();
   const versionReady = version?.available !== false;
   const providerReady = Boolean(provider?.available);
-  const voiceReady = openSource() ? voiceAvailable(voice) : !state.config?.voiceOptions?.length || voiceAvailable(voice);
+  const voiceReady = openSource() ? ['piper', 'kokoro'].includes(voice?.id) && voiceAvailable(voice) : !state.config?.voiceOptions?.length || voiceAvailable(voice);
   $('setup-list').replaceChildren();
   addSetupItem('Generation path', versionReady ? `${version?.name || 'Selected path'} is available.` : `${version?.name || 'Selected path'} needs configuration.`, versionReady, 'Review the setup details above.');
   addSetupItem('Lesson planner', providerReady ? `${provider?.name || 'Planner'} is connected.` : `${provider?.name || 'Planner'} is not configured.`, providerReady, provider?.description || 'Choose an available planner.');
@@ -173,12 +162,6 @@ function renderGenerationVersion() {
   }
   $('instructor-field').hidden = openSource();
   $('instructor-field').disabled = openSource();
-  $('presentation-field').hidden = openSource();
-  $('presentation-field').disabled = openSource();
-  if (openSource()) { $('intro').value = 'none'; $('audio').value = 'voice'; }
-  $('footage-field').hidden = !openSource();
-  $('footage-field').disabled = !openSource();
-  if (!openSource()) $('footage').value = 'none';
   $('generate').textContent = qualityGeneration() ? 'Generate quality lesson →' : 'Generate lesson →';
   notice(openSource() ? '' : state.capabilityWarning);
   renderProviders(false);
@@ -192,7 +175,7 @@ function selectedVoice() { return state.config?.voiceOptions?.find((voice) => vo
 function voiceAvailable(voice) { return Boolean(voice?.available && (!openSource() || voice.openSourceAvailable !== false)); }
 function paidVoice() { return ['openai', 'elevenlabs'].includes(selectedVoice()?.id); }
 function canGenerate() {
-  const voiceReady = openSource() ? voiceAvailable(selectedVoice()) : !state.config?.voiceOptions?.length || voiceAvailable(selectedVoice());
+  const voiceReady = openSource() ? ['piper', 'kokoro'].includes(selectedVoice()?.id) && voiceAvailable(selectedVoice()) : !state.config?.voiceOptions?.length || voiceAvailable(selectedVoice());
   return Boolean(generationVersions().find((version) => version.id === state.generationVersion)?.available && (openSource() || state.config?.avatars?.length) && providers().find((provider) => provider.id === state.provider)?.available && voiceReady);
 }
 function updateVoice() {
@@ -209,7 +192,7 @@ function updateVoice() {
   renderPipelineTransparency();
 }
 function renderVoiceOptions(provider) {
-  const voices = (state.config?.voiceOptions || []).filter((voice) => !openSource() || voice.openSourceAvailable !== false);
+  const voices = (state.config?.voiceOptions || []).filter((voice) => !openSource() || ['piper', 'kokoro'].includes(voice.id));
   $('voice-field').hidden = !voices.length && !openSource();
   $('voice-provider').replaceChildren(...voices.map((voice) => {
     const available = voiceAvailable(voice);
@@ -220,14 +203,14 @@ function renderVoiceOptions(provider) {
   $('voice-provider').value = preferred?.id || '';
   state.voiceProvider = $('voice-provider').value;
   updateVoice();
-  if (openSource() && !voices.length) $('voice-status').textContent = 'Set up a local open-source narrator before generating.';
+  if (openSource() && !voices.length) $('voice-status').textContent = 'Set up a local Piper or Kokoro narrator before generating.';
 }
 function selectProvider(id, remember = true) {
   if (remember && state.provider && $('model').value.trim()) state.providerModels[modelKey()] = $('model').value.trim();
   state.provider = id;
   const provider = providers().find((entry) => entry.id === id);
   const models = provider?.models || [];
-  $('model').value = openSource() ? state.config.defaults?.openSourceModel || '' : state.providerModels[modelKey()] || provider?.defaultModel || (id === 'local' ? state.config.defaults?.model : models[0]) || models[0] || '';
+  $('model').value = openSource() ? state.config.defaults?.openSourceModel || '' : state.providerModels[modelKey()] || provider?.defaultModel || models[0] || '';
   $('model-options').replaceChildren(...models.map((model) => { const option = el('option'); option.value = typeof model === 'string' ? model : model.name || model.id; return option; }));
   $('model').readOnly = openSource();
   if (openSource()) $('model').removeAttribute('list'); else $('model').setAttribute('list', 'model-options');
@@ -339,7 +322,6 @@ async function pollJob() {
     if (active(job)) state.timer = setTimeout(pollJob, 2000);
   } catch (error) {
     if (state.selected !== id) return;
-    if (error.status === 404) { $('job-status').textContent = 'Lesson not found.'; return; }
     $('job-status').textContent = `Connection interrupted. ${error.message} Reconnecting…`;
     state.timer = setTimeout(pollJob, 5000);
   }
@@ -347,7 +329,7 @@ async function pollJob() {
 function jobPipeline(job) {
   const id = job.brief?.generationVersion || job.generationVersion || 'classic';
   const version = generationVersions().find(entry => entry.id === id) || { id };
-  return pipelineSteps(version, { footage: job.brief?.footage === 'wan' || job.stage === 'footage', audio: job.brief?.audio === 'music' }).filter(stage => !stage.manual);
+  return pipelineSteps(version).filter(stage => !stage.manual);
 }
 function stageEvent(job, id) {
   return (job.events || []).find(event => event.stage === id);
@@ -464,7 +446,7 @@ function renderJob(job) {
       const video = $('video'); video.src = src; video.replaceChildren();
       const captions = safeArtifact(job.artifacts?.captions);
       if (captions) { const track = el('track'); track.kind = 'captions'; track.srclang = 'en'; track.label = 'English (also shown in video)'; track.src = captions; video.append(track); }
-      const names = { video: 'Download video', captions: 'Captions', transcript: 'Transcript', lesson: 'Lesson plan', prompts: 'Generation prompts', composition: 'Composition source', renderPlan: 'Render plan', footage: 'Footage provenance', report: 'Quality report', manifest: 'Manifest' };
+      const names = { video: 'Download video', captions: 'Captions', transcript: 'Transcript', lesson: 'Lesson plan', prompts: 'Generation prompts', composition: 'Composition source', renderPlan: 'Render plan', footage: 'Footage provenance', report: 'Quality report' };
       $('downloads').replaceChildren();
       for (const [key, name] of Object.entries(names)) {
         const href = safeArtifact(job.artifacts?.[key]); if (!href) continue;
@@ -551,7 +533,7 @@ async function initialize() {
     renderAvatars(state.config.avatars || []);
     $('lesson-treatment').textContent = [state.config.animation?.name, state.config.animation?.description].filter(Boolean).join(' · ');
     $('lesson-treatment').hidden = !$('lesson-treatment').textContent;
-    state.generationVersion = recommendedVersion()?.id || state.config.defaults?.generationVersion || 'classic';
+    state.generationVersion = recommendedVersion()?.id || state.config.defaults?.generationVersion || 'quality';
     state.provider = state.config.defaults?.provider || 'local';
     if (openSource()) state.provider = 'local';
     renderGenerationVersion();
@@ -605,7 +587,6 @@ $('generation-version').addEventListener('change', () => {
   if (openSource()) state.provider = 'local';
   renderGenerationVersion();
 });
-$('footage').addEventListener('change', renderPipelineTransparency);
 $('duration').addEventListener('input', () => { const minutes = Number($('duration').value) / 60; $('duration-label').textContent = `${minutes} minute${minutes === 1 ? '' : 's'}`; });
 document.querySelectorAll('[data-example]').forEach((button) => button.addEventListener('click', () => { $('brief').value = button.dataset.example; $('brief').dispatchEvent(new Event('input')); $('brief').focus(); }));
 $('new-lesson').addEventListener('click', showComposer); $('back-compose').addEventListener('click', showComposer);
@@ -632,8 +613,6 @@ $('lesson-form').addEventListener('submit', async (event) => {
   const values = new FormData(event.currentTarget);
   const payload = { text: String(values.get('text') || '').trim(), generationVersion: state.generationVersion, provider: String(values.get('provider') || state.provider), targetSeconds: Number(values.get('targetSeconds')), avatar: String(values.get('avatar') || state.config?.avatars?.[0]?.id || 'mira') };
   for (const field of ['audience', 'model', 'curriculumSource', 'voiceProvider']) { const value = String(values.get(field) || '').trim(); if (value) payload[field] = value; }
-  if (openSource()) { const footage = String(values.get('footage') || '').trim(); if (footage) payload.footage = footage; }
-  else for (const field of ['intro', 'audio']) { const value = String(values.get(field) || '').trim(); if (value) payload[field] = value; }
   if (payload.text.length < 10) { fail('Describe your lesson in at least 10 characters so the teaching plan has enough context.'); return; }
   if (!canGenerate()) { fail('Choose an available generation option or finish its server setup first.'); return; }
   $('generate').disabled = true; $('generate').textContent = 'Starting quality generation...';

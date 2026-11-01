@@ -1,0 +1,55 @@
+<template>
+  <style>
+    #root { position:absolute; inset:0; overflow:hidden; background:#2b1b16; font-family:Outfit,sans-serif; color:#f6e9cf; }
+    #shot02-scene { position:absolute; inset:0; overflow:hidden; background:linear-gradient(112deg,#241511 0 38%,#123d43 76%,#0b272b 100%); }
+    #shot02-floor { position:absolute; left:0; right:0; bottom:0; height:210px; background:repeating-linear-gradient(90deg,#2b1b16 0 118px,#3b241b 120px,#2b1b16 124px); box-shadow:inset 0 30px 55px rgba(0,0,0,.45); }
+    #shot02-machine { position:absolute; left:760px; top:108px; width:1035px; height:730px; border-radius:48px; border:18px solid #b77a32; background:#0b3035; box-shadow:inset 0 0 0 7px #5b341d,0 40px 58px rgba(0,0,0,.5); display:flex; gap:26px; padding:86px 48px 50px; }
+    .shot02-column { position:relative; flex:1; border:8px solid #b77a32; border-radius:30px; background:linear-gradient(rgba(98,214,207,.16),rgba(18,61,67,.78)); box-shadow:inset 0 0 28px rgba(98,214,207,.2); }
+    .shot02-label { position:absolute; top:-58px; left:0; right:0; text-align:center; font-size:35px; font-weight:750; letter-spacing:.08em; color:#f2c879; }
+    .shot02-lamp { position:absolute; left:50%; bottom:60px; width:74px; height:74px; border-radius:50%; background:#294e50; border:7px solid #b77a32; box-shadow:0 0 16px rgba(98,214,207,.2); margin-left:-37px; }
+    #shot02-mira { position:absolute; left:160px; top:236px; width:360px; height:650px; }
+    #shot02-mira .body { position:absolute; left:82px; top:238px; width:230px; height:360px; border-radius:100px 100px 42px 42px; background:#17616a; border:9px solid #0b3237; box-shadow:0 28px 35px rgba(0,0,0,.35); }
+    #shot02-mira .scarf { position:absolute; left:122px; top:218px; width:150px; height:72px; border-radius:48%; background:#ffb534; transform:rotate(-7deg); }
+    #shot02-mira .head { position:absolute; left:100px; top:58px; width:190px; height:210px; border-radius:48% 48% 45% 45%; background:#8f5639; border:9px solid #563022; }
+    #shot02-mira .hair { position:absolute; left:70px; top:22px; width:242px; height:118px; border-radius:60% 62% 38% 48%; background:#211914; }
+    #shot02-mira .eye { position:absolute; width:18px; height:11px; top:148px; border-radius:50%; background:#211914; } #shot02-mira .eye.l { left:150px; } #shot02-mira .eye.r { left:228px; }
+    #shot02-arm { position:absolute; left:412px; top:500px; width:490px; height:64px; transform-origin:20px 32px; }
+    #shot02-arm .sleeve { position:absolute; left:0; width:260px; height:64px; border-radius:32px; background:#17616a; border:8px solid #0b3237; }
+    #shot02-arm .hand { position:absolute; left:242px; width:152px; height:58px; border-radius:30px 14px 14px 30px; background:#8f5639; border:7px solid #563022; }
+    #shot02-ari { position:absolute; left:548px; top:440px; width:250px; height:450px; }
+    #shot02-ari .body { position:absolute; left:45px; top:180px; width:170px; height:230px; border-radius:70px 70px 32px 32px; background:#b6532d; border:8px solid #71321e; }
+    #shot02-ari .head { position:absolute; left:52px; top:36px; width:155px; height:170px; border-radius:48%; background:#a9653e; border:8px solid #6e3f29; }
+    #shot02-ari .hair { position:absolute; left:36px; top:8px; width:186px; height:84px; border-radius:64% 58% 35% 42%; background:#211914; }
+    #shot02-caption { position:absolute; left:156px; bottom:74px; width:780px; padding:24px 32px; border-radius:18px; background:rgba(33,25,20,.84); font-size:52px; line-height:1.15; font-weight:650; }
+    #shot02-guide { position:absolute; left:1025px; top:160px; width:310px; height:610px; border-radius:40px; border:8px solid rgba(255,181,52,.9); box-shadow:0 0 34px rgba(255,181,52,.32); opacity:0; }
+  </style>
+  <div data-hf-id="hf-lqcv" id="root" data-composition-id="shot-02" data-width="1920" data-height="1080" data-duration="7">
+    <div data-hf-id="hf-m8sr" id="shot02-clip" class="clip" data-start="0" data-duration="7" data-track-index="1">
+      <div data-hf-id="hf-pcbk" id="shot02-scene"><div data-hf-id="hf-m262" id="shot02-floor"></div>
+        <div data-hf-id="hf-rzvz" id="shot02-machine">
+          <div data-hf-id="hf-9y15" class="shot02-column"><div data-hf-id="hf-uduq" class="shot02-label">HUNDREDS</div><div data-hf-id="hf-vxzh" class="shot02-lamp"></div></div>
+          <div data-hf-id="hf-9sal" class="shot02-column"><div data-hf-id="hf-imcj" class="shot02-label">TENS</div><div data-hf-id="hf-d7up" class="shot02-lamp"></div></div>
+          <div data-hf-id="hf-az7o" class="shot02-column"><div data-hf-id="hf-fiym" class="shot02-label">ONES</div><div data-hf-id="hf-eers" class="shot02-lamp"></div></div>
+        </div>
+        <div data-hf-id="hf-fom9" id="shot02-mira"><div data-hf-id="hf-hx7w" class="hair"></div><div data-hf-id="hf-z992" class="head"></div><div data-hf-id="hf-2t3w" class="body"></div><div data-hf-id="hf-702r" class="scarf"></div><div data-hf-id="hf-an3v" class="eye l"></div><div data-hf-id="hf-y82t" class="eye r"></div></div>
+        <div data-hf-id="hf-k1g6" id="shot02-arm"><div data-hf-id="hf-gweg" class="sleeve"></div><div data-hf-id="hf-foeb" class="hand"></div></div>
+        <div data-hf-id="hf-yv1u" id="shot02-ari"><div data-hf-id="hf-k3d0" class="hair"></div><div data-hf-id="hf-gwvu" class="head"></div><div data-hf-id="hf-6g9g" class="body"></div></div>
+        <div data-hf-id="hf-7f3c" id="shot02-guide"></div>
+        <div data-hf-id="hf-l9qj" id="shot02-caption">Inside this machine, every digit has a place.</div>
+      </div>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused:true });
+    tl.fromTo('#shot02-scene',{scale:1.07,x:95},{scale:1,x:0,duration:1.15,ease:'power3.out'},0)
+      .fromTo('#shot02-arm',{rotation:-31},{rotation:-5,duration:.7,ease:'power4.out'},.55)
+      .fromTo('#shot02-guide',{opacity:0,x:490},{opacity:1,x:490,duration:.12,ease:'power2.out'},1.45)
+      .to('#shot02-guide',{x:245,duration:1.05,ease:'power2.inOut'},1.62)
+      .to('#shot02-guide',{x:0,duration:1.05,ease:'power2.inOut'},2.83)
+      .fromTo('#shot02-caption',{opacity:0},{opacity:1,duration:.14,ease:'power2.out'},.9)
+      .to('#shot02-caption',{opacity:0,duration:.16,ease:'power2.in'},5.25)
+      .to('#shot02-arm',{rotation:-18,duration:.55,ease:'power3.inOut'},5.56)
+      .to('#shot02-scene',{scale:1.09,x:-92,duration:.85,ease:'power3.in'},6.08);
+    window.__timelines['shot-02'] = tl;
+  </script>
+</template>

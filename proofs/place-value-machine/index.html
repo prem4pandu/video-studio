@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en" data-resolution="landscape">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      * { box-sizing: border-box; }
+      html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; background: #211914; }
+      #root { position: relative; width: 100%; height: 100%; overflow: hidden; background: #211914; }
+      .scene-host, .caption-host { position: absolute; inset: 0; width: 100%; height: 100%; }
+      .scene-host { z-index: 1; }
+      .caption-host { z-index: 20; pointer-events: none; }
+    </style>
+  </head>
+  <body>
+    <div data-hf-id="hf-qbnw" id="root" data-composition-id="main" data-start="0" data-duration="60" data-width="1920" data-height="1080">
+      <div data-hf-id="hf-1yl0" id="shot-01" class="clip scene-host" data-composition-id="shot-01" data-composition-src="compositions/shot-01.html" data-start="0" data-duration="5" data-track-index="1" data-track-kind="graphics"></div>
+      <div data-hf-id="hf-lm6t" id="shot-02" class="clip scene-host" data-composition-id="shot-02" data-composition-src="compositions/shot-02.html" data-start="5" data-duration="7" data-track-index="2" data-track-kind="graphics"></div>
+      <div data-hf-id="hf-vs94" id="shot-03" class="clip scene-host" data-composition-id="shot-03" data-composition-src="compositions/shot-03.html" data-start="12" data-duration="8" data-track-index="3" data-track-kind="graphics"></div>
+      <div data-hf-id="hf-0o4y" id="shot-04" class="clip scene-host" data-composition-id="shot-04" data-composition-src="compositions/shot-04.html" data-start="20" data-duration="9" data-track-index="4" data-track-kind="graphics"></div>
+      <div data-hf-id="hf-it4x" id="shot-05" class="clip scene-host" data-composition-id="shot-05" data-composition-src="compositions/shot-05.html" data-start="29" data-duration="9" data-track-index="5" data-track-kind="graphics"></div>
+      <div data-hf-id="hf-qqpj" id="shot-06" class="clip scene-host" data-composition-id="shot-06" data-composition-src="compositions/shot-06.html" data-start="38" data-duration="10" data-track-index="6" data-track-kind="graphics"></div>
+      <div data-hf-id="hf-7696" id="shot-07" class="clip scene-host" data-composition-id="shot-07" data-composition-src="compositions/shot-07.html" data-start="48" data-duration="7" data-track-index="7" data-track-kind="graphics"></div>
+      <div data-hf-id="hf-w3zu" id="shot-08" class="clip scene-host" data-composition-id="shot-08" data-composition-src="compositions/shot-08.html" data-start="55" data-duration="5" data-track-index="8" data-track-kind="graphics"></div>
+      <audio data-hf-id="hf-29yd" id="voiceover" class="clip" src="assets/audio/voice.wav" data-start="0" data-duration="60" data-track-index="10" data-volume="1" data-audio-group="voiceover"></audio>
+      <audio data-hf-id="hf-r8sn" id="music" class="clip" src="assets/audio/music.wav" data-start="0" data-duration="60" data-track-index="11" data-volume="0.24" data-fade-in="1.5" data-fade-out="2" data-audio-group="music"></audio>
+      <audio data-hf-id="hf-0gc8" id="workshop-sfx" class="clip" src="assets/audio/sfx.wav" data-start="0" data-duration="60" data-track-index="12" data-volume="0.5" data-audio-group="sfx"></audio>
+    </div>
+    <script>
+      const tl = gsap.timeline({ paused: true });
+      window.__timelines.main = tl;
+      tl.seek(0);
+    </script>
+  </body>
+</html>

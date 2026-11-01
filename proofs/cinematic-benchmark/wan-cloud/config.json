@@ -1,0 +1,13 @@
+{
+  "wanRepository": "https://github.com/Wan-Video/Wan2.2.git",
+  "wanRevision": "1ea34ff",
+  "checkpoint": "Wan-AI/Wan2.2-TI2V-5B",
+  "seed": 11,
+  "size": "1280*704",
+  "frames": 121,
+  "fps": 24,
+  "sampleSolver": "unipc",
+  "sampleSteps": 50,
+  "sampleShift": 5.0,
+  "guidanceScale": 5.0
+}

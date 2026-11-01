@@ -1,0 +1,59 @@
+<template>
+  <style>
+    #root { position:absolute; inset:0; overflow:hidden; background:#2b1b16; font-family:Outfit,sans-serif; color:#f6e9cf; }
+    #shot04-scene { position:absolute; inset:0; overflow:hidden; background:radial-gradient(circle at 63% 42%,#1b5257,#0d3034 48%,#231510 92%); }
+    #shot04-machine { position:absolute; left:470px; top:90px; width:1300px; height:790px; border:20px solid #b77a32; border-radius:54px; background:#0b3035; display:flex; gap:34px; padding:102px 62px 54px; box-shadow:inset 0 0 0 8px #5b341d,0 42px 64px rgba(0,0,0,.55); }
+    .shot04-column { position:relative; flex:1; border:9px solid #b77a32; border-radius:32px; background:linear-gradient(rgba(98,214,207,.14),rgba(18,61,67,.7)); box-shadow:inset 0 0 34px rgba(98,214,207,.18); }
+    .shot04-label { position:absolute; left:0; right:0; top:-64px; text-align:center; color:#f2c879; font-size:38px; font-weight:750; letter-spacing:.08em; }
+    .shot04-rail { position:absolute; left:-48px; right:-48px; height:26px; top:276px; border-radius:18px; background:linear-gradient(#f2c879,#8c5528 48%,#5b341d); }
+    .shot04-token { position:absolute; width:170px; height:170px; top:190px; border-radius:36px; display:grid; place-items:center; font-size:122px; font-weight:800; color:#211914; background:radial-gradient(circle at 30% 24%,#ffe1a0,#ffb534 44%,#a85f16); border:10px solid #f2c879; box-shadow:0 0 30px rgba(255,181,52,.55),0 18px 26px rgba(0,0,0,.38); z-index:4; }
+    #shot04-two { left:560px; } #shot04-three { left:968px; }
+    #shot04-zero { position:absolute; left:1410px; top:190px; width:170px; height:170px; border-radius:50%; display:grid; place-items:center; font-size:122px; font-weight:800; color:#211914; background:#ffb534; border:10px solid #f2c879; box-shadow:0 0 46px rgba(255,181,52,.75); opacity:0; }
+    #shot04-equation { position:absolute; left:662px; bottom:92px; font-size:112px; font-weight:800; letter-spacing:-.04em; color:#f6e9cf; text-shadow:0 8px 22px rgba(0,0,0,.58); }
+    #shot04-result { color:#ffb534; opacity:0; }
+    #shot04-mira-face,#shot04-ari-face { position:absolute; left:58px; width:270px; height:270px; border-radius:50%; border:10px solid #5b341d; box-shadow:0 20px 35px rgba(0,0,0,.45); overflow:hidden; }
+    #shot04-mira-face { top:150px; background:#8f5639; } #shot04-ari-face { top:500px; background:#a9653e; }
+    #shot04-mira-face::before,#shot04-ari-face::before { content:""; position:absolute; left:-18px; top:-24px; width:310px; height:125px; border-radius:58%; background:#211914; }
+    .shot04-eye { position:absolute; top:126px; width:24px; height:14px; border-radius:50%; background:#211914; }
+    .shot04-eye.l { left:75px; } .shot04-eye.r { right:75px; }
+    #shot04-caption { position:absolute; left:120px; bottom:75px; width:470px; padding:24px 30px; border-radius:18px; background:rgba(33,25,20,.86); font-size:46px; line-height:1.15; font-weight:650; }
+    #shot04-flare { position:absolute; left:1350px; top:130px; width:300px; height:300px; border-radius:50%; background:radial-gradient(circle,rgba(255,229,166,.95),rgba(255,181,52,.36) 40%,rgba(255,181,52,0) 72%); opacity:0; }
+  </style>
+  <div data-hf-id="hf-iz1e" id="root" data-composition-id="shot-04" data-width="1920" data-height="1080" data-duration="9" data-motion-blur="on">
+    <div data-hf-id="hf-7uyr" id="shot04-clip" class="clip" data-start="0" data-duration="9" data-track-index="1">
+      <div data-hf-id="hf-k2ue" id="shot04-scene">
+        <div data-hf-id="hf-078h" id="shot04-machine">
+          <div data-hf-id="hf-050b" class="shot04-column"><div data-hf-id="hf-u5p8" class="shot04-label">HUNDREDS</div><div data-hf-id="hf-25q1" class="shot04-rail"></div></div>
+          <div data-hf-id="hf-9dp7" class="shot04-column"><div data-hf-id="hf-1dg1" class="shot04-label">TENS</div><div data-hf-id="hf-bhot" class="shot04-rail"></div></div>
+          <div data-hf-id="hf-8ze6" class="shot04-column"><div data-hf-id="hf-n3bk" class="shot04-label">ONES</div><div data-hf-id="hf-colw" class="shot04-rail"></div></div>
+        </div>
+        <div data-hf-id="hf-1jzj" id="shot04-two" class="shot04-token">2</div><div data-hf-id="hf-4kgy" id="shot04-three" class="shot04-token">3</div><div data-hf-id="hf-p0r4" id="shot04-zero">0</div>
+        <div data-hf-id="hf-1nuj" id="shot04-equation">23 × 10 <span data-hf-id="hf-nrqe" id="shot04-result">= 230</span></div>
+        <div data-hf-id="hf-x5fz" id="shot04-mira-face"><div data-hf-id="hf-fsw0" class="shot04-eye l"></div><div data-hf-id="hf-gh2e" class="shot04-eye r"></div></div>
+        <div data-hf-id="hf-ol6q" id="shot04-ari-face"><div data-hf-id="hf-0s1k" class="shot04-eye l"></div><div data-hf-id="hf-0iy2" class="shot04-eye r"></div></div>
+        <div data-hf-id="hf-j5ql" id="shot04-caption">Multiply by ten, and every digit moves one place left.</div>
+        <div data-hf-id="hf-r9bq" id="shot04-flare"></div>
+      </div>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused:true });
+    tl.fromTo('#shot04-scene',{scale:1.13,x:-135},{scale:1,x:0,duration:1.0,ease:'power3.out'},0)
+      .fromTo('#shot04-equation',{opacity:0},{opacity:1,duration:.14,ease:'power2.out'},.55)
+      .fromTo('#shot04-caption',{opacity:0},{opacity:1,duration:.14,ease:'power2.out'},.82)
+      .fromTo('#shot04-two',{x:0},{x:-406,duration:1.68,ease:'power2.inOut'},2.12)
+      .fromTo('#shot04-three',{x:0},{x:-406,duration:1.68,ease:'power2.inOut'},2.12)
+      .to('#shot04-two',{scale:1.07,duration:.18,ease:'back.out(1.7)'},3.78)
+      .to('#shot04-two',{scale:1,duration:.2,ease:'power2.out'},3.96)
+      .to('#shot04-three',{scale:1.07,duration:.18,ease:'back.out(1.7)'},4.0)
+      .to('#shot04-three',{scale:1,duration:.2,ease:'power2.out'},4.18)
+      .fromTo('#shot04-zero',{opacity:0,scale:.65},{opacity:1,scale:1,duration:.48,ease:'back.out(1.45)'},4.32)
+      .fromTo('#shot04-result',{opacity:0},{opacity:1,duration:.18,ease:'power2.out'},4.88)
+      .fromTo('#shot04-flare',{opacity:0,scale:.5},{opacity:1,scale:1,duration:.52,ease:'power2.out'},4.46)
+      .to('#shot04-flare',{opacity:0,duration:.65,ease:'power2.in'},5.1)
+      .to('#shot04-caption',{opacity:0,duration:.16,ease:'power2.in'},6.72)
+      .to('#shot04-scene',{scale:1.08,x:-48,duration:1.05,ease:'power2.inOut'},7.15)
+      .to('#shot04-zero',{scale:5.8,duration:.72,ease:'power3.in'},8.14);
+    window.__timelines['shot-04'] = tl;
+  </script>
+</template>

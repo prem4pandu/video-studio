@@ -6,8 +6,8 @@
   <meta name="color-scheme" content="light">
   <meta name="description" content="Plan, generate, and review narrated educational videos in Video Studio.">
   <title>Video Studio</title>
-  <link rel="stylesheet" href="./studio.css">
-  <script type="module" src="./studio.mjs"></script>
+  <link rel="stylesheet" href="./fair-studio.css">
+  <script type="module" src="./fair-studio.mjs"></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to lesson studio</a>
@@ -39,8 +39,6 @@
             <div class="setup-panel" aria-labelledby="setup-title"><div><p class="section-kicker">Setup status</p><h3 id="setup-title">Ready to generate</h3><p id="setup-summary" role="status" aria-live="polite">Checking this workspace.</p></div><ul id="setup-list" class="setup-list"></ul></div>
           </section>
           <fieldset id="instructor-field" class="instructor-field"><legend>Visual presenter <span>Optional · clean canvas recommended</span></legend><div id="avatars" class="avatar-grid"><p class="muted">Loading presenter presets…</p></div><p id="lesson-treatment" class="field-note" hidden></p></fieldset>
-          <fieldset id="presentation-field" class="presentation-field"><legend>Presentation <span>Optional · classic lessons only</span></legend><div class="presentation-fields"><div class="field"><label for="intro">Title sequence</label><select id="intro" name="intro"><option value="none" selected>None</option><option value="card">Title card</option><option value="sting">Animated sting</option></select><p class="field-note">A short title sequence before the lesson. Only the classic renderer plays it.</p></div><div class="field"><label for="audio">Soundtrack</label><select id="audio" name="audio"><option value="voice" selected>Narration only</option><option value="music">Narration + music bed</option></select><p class="field-note">A low music bed can sit under the narration.</p></div></div></fieldset>
-          <fieldset id="footage-field" class="footage-field" hidden disabled><legend>Opening footage <span>Open-source generation only</span></legend><div class="field"><label for="footage">Establishing shot</label><select id="footage" name="footage"><option value="none" selected>Deterministic animation only</option><option value="wan">Wan2.2 establishing shot</option></select><p class="field-note">Wan2.2 renders a short cinematic establishing shot; exact teaching graphics stay deterministic.</p></div></fieldset>
           <div class="lesson-settings"><div class="field"><label for="audience">Learners <span>Optional</span></label><input id="audience" name="audience" maxlength="240" placeholder="e.g. Grade 5 · ages 10–11"></div><div class="field duration-field"><label for="duration">Target length <output id="duration-label" for="duration">3 minutes</output></label><input id="duration" name="targetSeconds" type="range" min="60" max="600" value="180" step="30"><div class="range-labels"><span>1 min</span><span>10 min</span></div></div></div>
           <fieldset id="provider-field" class="provider-field"><legend>AI lesson planner</legend><div id="providers" class="provider-grid"><p class="muted">Loading generation options…</p></div><p id="provider-status" class="field-note" role="status"></p></fieldset>
           <div id="voice-field" class="field voice-field" hidden><label for="voice-provider">Narrator voice</label><select id="voice-provider" name="voiceProvider" aria-describedby="voice-status"></select><p id="voice-status" class="field-note" role="status"></p><audio id="voice-sample" controls preload="none" aria-label="Selected narrator voice sample" hidden></audio></div>

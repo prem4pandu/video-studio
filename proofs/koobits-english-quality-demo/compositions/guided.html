@@ -1,0 +1,85 @@
+<template
+  ><style>
+    @import url("assets/vendor/lesson.css");
+    #guided-stage {
+      position: absolute;
+      left: 300px;
+      right: 300px;
+      top: 280px;
+    }
+    .guided-row {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 26px;
+    }
+    #guided-e {
+      margin-left: 80px;
+    }
+    #guided-prompt {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 135px;
+      text-align: center;
+      font-size: 44px;
+      font-weight: 900;
+    }
+    #guided-answer {
+      color: #13805b;
+    }
+  </style>
+  <div
+    id="root"
+    data-composition-id="guided"
+    data-width="1920"
+    data-height="1080"
+    data-duration="25"
+  >
+    <div class="ground"></div>
+    <div
+      id="guided-canvas"
+      class="clip canvas"
+      data-start="0"
+      data-duration="25"
+      data-track-index="1"
+    >
+      <div class="kicker">We do</div>
+      <div class="title">Change tap with silent e</div>
+      <div id="guided-stage">
+        <div class="guided-row">
+          <div class="tile">t</div>
+          <div id="guided-a" class="tile vowel">a</div>
+          <div class="tile">p</div>
+          <div id="guided-e" class="tile magic">e</div>
+        </div>
+      </div>
+      <div id="guided-prompt">
+        tap + e = <span id="guided-answer">tape</span>
+      </div>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo(
+      "#guided-e",
+      { opacity: 0, x: 170 },
+      { opacity: 1, x: 0, duration: 0.6, ease: "power4.out" },
+      3,
+    )
+      .to("#guided-a", { backgroundColor: "#ffd45e", duration: 0.3 }, 4)
+      .fromTo(
+        "#guided-answer",
+        { opacity: 0, filter: "blur(7px)" },
+        { opacity: 1, filter: "blur(0px)", duration: 0.35, ease: "power4.out" },
+        5.2,
+      )
+      .fromTo(
+        "#guided-prompt",
+        { y: 8 },
+        { y: 0, duration: 0.35, ease: "power4.out" },
+        15,
+      );
+    window.__timelines.guided = tl;
+  </script></template
+>

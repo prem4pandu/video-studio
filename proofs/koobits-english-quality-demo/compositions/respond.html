@@ -1,0 +1,101 @@
+<template
+  ><style>
+    @import url("assets/vendor/lesson.css");
+    #respond-word {
+      position: absolute;
+      left: 330px;
+      top: 280px;
+    }
+    #respond-bank {
+      position: absolute;
+      right: 330px;
+      top: 300px;
+      display: flex;
+      gap: 30px;
+    }
+    #respond-timer {
+      position: absolute;
+      left: 280px;
+      right: 280px;
+      bottom: 180px;
+      height: 18px;
+      border-radius: 10px;
+      background: #e4dcc9;
+      overflow: hidden;
+    }
+    #respond-bar {
+      width: 100%;
+      height: 100%;
+      background: #e99b25;
+      transform-origin: left center;
+    }
+    #respond-result {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 90px;
+      text-align: center;
+      font-size: 54px;
+      font-weight: 900;
+      color: #13805b;
+    }
+  </style>
+  <div
+    id="root"
+    data-composition-id="respond"
+    data-width="1920"
+    data-height="1080"
+    data-duration="25"
+  >
+    <div class="ground"></div>
+    <div
+      id="respond-canvas"
+      class="clip canvas"
+      data-start="0"
+      data-duration="25"
+      data-track-index="1"
+    >
+      <div class="kicker">Your turn</div>
+      <div class="title">Make the long o word</div>
+      <div id="respond-word" class="word">hop + ?</div>
+      <div id="respond-bank">
+        <div class="choice">a</div>
+        <div id="respond-e" class="choice">e</div>
+        <div class="choice">i</div>
+      </div>
+      <div id="respond-timer"><div id="respond-bar"></div></div>
+      <div id="respond-result">hop + e = hope</div>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo(
+      "#respond-word,#respond-bank",
+      { opacity: 0, y: 12 },
+      { opacity: 1, y: 0, duration: 0.4, stagger: 0.12, ease: "power4.out" },
+      0.5,
+    )
+      .fromTo(
+        "#respond-bar",
+        { scaleX: 1 },
+        { scaleX: 0, duration: 10, ease: "none" },
+        4,
+      )
+      .fromTo(
+        "#respond-result",
+        { opacity: 0, filter: "blur(7px)" },
+        { opacity: 1, filter: "blur(0px)", duration: 0.4, ease: "power4.out" },
+        15,
+      )
+      .to(
+        "#respond-e",
+        {
+          backgroundColor: "#ffd45e",
+          boxShadow: "inset 0 0 0 5px #13805b",
+          duration: 0.3,
+        },
+        15,
+      );
+    window.__timelines.respond = tl;
+  </script></template
+>

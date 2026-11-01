@@ -1,0 +1,72 @@
+{
+  "revision": 1,
+  "id": "place-value-machine",
+  "title": "The Place-Value Machine",
+  "width": 1920,
+  "height": 1080,
+  "fps": 30,
+  "durationSeconds": 60,
+  "shots": [
+    {
+      "id": "shot-01", "sceneId": "hook", "purpose": "Open on a mysterious brass machine and establish the multiply-by-ten motif.",
+      "route": "deterministic", "startSeconds": 0, "durationSeconds": 5, "characters": [], "location": "brass-workshop",
+      "action": "A glowing number tile and brass lever wake the machine.", "camera": { "shotSize": "insert", "movement": "push-in" },
+      "overlays": [{ "id": "times-ten", "kind": "label", "source": "×10" }], "references": [], "continuity": { "screenDirection": "left-to-right" }
+    },
+    {
+      "id": "shot-02", "sceneId": "machine-intro", "purpose": "Introduce Mira, Ari and the three place-value chambers.",
+      "route": "deterministic", "startSeconds": 5, "durationSeconds": 7, "characters": ["mira", "ari"], "location": "brass-workshop",
+      "action": "Mira reveals the hundreds, tens and ones chambers to Ari.", "camera": { "shotSize": "wide", "movement": "pan-right" },
+      "dialogue": { "speaker": "mira", "text": "Inside this machine, every digit has a place." }, "overlays": [], "references": [],
+      "continuity": { "screenDirection": "left-to-right", "previousShotId": "shot-01" }
+    },
+    {
+      "id": "shot-03", "sceneId": "build-twenty-three", "purpose": "Represent twenty-three as two tens and three ones.",
+      "route": "deterministic", "startSeconds": 12, "durationSeconds": 8, "characters": ["mira"], "location": "brass-workshop",
+      "action": "Tiles two and three settle into the tens and ones chambers.", "camera": { "shotSize": "medium", "movement": "static" },
+      "dialogue": { "speaker": "mira", "text": "Here is twenty-three: two tens and three ones." },
+      "overlays": [{ "id": "expanded-23", "kind": "label", "source": "2 tens + 3 ones" }], "references": [],
+      "continuity": { "screenDirection": "left-to-right", "previousShotId": "shot-02" }
+    },
+    {
+      "id": "shot-04", "sceneId": "shift", "purpose": "Show multiplication by ten as a one-place-left shift.",
+      "route": "deterministic", "startSeconds": 20, "durationSeconds": 9, "characters": ["mira", "ari"], "location": "brass-workshop",
+      "action": "Both digits travel one chamber left and a zero occupies the ones chamber.", "camera": { "shotSize": "medium", "movement": "track" },
+      "dialogue": { "speaker": "mira", "text": "Multiply by ten, and every digit moves one place left." },
+      "overlays": [{ "id": "equation-23", "kind": "equation", "source": "23 × 10" }], "references": [],
+      "continuity": { "screenDirection": "left-to-right", "previousShotId": "shot-03" }
+    },
+    {
+      "id": "shot-05", "sceneId": "zero-role", "purpose": "Explain that the trailing zero is an occupied empty ones place, not decoration.",
+      "route": "deterministic", "startSeconds": 29, "durationSeconds": 9, "characters": ["mira", "ari"], "location": "brass-workshop",
+      "action": "A labeled zero tile locks the empty ones chamber after the shift.", "camera": { "shotSize": "medium", "movement": "push-in" },
+      "dialogue": { "speaker": "ari", "text": "The zero holds the empty ones place." },
+      "overlays": [{ "id": "zero-label", "kind": "highlight", "source": "Empty ones place" }], "references": [],
+      "continuity": { "screenDirection": "left-to-right", "previousShotId": "shot-04" }
+    },
+    {
+      "id": "shot-06", "sceneId": "practice", "purpose": "Ask the learner to apply the rule without leaking the answer.",
+      "route": "deterministic", "startSeconds": 38, "durationSeconds": 10, "characters": ["mira", "ari"], "location": "brass-workshop",
+      "action": "Forty-seven waits in the tens and ones chambers while the learner thinks.", "camera": { "shotSize": "wide", "movement": "static" },
+      "dialogue": { "speaker": "mira", "text": "Your turn. What is forty-seven times ten?" },
+      "overlays": [{ "id": "question-47", "kind": "question", "source": "47 × 10 = ?" }], "references": [],
+      "continuity": { "screenDirection": "left-to-right", "previousShotId": "shot-05" }
+    },
+    {
+      "id": "shot-07", "sceneId": "answer", "purpose": "Reveal and verify the learner answer only after thinking time.",
+      "route": "deterministic", "startSeconds": 48, "durationSeconds": 7, "characters": ["mira", "ari"], "location": "brass-workshop",
+      "action": "The digits shift left, zero fills ones, and the full equation resolves.", "camera": { "shotSize": "wide", "movement": "push-in" },
+      "dialogue": { "speaker": "ari", "text": "Four hundred seventy." },
+      "overlays": [{ "id": "answer-47", "kind": "equation", "source": "47 × 10 = 470" }], "references": [],
+      "continuity": { "screenDirection": "left-to-right", "previousShotId": "shot-06" }
+    },
+    {
+      "id": "shot-08", "sceneId": "rule", "purpose": "Close on the reusable conceptual rule.",
+      "route": "deterministic", "startSeconds": 55, "durationSeconds": 5, "characters": ["mira", "ari"], "location": "brass-workshop",
+      "action": "Mira and Ari celebrate beside the locked place-value machine.", "camera": { "shotSize": "wide", "movement": "pull-out" },
+      "dialogue": { "speaker": "mira", "text": "Times ten means every digit shifts one place left." },
+      "overlays": [{ "id": "final-rule", "kind": "caption", "source": "×10: every digit shifts one place left" }], "references": [],
+      "continuity": { "screenDirection": "left-to-right", "previousShotId": "shot-07" }
+    }
+  ]
+}

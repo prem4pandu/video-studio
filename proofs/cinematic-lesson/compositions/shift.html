@@ -1,0 +1,55 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; overflow: hidden; background: #160f0b; color: #fff2d2; font-family: Outfit, sans-serif; }
+    #shift-footage { position: absolute; inset: 0; width: 1920px; height: 1080px; object-fit: cover; }
+    #shift-shade { position: absolute; inset: 0; background: rgba(12,8,6,.48); }
+    #shift-board { position: absolute; left: 160px; top: 104px; width: 1600px; height: 820px; border-radius: 40px; background: rgba(19,32,31,.88); box-shadow: inset 0 0 0 2px rgba(241,190,91,.42), 0 34px 80px rgba(0,0,0,.5); backdrop-filter: blur(12px); }
+    #shift-heading { position: absolute; left: 92px; top: 62px; font-size: 42px; font-weight: 680; letter-spacing: -.02em; }
+    #shift-lever { position: absolute; right: 92px; top: 44px; width: 200px; height: 82px; transform-origin: 36px 41px; }
+    #shift-lever::before { content: ""; position: absolute; left: 28px; top: 29px; width: 132px; height: 24px; border-radius: 20px; background: linear-gradient(#f6d27d, #9b642b); box-shadow: 0 8px 16px rgba(0,0,0,.35); }
+    #shift-lever::after { content: ""; position: absolute; right: 0; top: 4px; width: 72px; height: 72px; border-radius: 50%; background: radial-gradient(circle at 35% 28%, #ffe2a0, #d28b27 62%, #764217); box-shadow: inset 0 0 0 5px #f4c869, 0 10px 20px rgba(0,0,0,.38); }
+    #shift-table { position: absolute; left: 86px; right: 86px; top: 184px; height: 506px; display: grid; grid-template-columns: repeat(3, 1fr); }
+    .shift-column { position: relative; border-left: 2px solid rgba(244,200,105,.35); }
+    .shift-column:last-child { border-right: 2px solid rgba(244,200,105,.35); }
+    .shift-label { height: 86px; display: grid; place-items: center; border-top: 2px solid rgba(244,200,105,.35); border-bottom: 2px solid rgba(244,200,105,.35); color: #e9bd66; font: 600 27px/1 "IBM Plex Mono", monospace; letter-spacing: .13em; text-transform: uppercase; }
+    .shift-slot { height: 420px; display: grid; place-items: center; }
+    .shift-token { position: absolute; top: 310px; width: 190px; height: 190px; display: grid; place-items: center; border-radius: 24px; color: #28180c; font-size: 124px; line-height: 1; font-weight: 800; background: linear-gradient(145deg, #ffe4a0, #d88d29); box-shadow: inset 0 0 0 3px rgba(255,255,255,.3), 0 20px 36px rgba(0,0,0,.42); }
+    #shift-two { left: 705px; }
+    #shift-three { left: 1181px; }
+    #shift-zero { left: 1181px; opacity: 0; }
+    #shift-arrow { position: absolute; left: 520px; top: 426px; width: 590px; height: 12px; border-radius: 8px; background: #f4c869; transform-origin: left center; }
+    #shift-arrow::after { content: ""; position: absolute; left: -3px; top: -19px; width: 42px; height: 42px; border-left: 12px solid #f4c869; border-bottom: 12px solid #f4c869; transform: rotate(45deg); }
+    #shift-zero-note { position: absolute; right: 126px; bottom: 54px; font-size: 30px; color: rgba(255,242,210,.88); opacity: 0; }
+  </style>
+  <div data-hf-id="hf-jhl5" id="root" data-composition-id="shift" data-width="1920" data-height="1080" data-duration="5" data-motion-blur="on">
+    <video data-hf-id="hf-67r3" id="shift-footage" class="clip" src="assets/video/brass-workshop.mp4" data-start="0" data-duration="5" data-media-start="0.08" data-track-index="1" muted playsinline></video>
+    <div data-hf-id="hf-ql8u" id="shift-overlay" class="clip" data-start="0" data-duration="5" data-track-index="2">
+      <div data-hf-id="hf-7k7v" id="shift-shade"></div>
+      <div data-hf-id="hf-7p3k" id="shift-board">
+        <div data-hf-id="hf-3xim" id="shift-heading">Pull the ×10 lever: both digits move one place left.</div>
+        <div data-hf-id="hf-dhlg" id="shift-lever"></div>
+        <div data-hf-id="hf-llrg" id="shift-table">
+          <div data-hf-id="hf-9mmb" class="shift-column"><div data-hf-id="hf-7390" class="shift-label">Hundreds</div><div data-hf-id="hf-9n4t" class="shift-slot"></div></div>
+          <div data-hf-id="hf-vcjn" class="shift-column"><div data-hf-id="hf-eumx" class="shift-label">Tens</div><div data-hf-id="hf-lw8h" class="shift-slot"></div></div>
+          <div data-hf-id="hf-uy8m" class="shift-column"><div data-hf-id="hf-l9ag" class="shift-label">Ones</div><div data-hf-id="hf-n35k" class="shift-slot"></div></div>
+        </div>
+        <div data-hf-id="hf-bt9n" id="shift-two" class="shift-token">2</div>
+        <div data-hf-id="hf-zvym" id="shift-three" class="shift-token">3</div>
+        <div data-hf-id="hf-jg1n" id="shift-zero" class="shift-token">0</div>
+        <div data-hf-id="hf-bivv" id="shift-arrow"></div>
+        <div data-hf-id="hf-9hxd" id="shift-zero-note">Zero fills the empty ones place.</div>
+      </div>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo('#shift-board', { opacity: 0, y: 14, filter: 'blur(8px)' }, { opacity: 1, y: 0, filter: 'blur(0px)', duration: .46, ease: 'expo.out' }, .06)
+      .fromTo('#shift-lever', { rotation: -16 }, { rotation: 24, duration: .44, ease: 'back.out(1.35)' }, 1.16)
+      .fromTo('#shift-arrow', { scaleX: 0, opacity: 0 }, { scaleX: 1, opacity: 1, duration: .38, ease: 'power3.out' }, 1.34)
+      .to('#shift-two, #shift-three', { x: -476, duration: .86, ease: 'power2.inOut' }, 1.46)
+      .fromTo('#shift-zero', { opacity: 0, scale: .9, filter: 'blur(6px)' }, { opacity: 1, scale: 1, filter: 'blur(0px)', duration: .42, ease: 'back.out(1.2)' }, 2.48)
+      .fromTo('#shift-zero-note', { opacity: 0, filter: 'blur(4px)' }, { opacity: 1, filter: 'blur(0px)', duration: .3, ease: 'power4.out' }, 2.72)
+      .to('#shift-overlay', { opacity: 0, filter: 'blur(4px)', duration: .2, ease: 'power2.in' }, 4.7);
+    window.__timelines.shift = tl;
+  </script>
+</template>

@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+  <body>
+    <template>
+      <style>
+        * { box-sizing: border-box; }
+        #root { position: relative; width: 100%; height: 100%; overflow: hidden; font-family: Arial, sans-serif; }
+        .caption { position: absolute; left: 11%; bottom: 70px; width: 78%; }
+        .caption-inner { display: block; padding: 16px 30px 18px; border: 2px solid rgba(242, 200, 121, 0.55); border-radius: 18px; background: rgba(33, 25, 20, 0.88); color: #f6e9cf; box-shadow: 0 14px 38px rgba(0, 0, 0, 0.38); font-size: 48px; font-weight: 700; line-height: 1.15; text-align: center; letter-spacing: -0.02em; }
+        .speaker { color: #62d6cf; margin-right: 14px; font-size: 30px; letter-spacing: 0.08em; text-transform: uppercase; vertical-align: 6px; }
+        .ari .speaker { color: #ffb534; }
+      </style>
+      <div data-hf-id="hf-p8o4" id="root" data-composition-id="captions" data-width="1920" data-height="1080" data-duration="60">
+        <div data-hf-id="hf-jul4" id="caption-01" class="clip caption" data-start="6" data-duration="3.3"><div data-hf-id="hf-mkna" class="caption-inner"><span data-hf-id="hf-l927" class="speaker">Mira</span>Inside this machine, every digit has a place.</div></div>
+        <div data-hf-id="hf-3sdf" id="caption-02" class="clip caption" data-start="13" data-duration="2.8"><div data-hf-id="hf-9hlr" class="caption-inner"><span data-hf-id="hf-awtb" class="speaker">Mira</span>Here is twenty-three: two tens and three ones.</div></div>
+        <div data-hf-id="hf-srpq" id="caption-03" class="clip caption" data-start="21" data-duration="3.6"><div data-hf-id="hf-7qco" class="caption-inner"><span data-hf-id="hf-aiia" class="speaker">Mira</span>Multiply by ten, and every digit moves one place left.</div></div>
+        <div data-hf-id="hf-3e90" id="caption-04" class="clip caption ari" data-start="29.4" data-duration="2"><div data-hf-id="hf-d28w" class="caption-inner"><span data-hf-id="hf-9cs2" class="speaker">Ari</span>So we just stick a zero on the end?</div></div>
+        <div data-hf-id="hf-o333" id="caption-05" class="clip caption" data-start="32" data-duration="3.5"><div data-hf-id="hf-5im9" class="caption-inner"><span data-hf-id="hf-a479" class="speaker">Mira</span>The zero records the empty ones place. The movement is the rule.</div></div>
+        <div data-hf-id="hf-2kma" id="caption-06" class="clip caption" data-start="39" data-duration="2.9"><div data-hf-id="hf-axjb" class="caption-inner"><span data-hf-id="hf-cwcg" class="speaker">Mira</span>Your turn. What is forty-seven times ten?</div></div>
+        <div data-hf-id="hf-spsn" id="caption-07" class="clip caption ari" data-start="49.5" data-duration="1.6"><div data-hf-id="hf-uvl0" class="caption-inner"><span data-hf-id="hf-ylkm" class="speaker">Ari</span>Four hundred and seventy.</div></div>
+        <div data-hf-id="hf-ufos" id="caption-08" class="clip caption" data-start="55.8" data-duration="3.4"><div data-hf-id="hf-ueqa" class="caption-inner"><span data-hf-id="hf-ci1f" class="speaker">Mira</span>Exactly. Every digit shifted one place left.</div></div>
+      </div>
+      <script>
+        const tl = gsap.timeline({ paused: true });
+        window.__timelines.captions = tl;
+        tl.seek(0);
+      </script>
+    </template>
+  </body>
+</html>

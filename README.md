@@ -9,6 +9,14 @@ it. No paid APIs are required anywhere in the pipeline.
 Built for Apple Silicon. Every generated video is a **draft** until an educator
 reviews it.
 
+New dashboard, API, CLI and curriculum lessons default to the **KooBits-inspired
+teaching film** (`quality`): hook → concept → worked example → guided practice
+and feedback → misconception repair → independent transfer and feedback → recap.
+This selects the approved proof-derived 1080p renderer; it is not a guarantee
+that every generated lesson matches the reference quality. Review one lesson
+before scaling. Unit/all-topic generation is paused in both the API and CLI.
+Classic remains an explicit legacy option, never the default for new jobs.
+
 ## What it does
 
 ```
@@ -30,10 +38,16 @@ concept or curriculum topic
 npm install
 cp .env.example .env
 npm run check:env        # reports what is installed and what is missing
-npm start              # studio UI → http://127.0.0.1:4310
+npm run check:ui         # type-check and build the React studio
+npm start                # studio UI → http://127.0.0.1:4310
 ```
 
 - **Single concept**: open the studio, describe the lesson, generate.
+- **Storyboard mode**: review the finished film beside its teaching plan,
+  narration script, prompts, scene cards, and quality gates.
+- **Advanced mode**: expose the detailed production timeline when diagnosing a
+  run. On smaller screens the creation form becomes a guided, touch-friendly
+  sequence while preserving the same lesson data.
 - **Curriculum mode**: open `curriculum.html` (or the topbar link) to browse the
   Cambridge Primary Mathematics Stage 5 tree, generate per topic or unit, and
   work the review queue.
@@ -88,6 +102,14 @@ ignored `.openmontage` directory; see `studio-v2/worker/README.md` for provenanc
 and compatibility adjustments. Review its licence obligations before distributing
 or hosting this integration. Original graphics and synthesized music do not by
 themselves establish platform monetization eligibility or rights for user prompts.
+
+## Web studio
+
+The web studio is React + TypeScript + Vite. `npm run dev:ui` starts the Vite
+development server; `npm run build:ui` writes the production bundle to
+`public/app/`, which the local Node server serves at `/`. The previous static
+shell remains available at `/legacy.html` while its controller is migrated into
+typed React modules.
 
 ## CLI
 
@@ -236,11 +258,13 @@ not change.
 src/            pipeline: plan → voice → compose → render → verify
 curriculum/     authored curriculum trees (board, stage, subject, topics)
 content/voices/ designed-voice profiles
-public/         studio UI + curriculum/review page
+frontend/       React + TypeScript studio shell and responsive workspace
+public/         built studio assets + curriculum/review page
+app/            Flutter Studio V2 client and responsive creator workspace
 tools/          environment readiness check + teaching-pacing metrics
 assets/audio/   licence-audited music beds and their manifest
 scripts/        voice setup, Wan/ComfyUI helpers, benchmarks
-test/           node --test suite (140 tests)
+test/           node --test suite
 .fair-video/    per-run job directories with full provenance (git-ignored)
 ```
 

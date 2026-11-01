@@ -1,0 +1,33 @@
+<template>
+  <style>
+    #root { position: absolute; inset: 0; overflow: hidden; background: #160f0b; color: #fff2d2; font-family: Outfit, sans-serif; }
+    #resolve-image { position: absolute; inset: 0; width: 1920px; height: 1080px; object-fit: cover; }
+    #resolve-shade { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(13,8,5,.9), rgba(13,8,5,.48) 58%, rgba(13,8,5,.15)); }
+    #resolve-panel { position: absolute; left: 150px; top: 162px; width: 1050px; padding: 72px 82px 76px; border: 16px solid #8d602d; border-radius: 24px; background: linear-gradient(145deg, rgba(16,49,48,.96), rgba(10,35,35,.97)); box-shadow: inset 0 0 0 4px #d2a95d, inset 0 0 45px rgba(0,0,0,.42), 0 32px 72px rgba(0,0,0,.48); }
+    #resolve-kicker { color: #e7b85c; font: 600 28px/1.2 "IBM Plex Mono", monospace; letter-spacing: .15em; text-transform: uppercase; }
+    #resolve-equation { margin-top: 34px; font-size: 112px; line-height: .95; font-weight: 800; letter-spacing: -.055em; white-space: nowrap; }
+    #resolve-equation strong { color: #f0b74f; }
+    #resolve-proof { margin-top: 46px; font-size: 41px; line-height: 1.25; font-weight: 560; }
+    #resolve-rule { margin-top: 22px; color: rgba(255,242,210,.78); font-size: 31px; }
+  </style>
+  <div data-hf-id="hf-gggs" id="root" data-composition-id="resolve" data-width="1920" data-height="1080" data-duration="5">
+    <img data-hf-id="hf-7tp1" id="resolve-image" class="clip" src="assets/reference/mira-brass-workshop-v1.png" data-start="0" data-duration="5" data-track-index="1" alt="Mira in a cinematic brass workshop" />
+    <div data-hf-id="hf-ad42" id="resolve-overlay" class="clip" data-start="0" data-duration="5" data-track-index="2">
+      <div data-hf-id="hf-bsen" id="resolve-shade"></div>
+      <div data-hf-id="hf-e5ti" id="resolve-panel">
+        <div data-hf-id="hf-sh33" id="resolve-kicker">One place left</div>
+        <div data-hf-id="hf-l2ve" id="resolve-equation">23 × 10 = <strong data-hf-id="hf-ae1v">230</strong></div>
+        <div data-hf-id="hf-y1xv" id="resolve-proof">2 hundreds + 3 tens + 0 ones</div>
+        <div data-hf-id="hf-qn0k" id="resolve-rule">The digits shift. Zero holds the empty place.</div>
+      </div>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo('#resolve-panel', { opacity: 0, y: 14, filter: 'blur(9px)' }, { opacity: 1, y: 0, filter: 'blur(0px)', duration: .52, ease: 'expo.out' }, .08)
+      .fromTo('#resolve-equation strong', { opacity: 0, scale: .92, filter: 'blur(7px)' }, { opacity: 1, scale: 1, filter: 'blur(0px)', duration: .44, ease: 'back.out(1.25)' }, .82)
+      .fromTo('#resolve-proof', { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: .34, ease: 'power4.out' }, 1.42)
+      .fromTo('#resolve-rule', { opacity: 0 }, { opacity: 1, duration: .28, ease: 'power2.out' }, 2.02);
+    window.__timelines.resolve = tl;
+  </script>
+</template>

@@ -1,0 +1,104 @@
+<template
+  ><style>
+    @import url("assets/vendor/lesson.css");
+    #notice-stage {
+      position: absolute;
+      left: 240px;
+      right: 240px;
+      top: 255px;
+    }
+    .sound {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .sound-card {
+      width: 560px;
+      padding: 34px;
+      border-radius: 28px;
+      background: #f4f0e6;
+      text-align: center;
+    }
+    .phoneme {
+      margin-top: 16px;
+      font-size: 54px;
+      font-weight: 900;
+      color: #c75a25;
+    }
+    #notice-e {
+      position: absolute;
+      left: 930px;
+      top: 225px;
+    }
+    .rule {
+      position: absolute;
+      left: 250px;
+      right: 250px;
+      bottom: 105px;
+      text-align: center;
+      font-size: 42px;
+      font-weight: 900;
+    }
+  </style>
+  <div
+    id="root"
+    data-composition-id="notice"
+    data-width="1920"
+    data-height="1080"
+    data-duration="23"
+  >
+    <div class="ground"></div>
+    <div
+      id="notice-canvas"
+      class="clip canvas"
+      data-start="0"
+      data-duration="23"
+      data-track-index="1"
+    >
+      <div class="kicker">Notice the sound</div>
+      <div class="title">Silent e helps the vowel say its name</div>
+      <div id="notice-stage" class="sound">
+        <div class="sound-card">
+          <div class="word">cap</div>
+          <div class="phoneme">short a · /ă/</div>
+        </div>
+        <div class="sound-card">
+          <div class="word">cape</div>
+          <div class="phoneme">long a · /ā/</div>
+        </div>
+      </div>
+      <div id="notice-e" class="tile magic">e</div>
+      <div id="notice-rule" class="rule">
+        The final e is silent. The vowel changes.
+      </div>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo(
+      ".sound-card:first-child",
+      { opacity: 0, y: 12 },
+      { opacity: 1, y: 0, duration: 0.4, ease: "power4.out" },
+      0.4,
+    )
+      .fromTo(
+        "#notice-e",
+        { opacity: 0, x: -90 },
+        { opacity: 1, x: 0, duration: 0.55, ease: "power4.out" },
+        2.5,
+      )
+      .fromTo(
+        ".sound-card:last-child",
+        { opacity: 0, filter: "blur(6px)" },
+        { opacity: 1, filter: "blur(0px)", duration: 0.4, ease: "power4.out" },
+        3.5,
+      )
+      .fromTo(
+        "#notice-rule",
+        { opacity: 0 },
+        { opacity: 1, duration: 0.3, ease: "power2.out" },
+        13.2,
+      );
+    window.__timelines.notice = tl;
+  </script></template
+>
