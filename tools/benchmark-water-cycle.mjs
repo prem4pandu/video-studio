@@ -8,7 +8,8 @@ import { createRequire } from 'node:module';
 import { execFileSync } from 'node:child_process';
 import { renderWithOpenMontage } from '../studio-v2/worker/index.mjs';
 import { fairCommand } from '../src/utils.mjs';
-import { mascotSvg, mouthSets, visemeTimeline, idleTimeline, gestureTimeline, loadAlignmentWords } from './mascot.mjs';
+import { mascotSvg, mouthSets, visemeTimeline, idleTimeline, gestureTimeline, expressionTimeline, walkIn, stick, loadAlignmentWords } from './mascot.mjs';
+import { landscapeWorld } from './landscape.mjs';
 
 const repo = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const require = createRequire(import.meta.url);
@@ -50,10 +51,7 @@ const arrows = `
  <path id="ar-dn-head" d="M1346 858 L1330 902 L1300 872" fill="none" stroke="${P.accent}" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" opacity="0"/>
  <path id="ar-rv" d="M640 905 Q480 910 390 915" fill="none" stroke="${P.accent}" stroke-width="10" stroke-linecap="round" stroke-dasharray="300" stroke-dashoffset="300" opacity="0"/>`;
 
-const world = `${mountainsFar}${mountainsNear}${hills}${ocean}${sun}
- ${cloudG('cloud-a', 420, 250, 1)}${cloudG('cloud-b', 1050, 160, 0.72)}${cloudG('cloud-main', 1010, 330, 1.15)}
- ${river}${vapor}${rain}${ripples}${arrows}
- ${stageLabel('lab-evap', 'EVAPORATION', 850, 720)}${stageLabel('lab-cond', 'CONDENSATION', 1010, 90)}${stageLabel('lab-rain', 'PRECIPITATION', 1440, 700)}${stageLabel('lab-coll', 'COLLECTION', 300, 860)}`;
+const world = landscapeWorld();
 
 const captionsArr = [
   { text: 'Welcome to the water cycle — a never-ending journey that moves water around our planet.', start: .35, end: 9.4 },
@@ -79,7 +77,7 @@ h1{position:absolute;left:120px;top:90px;margin:0;font-size:74px;font-weight:700
 ${captionsArr.map((c, i) => `<div id="cap-${i}" class="clip caption" data-start="${c.start}" data-duration="${(c.end - c.start).toFixed(3)}" data-track-index="4"><span>${esc(c.text)}</span></div>`).join('')}
 <script>const motion=d=>matchMedia('(prefers-reduced-motion: reduce)').matches?.01:d;const tl=gsap.timeline({paused:true});
 const cam='#cam';
-tl.from('#mascot',{y:430,duration:motion(.7),ease:'back.out(1.6)'},0.05);
+
 tl.fromTo('#bm-title',{opacity:0,y:26},{opacity:1,y:0,duration:motion(.8)},0.2);
 tl.fromTo('#sun',{scale:.7,transformOrigin:'50% 50%'},{scale:1,duration:motion(1.4),ease:'power2.out'},0.3);
 tl.fromTo('#cloud-a,#cloud-b,#cloud-main',{opacity:0,x:-40},{opacity:1,x:0,stagger:.3,duration:motion(1.0)},0.5);
@@ -123,7 +121,10 @@ for (const [name, start] of [['scene-1', 0.35], ['scene-2', 9.85], ['scene-6', 2
   if (words) performance += visemeTimeline('mascot', words, start);
 }
 performance += idleTimeline('mascot', 31);
-performance += gestureTimeline('mascot', { celebrate: [25.6, 28.5], point: [24.7, 27.5], lean: [20.0] });
+performance += walkIn('mascot', 0.05, 1.5);
+performance += expressionTimeline('mascot', { confused: [{ at: 12.2, hold: 1.3 }], thinking: [{ at: 19.9, hold: 1.5 }], excited: [{ at: 25.6, hold: 1.6 }, { at: 28.5, hold: 1.4 }] });
+performance += gestureTimeline('mascot', { celebrate: [25.7, 28.6] });
+performance += stick('mascot', [24.7, 27.5]);
 const finalHtml = html.replace('PERFORMANCE', performance);
 
 await mkdir(join(workspace, 'compositions'), { recursive: true });

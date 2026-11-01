@@ -1,0 +1,1997 @@
+{
+  "source": "derived from KooBits public lesson catalog (topics/ages only)",
+  "subjects": {
+    "Math": {
+      "topics": {
+        "2D Shapes 1": {
+          "lessons": [
+            {
+              "title": "Drawing with Shapes",
+              "activityTypes": [
+                "Fun with Math",
+                "Watch and Learn"
+              ],
+              "ageMin": 7,
+              "ageMax": 8
+            },
+            {
+              "title": "What Comes Next?",
+              "activityTypes": [
+                "Fun with Math",
+                "Watch and Learn"
+              ],
+              "ageMin": 7,
+              "ageMax": 8
+            }
+          ],
+          "ageMin": 7,
+          "ageMax": 8
+        },
+        "2D Shapes 2": {
+          "lessons": [
+            {
+              "title": "Squares & Rectangles",
+              "activityTypes": [
+                "Fun with Math",
+                "Watch and Learn"
+              ],
+              "ageMin": 9,
+              "ageMax": 10
+            },
+            {
+              "title": "Triangles",
+              "activityTypes": [
+                "Fun with Math",
+                "Watch and Learn"
+              ],
+              "ageMin": 10,
+              "ageMax": 12
+            }
+          ],
+          "ageMin": 9,
+          "ageMax": 12
+        },
+        "3D Shapes": {
+          "lessons": [
+            {
+              "title": "Identifying 3D Shapes",
+              "activityTypes": [
+                "Fun with Math",
+                "Watch and Learn"
+              ],
+              "ageMin": 7,
+              "ageMax": 9
+            },
+            {
+              "title": "Identifying Prisms & Pyramids",
+              "activityTypes": [
+                "Fun with Math",
+                "Watch and Learn"
+              ],
+              "ageMin": 11,
+              "ageMax": 13
+            },
+            {
+              "title": "Identifying Nets & their Solids",
+              "activityTypes": [
+                "Fun with Math",
+                "Watch and Learn"
+              ],
+              "ageMin": 11,
+              "ageMax": 13
+            }
+          ],
+          "ageMin": 7,
+          "ageMax": 13
+        },
+        "Angles": {
+          "lessons": [
+            {
+              "title": "Angles Around Us",
+              "activityTypes": [
+                "Fun with Math",
+                "Watch and Learn"
+              ],
+              "ageMin": 9,
+              "ageMax": 10
+            }
+          ],
+          "ageMin": 9,
+          "ageMax": 10
+        },
+        "Area of Triangle": {
+          "lessons": [
+            {
+              "title": "Identify the base and corresponding height of a triangle",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Calculate the area of a triangle given a base and corresponding height",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Find area of a triangle",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Find area involving triangles and rectangles",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Find area involving triangles",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            }
+          ],
+          "ageMin": null,
+          "ageMax": null
+        },
+        "Area of Triangle (Word Problem)": {
+          "lessons": [
+            {
+              "title": "Find the area and perimeter of parts of a figure",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Find area and perimeter of a figure made up of square, rectangle and triangle",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            }
+          ],
+          "ageMin": null,
+          "ageMax": null
+        },
+        "Average": {
+          "lessons": [
+            {
+              "title": "Average of a Set of Data",
+              "activityTypes": [
+                "Fun with Math",
+                "Watch and Learn"
+              ],
+              "ageMin": 10,
+              "ageMax": 12
+            }
+          ],
+          "ageMin": 10,
+          "ageMax": 12
+        },
+        "Decimals": {
+          "lessons": [
+            {
+              "title": "Convert from kilograms to grams",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Convert from grams to kilograms",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Convert from centimetres to metres",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Convert from kilometres to metres",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Convert from litres to millilitres",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Convert between ℓ, ml and cm³",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Multiply by 10",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Multiply by 100",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Multiply by 1000",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Divide by 10",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Divide by 100",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Divide by 1000",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Multiply decimals by tens",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Multiply by hundreds",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Multiply by thousands",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Divide decimals by tens",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Divide by hundreds",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Divide by thousands",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            }
+          ],
+          "ageMin": null,
+          "ageMax": null
+        },
+        "Decimals (Word Problem)": {
+          "lessons": [
+            {
+              "title": "Find fraction of a measurement unit involving conversion of units",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Conversion from fraction to decimal, operation on decimals, & rounding",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Given unit price, item quantity and total amount, find change amount",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Given operations & final value, find mystery number",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Given item quantity, unit mass & final mass, find initial mass",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Find number expressed in tens/hundreds/thousands and tenths/hundredths/thousandths",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Given unit distance, quantity & additional distance, find total distance",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Given total height, height relationship among 3 people, find height of one person",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Given total amount & repeated quantity among parties, find amount for one party",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            }
+          ],
+          "ageMin": null,
+          "ageMax": null
+        },
+        "Decimals 1": {
+          "lessons": [
+            {
+              "title": "Tenths",
+              "activityTypes": [
+                "Fun with Math",
+                "Watch and Learn"
+              ],
+              "ageMin": 9,
+              "ageMax": 11
+            },
+            {
+              "title": "Hundredths",
+              "activityTypes": [
+                "Fun with Math",
+                "Watch and Learn"
+              ],
+              "ageMin": 9,
+              "ageMax": 11
+            },
+            {
+              "title": "Thousandths",
+              "activityTypes": [
+                "Fun with Math",
+                "Watch and Learn"
+              ],
+              "ageMin": 9,
+              "ageMax": 11
+            },
+            {
+              "title": "Comparing Decimals",
+              "activityTypes": [
+                "Fun with Math",
+                "Watch and Learn"
+              ],
+              "ageMin": 9,
+              "ageMax": 11
+            },
+            {
+              "title": "Rounding Decimals",
+              "activityTypes": [
+                "Fun with Math",
+                "Watch and Learn"
+              ],
+              "ageMin": 9,
+              "ageMax": 12
+            }
+          ],
+          "ageMin": 9,
+          "ageMax": 12
+        },
+        "Decimals 2": {
+          "lessons": [
+            {
+              "title": "Adding Decimals",
+              "activityTypes": [
+                "Fun with Math",
+                "Watch and Learn"
+              ],
+              "ageMin": 9,
+              "ageMax": 11
+            },
+            {
+              "title": "Subtracting Decimals",
+              "activityTypes": [
+                "Fun with Math",
+                "Watch and Learn"
+              ],
+              "ageMin": 9,
+              "ageMax": 11
+            }
+          ],
+          "ageMin": 9,
+          "ageMax": 11
+        },
+        "Four Operations of Fractions": {
+          "lessons": [
+            {
+              "title": "Add involving mixed numbers without regrouping",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Add involving mixed numbers with regrouping",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Subtract involving mixed numbers without regrouping",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Subtract involving mixed numbers with regrouping",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Multiply proper fractions",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Multiply a proper fraction and a whole number",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Multiply mixed numbers by whole numbers",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Multiply improper fractions by proper fractions",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Multiply an improper fraction by an improper fraction",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Multiply an improper fraction and a whole number",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Express the product of a mixed number and a whole number as a decimal",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Fraction of a remainder",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Solve word problems involving multiplying with proper fractions",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Solve world problems involving multiplication of fractions",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Solve two-step problems involving multiplying with mixed numbers",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            }
+          ],
+          "ageMin": null,
+          "ageMax": null
+        },
+        "Four Operations of Fractions (Word Problem)": {
+          "lessons": [
+            {
+              "title": "Given total mass expressed in fraction",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Given fractional quantity, absolute quantity of one group & sub-groups relationship",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Given relationship between fractional & repeated-quantity values, find the value of a number",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Given fractional quantity & absolute quantities of items",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Given fractional quantity, absolute quantity, & repeated-quantity relationship",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Given total quantity of combinations involving a common item",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Given a number & fractional relationship among different numbers, find total value",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Given fractional amount & absolute transfer amounts, find an absolute amount",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Given fractional amount & absolute amount in repeated-quantity, find the total amount",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Given repeated-quantity & fractional relationship, find the total amount",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Given unit value & fractional relationship",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Given fractional savings amount & difference in total savings",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Given total amount, fractional & absolute relationship",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Given total amount & repeated-quantity relationship between a unit value and a fraction",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Given fraction and the increase in fraction & value",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            }
+          ],
+          "ageMin": null,
+          "ageMax": null
+        },
+        "Four Operations of Whole Numbers": {
+          "lessons": [
+            {
+              "title": "Multiply by 100",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Multiply by 1000",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Multiply by hundreds",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Multiply by thousands",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Divide by 10",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Divide by 100",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Divide by 1000",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Divide by tens",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Divide by hundreds",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Divide by thousands",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Calculate, involving only addition and subtraction",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Calculate, involving only multiplication and division",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Rules for order of operations on numbers (without brackets)",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Rules for order of operations on numbers (with brackets)",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Find the tens/hundreds/thousands to be added to a number to obtain a given value",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Find the difference between two numbers rounded to the nearest tens/hundreds/thousands",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Use rounding to estimate quotients",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Estimate quotients using compatible numbers",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Solve multi-step problems involving whole numbers",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Solve word problems using guess and check",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            }
+          ],
+          "ageMin": null,
+          "ageMax": null
+        },
+        "Four Operations of Whole Numbers (Word Problem)": {
+          "lessons": [
+            {
+              "title": "Given events of operations & final value",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Find the mass of a container given total mass with different quantity of items",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Find the age of a person given the age difference and repeated-quantity relationship between the persons some years later",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Given total amount, repeated-quantity & a difference relationship, find the amount for one person",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Given transfer amount & relationship between two persons before and after the transfer, find final amount for one person",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Given the amount of spending and repeated-quantity relationship, find the final amount for a person",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Given the initial repeated-quantity relationship and the change in amount/quantity, find initial total amount/quantity",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Given total value & quantities of notes exchanged",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Given quantity-cost relationship & repeated-quantity relationship between items",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Given quantity-cost relationship & absolute cost difference between items",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            }
+          ],
+          "ageMin": null,
+          "ageMax": null
+        },
+        "Fractions 1": {
+          "lessons": [
+            {
+              "title": "Equal Parts of a Whole",
+              "activityTypes": [
+                "Fun with Math",
+                "Watch and Learn"
+              ],
+              "ageMin": 7,
+              "ageMax": 9
+            },
+            {
+              "title": "Unit Fractions",
+              "activityTypes": [
+                "Fun with Math",
+                "Watch and Learn"
+              ],
+              "ageMin": 7,
+              "ageMax": 9
+            },
+            {
+              "title": "Comparing Unit Fractions",
+              "activityTypes": [
+                "Fun with Math",
+                "Watch and Learn"
+              ],
+              "ageMin": 7,
+              "ageMax": 9
+            },
+            {
+              "title": "Like Fractions",
+              "activityTypes": [
+                "Fun with Math"
+              ],
+              "ageMin": 7,
+              "ageMax": 9
+            },
+            {
+              "title": "Adding & Subtracting Like Fractions",
+              "activityTypes": [
+                "Fun with Math",
+                "Watch and Learn"
+              ],
+              "ageMin": 7,
+              "ageMax": 9
+            }
+          ],
+          "ageMin": 7,
+          "ageMax": 9
+        },
+        "Fractions 2": {
+          "lessons": [
+            {
+              "title": "Equivalent Fractions",
+              "activityTypes": [
+                "Fun with Math",
+                "Watch and Learn"
+              ],
+              "ageMin": 8,
+              "ageMax": 10
+            },
+            {
+              "title": "Comparing Unlike Fractions",
+              "activityTypes": [
+                "Fun with Math",
+                "Watch and Learn"
+              ],
+              "ageMin": 8,
+              "ageMax": 10
+            },
+            {
+              "title": "Addition & Subtraction of Unlike Fractions",
+              "activityTypes": [
+                "Fun with Math",
+                "Watch and Learn"
+              ],
+              "ageMin": 8,
+              "ageMax": 10
+            },
+            {
+              "title": "Mixed Numbers & Improper Fractions",
+              "activityTypes": [
+                "Fun with Math",
+                "Watch and Learn"
+              ],
+              "ageMin": 9,
+              "ageMax": 11
+            },
+            {
+              "title": "Addition & Subtraction of Mixed Numbers & Unrelated Fractions",
+              "activityTypes": [
+                "Fun with Math",
+                "Watch and Learn"
+              ],
+              "ageMin": 9,
+              "ageMax": 11
+            }
+          ],
+          "ageMin": 8,
+          "ageMax": 11
+        },
+        "Fractions 3": {
+          "lessons": [
+            {
+              "title": "Fraction of a Set",
+              "activityTypes": [
+                "Fun with Math",
+                "Watch and Learn"
+              ],
+              "ageMin": 9,
+              "ageMax": 11
+            }
+          ],
+          "ageMin": 9,
+          "ageMax": 11
+        },
+        "Fractions and Division": {
+          "lessons": [
+            {
+              "title": "Express division as fractions",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Express division as mixed numbers",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Express fractions as decimals",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Express division as decimals",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Express mixed numbers as decimals",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Division of whole numbers as fractions",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            }
+          ],
+          "ageMin": null,
+          "ageMax": null
+        },
+        "Graphs, Tables & Charts": {
+          "lessons": [
+            {
+              "title": "Picture Graphs",
+              "activityTypes": [
+                "Fun with Math",
+                "Watch and Learn"
+              ],
+              "ageMin": 6,
+              "ageMax": 8
+            },
+            {
+              "title": "Picture Graphs with Scales",
+              "activityTypes": [
+                "Fun with Math",
+                "Watch and Learn"
+              ],
+              "ageMin": 7,
+              "ageMax": 9
+            },
+            {
+              "title": "Bar Graphs",
+              "activityTypes": [
+                "Fun with Math",
+                "Watch and Learn"
+              ],
+              "ageMin": 8,
+              "ageMax": 10
+            },
+            {
+              "title": "Table & Line Graphs",
+              "activityTypes": [
+                "Fun with Math",
+                "Watch and Learn"
+              ],
+              "ageMin": 9,
+              "ageMax": 11
+            }
+          ],
+          "ageMin": 6,
+          "ageMax": 11
+        },
+        "Lines & Symmetry": {
+          "lessons": [
+            {
+              "title": "Perpendicular and Parallel lines",
+              "activityTypes": [
+                "Fun with Math",
+                "Watch and Learn"
+              ],
+              "ageMin": 8,
+              "ageMax": 10
+            },
+            {
+              "title": "The Beauty of Symmetry",
+              "activityTypes": [
+                "Fun with Math",
+                "Watch and Learn"
+              ],
+              "ageMin": 9,
+              "ageMax": 10
+            }
+          ],
+          "ageMin": 8,
+          "ageMax": 10
+        },
+        "Mass": {
+          "lessons": [
+            {
+              "title": "Mass and its History",
+              "activityTypes": [
+                "Fun with Math",
+                "Watch and Learn"
+              ],
+              "ageMin": 8,
+              "ageMax": 9
+            },
+            {
+              "title": "Mass and Capacity",
+              "activityTypes": [
+                "Fun with Math",
+                "Watch and Learn"
+              ],
+              "ageMin": 8,
+              "ageMax": 9
+            }
+          ],
+          "ageMin": 8,
+          "ageMax": 9
+        },
+        "Money": {
+          "lessons": [
+            {
+              "title": "Counting Money",
+              "activityTypes": [
+                "Fun with Math",
+                "Watch and Learn"
+              ],
+              "ageMin": 6,
+              "ageMax": 8
+            },
+            {
+              "title": "Representing Money Differently",
+              "activityTypes": [
+                "Fun with Math",
+                "Watch and Learn"
+              ],
+              "ageMin": 7,
+              "ageMax": 9
+            }
+          ],
+          "ageMin": 6,
+          "ageMax": 9
+        },
+        "Numbers to 10 Million": {
+          "lessons": [
+            {
+              "title": "Count on and back to 1 000 000 in hundred thousands",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Count on and back to 10 000 000 in millions",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Write numbers to 1 000 000 in numerals",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Write numbers to 1 000 000 in words",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Write numbers to 10 000 000 in numerals",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Write numbers to 10 000 000 in words",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Identify values and place values up to 1 000 000",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Write numbers to 1 000 000 in expanded form",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Identify values and place values up to 10 000 000",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Compare numbers to 1 000 000 using greater than and less than",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Compare numbers up to 10 000 000",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Write numbers to 10 000 000 in expanded form",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Complete number patterns involving numbers to 10 000 000",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            }
+          ],
+          "ageMin": null,
+          "ageMax": null
+        },
+        "Rate": {
+          "lessons": [
+            {
+              "title": "Find rates given two quantities",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Find rates with one quantity involving money",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Find one quantity given rate and another quantity",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Find one quantity given rate and another quantity involving money",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Solve rate word problems",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Solve word problems with 2 or more rates involving money",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            }
+          ],
+          "ageMin": null,
+          "ageMax": null
+        },
+        "Rate (Word Problem)": {
+          "lessons": [
+            {
+              "title": "Finding Rates involving Money",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Finding Total Amount involving Time",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Finding Rates involving Time",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            }
+          ],
+          "ageMin": null,
+          "ageMax": null
+        },
+        "Time": {
+          "lessons": [
+            {
+              "title": "History of Time & Parts of the Day",
+              "activityTypes": [
+                "Fun with Math",
+                "Watch and Learn"
+              ],
+              "ageMin": 6,
+              "ageMax": 8
+            },
+            {
+              "title": "A.M. & P.M",
+              "activityTypes": [
+                "Fun with Math",
+                "Watch and Learn"
+              ],
+              "ageMin": 7,
+              "ageMax": 9
+            },
+            {
+              "title": "The Traditional Clock",
+              "activityTypes": [
+                "Fun with Math",
+                "Watch and Learn"
+              ],
+              "ageMin": 7,
+              "ageMax": 10
+            },
+            {
+              "title": "Timetable",
+              "activityTypes": [
+                "Fun with Math",
+                "Watch and Learn"
+              ],
+              "ageMin": 8,
+              "ageMax": 10
+            },
+            {
+              "title": "Time & Duration",
+              "activityTypes": [
+                "Fun with Math",
+                "Watch and Learn"
+              ],
+              "ageMin": 8,
+              "ageMax": 10
+            },
+            {
+              "title": "Seconds",
+              "activityTypes": [
+                "Fun with Math",
+                "Watch and Learn"
+              ],
+              "ageMin": 9,
+              "ageMax": 11
+            }
+          ],
+          "ageMin": 6,
+          "ageMax": 11
+        },
+        "Volume": {
+          "lessons": [
+            {
+              "title": "Measure volume in cubic units",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Measure volume of a figure made up of cubes",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Find volume of a cube or cuboid by computing the product of its length, breadth and height",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Volume of liquid in cubic centimetres and cubic metres",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Find one dimension of a cuboid knowing its volume and other dimensions",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Solve up to 3-step word problems involving volume of cuboids",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            }
+          ],
+          "ageMin": null,
+          "ageMax": null
+        },
+        "Volume (Word Problem)": {
+          "lessons": [
+            {
+              "title": "Given total volume & quantity, find edge of a cube",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Given dimensions of a container & fractional volume, find absolute differential volume",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Given dimension of one container, fractional volume & base area of another container",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Given base area of container & rate of flow, find absolute volume of water",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            },
+            {
+              "title": "Given base area, rate of flow & absolute volume, find height",
+              "activityTypes": [
+                "Tutorial"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            }
+          ],
+          "ageMin": null,
+          "ageMax": null
+        },
+        "Volume 1": {
+          "lessons": [
+            {
+              "title": "Measuring Volume in Litres",
+              "activityTypes": [
+                "Fun with Math",
+                "Watch and Learn"
+              ],
+              "ageMin": 7,
+              "ageMax": 9
+            },
+            {
+              "title": "Comparing Volumes in Litres",
+              "activityTypes": [
+                "Fun with Math",
+                "Watch and Learn"
+              ],
+              "ageMin": 7,
+              "ageMax": 9
+            },
+            {
+              "title": "Capacity & Volume",
+              "activityTypes": [
+                "Fun with Math",
+                "Watch and Learn"
+              ],
+              "ageMin": 8,
+              "ageMax": 10
+            }
+          ],
+          "ageMin": 7,
+          "ageMax": 10
+        },
+        "Whole Numbers 1": {
+          "lessons": [
+            {
+              "title": "Numbers to 10",
+              "activityTypes": [
+                "Fun with Math",
+                "Watch and Learn"
+              ],
+              "ageMin": 6,
+              "ageMax": 8
+            },
+            {
+              "title": "Comparing Numbers (within 10)",
+              "activityTypes": [
+                "Fun with Math",
+                "Watch and Learn"
+              ],
+              "ageMin": 6,
+              "ageMax": 8
+            },
+            {
+              "title": "Number Positions",
+              "activityTypes": [
+                "Fun with Math",
+                "Watch and Learn"
+              ],
+              "ageMin": 6,
+              "ageMax": 8
+            },
+            {
+              "title": "Numbers to 20",
+              "activityTypes": [
+                "Fun with Math",
+                "Watch and Learn"
+              ],
+              "ageMin": 6,
+              "ageMax": 8
+            },
+            {
+              "title": "Comparing Numbers (within 20)",
+              "activityTypes": [
+                "Fun with Math",
+                "Watch and Learn"
+              ],
+              "ageMin": 6,
+              "ageMax": 8
+            },
+            {
+              "title": "Numbers to 40",
+              "activityTypes": [
+                "Fun with Math",
+                "Watch and Learn"
+              ],
+              "ageMin": 6,
+              "ageMax": 8
+            },
+            {
+              "title": "Numbers to 100",
+              "activityTypes": [
+                "Fun with Math",
+                "Watch and Learn"
+              ],
+              "ageMin": 6,
+              "ageMax": 8
+            }
+          ],
+          "ageMin": 6,
+          "ageMax": 8
+        },
+        "Whole Numbers 2": {
+          "lessons": [
+            {
+              "title": "Numbers to 1000",
+              "activityTypes": [
+                "Fun with Math",
+                "Watch and Learn"
+              ],
+              "ageMin": 7,
+              "ageMax": 9
+            },
+            {
+              "title": "Comparing Numbers (within 1000)",
+              "activityTypes": [
+                "Fun with Math",
+                "Watch and Learn"
+              ],
+              "ageMin": 7,
+              "ageMax": 9
+            },
+            {
+              "title": "Odd & Even Numbers",
+              "activityTypes": [
+                "Fun with Math",
+                "Watch and Learn"
+              ],
+              "ageMin": 7,
+              "ageMax": 9
+            },
+            {
+              "title": "Numbers to 10 000",
+              "activityTypes": [
+                "Fun with Math",
+                "Watch and Learn"
+              ],
+              "ageMin": 8,
+              "ageMax": 10
+            },
+            {
+              "title": "Comparing Numbers (within 10 000)",
+              "activityTypes": [
+                "Fun with Math",
+                "Watch and Learn"
+              ],
+              "ageMin": 8,
+              "ageMax": 10
+            },
+            {
+              "title": "Numbers to 100 000",
+              "activityTypes": [
+                "Fun with Math",
+                "Watch and Learn"
+              ],
+              "ageMin": 9,
+              "ageMax": 11
+            },
+            {
+              "title": "Rounding & Estimating Numbers",
+              "activityTypes": [
+                "Fun with Math",
+                "Watch and Learn"
+              ],
+              "ageMin": 9,
+              "ageMax": 11
+            },
+            {
+              "title": "Numbers to 10 Million",
+              "activityTypes": [
+                "Fun with Math",
+                "Watch and Learn"
+              ],
+              "ageMin": 10,
+              "ageMax": 12
+            },
+            {
+              "title": "Comparing Numbers (within 10 Million)",
+              "activityTypes": [
+                "Fun with Math",
+                "Watch and Learn"
+              ],
+              "ageMin": 10,
+              "ageMax": 12
+            }
+          ],
+          "ageMin": 7,
+          "ageMax": 12
+        },
+        "Whole Numbers 3": {
+          "lessons": [
+            {
+              "title": "Adding within 10",
+              "activityTypes": [
+                "Fun with Math",
+                "Watch and Learn"
+              ],
+              "ageMin": 6,
+              "ageMax": 8
+            },
+            {
+              "title": "Subtracting within 10",
+              "activityTypes": [
+                "Fun with Math",
+                "Watch and Learn"
+              ],
+              "ageMin": 6,
+              "ageMax": 8
+            },
+            {
+              "title": "Adding & Subtracting within 20",
+              "activityTypes": [
+                "Fun with Math",
+                "Watch and Learn"
+              ],
+              "ageMin": 6,
+              "ageMax": 8
+            },
+            {
+              "title": "Adding & Subtracting within 100",
+              "activityTypes": [
+                "Fun with Math",
+                "Watch and Learn"
+              ],
+              "ageMin": 6,
+              "ageMax": 8
+            },
+            {
+              "title": "Adding & Subtracting within 1000",
+              "activityTypes": [
+                "Fun with Math",
+                "Watch and Learn"
+              ],
+              "ageMin": 7,
+              "ageMax": 9
+            }
+          ],
+          "ageMin": 6,
+          "ageMax": 9
+        },
+        "Whole Numbers 4": {
+          "lessons": [
+            {
+              "title": "What is Multiplication?",
+              "activityTypes": [
+                "Fun with Math",
+                "Watch and Learn"
+              ],
+              "ageMin": 6,
+              "ageMax": 8
+            }
+          ],
+          "ageMin": 6,
+          "ageMax": 8
+        }
+      }
+    },
+    "Science": {
+      "topics": {
+        "Life Cycles of Plants and Animals": {
+          "lessons": [
+            {
+              "title": "Life Cycles of Plants and Animals",
+              "activityTypes": [
+                "Animated skill explanation"
+              ],
+              "ageMin": null,
+              "ageMax": null
+            }
+          ],
+          "ageMin": null,
+          "ageMax": null
+        },
+        "Living & Non Living Things: Real Life": {
+          "lessons": [
+            {
+              "title": "How do we know that robots are non-living things?",
+              "activityTypes": [
+                "Fun with Science"
+              ],
+              "ageMin": 6,
+              "ageMax": 8
+            }
+          ],
+          "ageMin": 6,
+          "ageMax": 8
+        }
+      }
+    }
+  },
+  "teachingBeats": [
+    "hook",
+    "goal",
+    "model",
+    "predict",
+    "example",
+    "practice",
+    "misconception",
+    "transfer",
+    "recap"
+  ],
+  "lessonLoop": [
+    "diagnose prerequisite and misconception",
+    "hook with a meaningful problem, phenomenon or story",
+    "state a child-readable learning goal",
+    "explain with one coherent visual model",
+    "pause for prediction before revealing",
+    "model one worked example with narrated reasoning",
+    "do-with-me interaction with hints that fade",
+    "independent check with misconception-specific feedback",
+    "transfer to a new context or representation",
+    "retrieval recap and scheduled later review"
+  ],
+  "subjectGrammars": {
+    "Math": "concrete to pictorial to symbolic; worked examples; variation; multiple strategies; reasoning aloud; common-error contrast",
+    "Science": "phenomenon to prediction to evidence/investigation to model to claim-evidence-reasoning; explicit vocabulary; distinguish observation from inference; show model limits and safety",
+    "English": "meaning in context; pronunciation/decoding; fluent model; vocabulary morphology; text evidence; discussion; guided-to-independent writing",
+    "Chinese": "form-sound-meaning linkage; tone and listening discrimination; pinyin scaffolding that fades; radicals and components; stroke animation; receptive practice then spoken/written production"
+  },
+  "ageBands": {
+    "4-6": {
+      "unitMinutes": [
+        2,
+        4
+      ],
+      "principles": [
+        "one idea per scene",
+        "concrete manipulation",
+        "immediate feedback",
+        "minimal text"
+      ]
+    },
+    "7-10": {
+      "unitMinutes": [
+        4,
+        7
+      ],
+      "principles": [
+        "guided prediction",
+        "dual representations",
+        "short independent check"
+      ]
+    },
+    "11-12": {
+      "unitMinutes": [
+        6,
+        9
+      ],
+      "principles": [
+        "misconception contrasts",
+        "learner explanations",
+        "multi-step transfer"
+      ]
+    },
+    "13-15": {
+      "unitMinutes": [
+        7,
+        12
+      ],
+      "principles": [
+        "abstraction",
+        "evidence evaluation",
+        "multiple solution paths",
+        "reflection and spaced retrieval"
+      ]
+    }
+  }
+}
