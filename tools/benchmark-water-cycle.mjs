@@ -8,6 +8,7 @@ import { createRequire } from 'node:module';
 import { execFileSync } from 'node:child_process';
 import { renderWithOpenMontage } from '../studio-v2/worker/index.mjs';
 import { fairCommand } from '../src/utils.mjs';
+import { mascotSvg, mouthSets, visemeTimeline, idleTimeline, gestureTimeline, loadAlignmentWords } from './mascot.mjs';
 
 const repo = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const require = createRequire(import.meta.url);
@@ -74,10 +75,11 @@ h1{position:absolute;left:120px;top:90px;margin:0;font-size:74px;font-weight:700
 </style><div id="root" data-composition-id="bm" data-width="1920" data-height="1080" data-duration="31">
 <h1 id="bm-title">The Water Cycle</h1>
 <svg id="view" viewBox="0 0 1920 1080"><defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#bfe3f0"/><stop offset=".62" stop-color="#eaf6f8"/><stop offset="1" stop-color="#fdf6e0"/></linearGradient></defs>
-<rect x="-100" y="-100" width="2200" height="1300" fill="url(#sky)" data-layout-allow-overflow/><g id="cam" data-layout-allow-overflow>${world}</g></svg>
+<rect x="-100" y="-100" width="2200" height="1300" fill="url(#sky)" data-layout-allow-overflow/><g id="cam" data-layout-allow-overflow>${world}</g>${mascotSvg('mascot')}</svg>
 ${captionsArr.map((c, i) => `<div id="cap-${i}" class="clip caption" data-start="${c.start}" data-duration="${(c.end - c.start).toFixed(3)}" data-track-index="4"><span>${esc(c.text)}</span></div>`).join('')}
 <script>const motion=d=>matchMedia('(prefers-reduced-motion: reduce)').matches?.01:d;const tl=gsap.timeline({paused:true});
 const cam='#cam';
+tl.from('#mascot',{y:430,duration:motion(.7),ease:'back.out(1.6)'},0.05);
 tl.fromTo('#bm-title',{opacity:0,y:26},{opacity:1,y:0,duration:motion(.8)},0.2);
 tl.fromTo('#sun',{scale:.7,transformOrigin:'50% 50%'},{scale:1,duration:motion(1.4),ease:'power2.out'},0.3);
 tl.fromTo('#cloud-a,#cloud-b,#cloud-main',{opacity:0,x:-40},{opacity:1,x:0,stagger:.3,duration:motion(1.0)},0.5);
@@ -110,14 +112,25 @@ tl.fromTo('#ar-dn',{strokeDashoffset:260},{strokeDashoffset:0,duration:motion(1.
 tl.to('#ar-dn-head',{opacity:1,duration:motion(.3)},28.3);tl.to('#lab-rain',{opacity:1,duration:motion(.5)},28.4);
 tl.to('#lab-coll',{opacity:1,duration:motion(.5)},29.0);tl.to('#ar-rv',{opacity:1,strokeDashoffset:0,duration:motion(.6)},29.0);
 tl.to('#root',{opacity:0,duration:motion(.4)},30.5);
+PERFORMANCE
 window.__timelines['bm']=tl;</script></div></template>`;
 
-// ---- build workspace, render, mux, verify ---------------------------------
+// ---- mascot performance: real alignment-driven lip-sync -------------------
+let performance = '';
+const alignDir = join(repo, '.fair-video/studio-v2/c336b84e-ced4-4674-917d-5eea904c37af/project/audio');
+for (const [name, start] of [['scene-1', 0.35], ['scene-2', 9.85], ['scene-6', 22.15]]) {
+  const words = await loadAlignmentWords(join(alignDir, `${name}.wav.alignment.json`));
+  if (words) performance += visemeTimeline('mascot', words, start);
+}
+performance += idleTimeline('mascot', 31);
+performance += gestureTimeline('mascot', { celebrate: [25.6, 28.5], point: [24.7, 27.5], lean: [20.0] });
+const finalHtml = html.replace('PERFORMANCE', performance);
+
 await mkdir(join(workspace, 'compositions'), { recursive: true });
 await mkdir(join(workspace, 'assets/fonts'), { recursive: true });
 for (const f of ['Inter-Regular.ttf', 'Inter-Bold.ttf']) await copyFile(join(repo, 'app/fonts', f), join(workspace, 'assets/fonts', f));
 await copyFile(require.resolve('gsap/dist/gsap.min.js'), join(workspace, 'assets/gsap.min.js'));
-await writeFile(join(workspace, 'compositions/bm.html'), html);
+await writeFile(join(workspace, 'compositions/bm.html'), finalHtml);
 
 const voices = [
   { file: join(job, 'scene-1.wav'), start: .35 },
