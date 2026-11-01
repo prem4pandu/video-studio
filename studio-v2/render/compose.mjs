@@ -84,10 +84,75 @@ function motifSvg(motif,p,state='growing',gentleRain=false,hotSun=false){
  }
 }
 
+function iconFor(text){
+ const t=String(text).toLowerCase();
+ if(/\b(sun|solar|heat\w*|warm\w*|energy|light)\b/.test(t))return 'sun';
+ if(/\b(cloud\w*|condens\w*|vapou?r|fog|steam|sky)\b/.test(t))return 'cloud';
+ if(/\b(rain\w*|precip\w*|snow|storm|drizzle|hail|sleet|shower)\b/.test(t))return 'rain';
+ if(/\b(river|ocean|sea|lake|water|wave|collect\w*|stream|runoff|ground\w*|pool|flow)\b/.test(t))return 'wave';
+ if(/\b(plant|leaf|leaves|seed\w*|grow\w*|bloom|flower|soil|root|tree|garden)\b/.test(t))return 'leaf';
+ if(/\b(rocket|launch|space|planet|moon|star|orbit)\b/.test(t))return 'rocket';
+ if(/\b(idea|think|brain|learn|question|why|how|know|understand)\b/.test(t))return 'bulb';
+ if(/\b(chart|graph|data|percent|measure|number|count|sales|growth|stat)\b/.test(t))return 'chart';
+ if(/\b(money|cost|price|sell|buy|pay|dollar|income|budget|rupee|save)\b/.test(t))return 'coin';
+ if(/\b(time|clock|hour|minute|schedule|deadline|fast|slow|long)\b/.test(t))return 'clock';
+ if(/\b(people|person|team|user|student|kid|child|audience|customer|teacher|human|class)\b/.test(t))return 'person';
+ if(/\b(check|done|complete|finish|success|win|goal|target|answer|result|correct)\b/.test(t))return 'check';
+ if(/\b(warn|danger|risk|alert|problem|fail|error|wrong|avoid)\b/.test(t))return 'warn';
+ if(/\b(gear|setting|process|engine|machine|mechan|system|work|build)\b/.test(t))return 'gear';
+ if(/\b(lock|secure|safe|protect|privacy|key|password)\b/.test(t))return 'lock';
+ if(/\b(heart|love|health|fit|body|life|feel)\b/.test(t))return 'heart';
+ if(/\b(food|eat|cook|meal|fruit|pizza|crop|farm|hungry)\b/.test(t))return 'food';
+ if(/\b(home|house|build\w*|city|town|village|place|land)\b/.test(t))return 'home';
+ return 'dot';
+}
+function iconSvg(name,p){
+ const A=p.accent,S=p.second;
+ switch(name){
+ case 'sun':return `<circle r="19" fill="#e0a533"/>`+Array.from({length:8},(_,i)=>{const a=i*Math.PI/4;return `<path d="M${(Math.cos(a)*29).toFixed(1)} ${(Math.sin(a)*29).toFixed(1)} l${(Math.cos(a)*10).toFixed(1)} ${(Math.sin(a)*10).toFixed(1)}" stroke="#e0a533" stroke-width="6" stroke-linecap="round"/>`}).join('');
+ case 'cloud':return `<g fill="${A}"><ellipse cx="-11" cy="7" rx="17" ry="13"/><ellipse cx="9" cy="0" rx="20" ry="16"/><rect x="-31" y="3" width="62" height="16" rx="8"/></g>`;
+ case 'rain':return `<g fill="${A}"><ellipse cx="-10" cy="-8" rx="15" ry="11"/><ellipse cx="8" cy="-14" rx="17" ry="14"/><rect x="-26" y="-10" width="52" height="13" rx="6"/></g><path d="M-15 16 l-5 15 M0 18 l-5 15 M15 16 l-5 15" stroke="#387a99" stroke-width="7" stroke-linecap="round"/>`;
+ case 'wave':return `<path d="M-30 0 Q-15 -18 0 0 T30 0 M-30 18 Q-15 0 0 18 T30 18" fill="none" stroke="${A}" stroke-width="8" stroke-linecap="round"/>`;
+ case 'leaf':return `<path d="M2 28 Q-28 8 -4 -24 Q26 -14 10 24 Z" fill="${A}"/><path d="M2 28 Q0 4 8 -14" fill="none" stroke="${p.background}" stroke-width="4"/>`;
+ case 'rocket':return `<g transform="scale(.18)"><path d="M0 -190 C-100 -100 -95 95 -55 145 L55 145 C95 95 100 -100 0 -190Z" fill="${A}"/><circle cx="0" cy="-35" r="43" fill="${p.background}"/><path d="M-65 65 L-125 165 L-48 130 M65 65 L125 165 L48 130" fill="${S}"/><path d="M-32 150 Q0 270 32 150" fill="${S}"/></g>`;
+ case 'bulb':return `<g transform="scale(.22)"><path d="M-60 90 C-60 20 -130 -5 -130 -95 A130 130 0 0 1 130 -95 C130 -5 60 20 60 90Z" fill="${p.soft}" stroke="${A}" stroke-width="9"/><path d="M-50 100 L50 100 M-45 128 L45 128 M-32 155 L32 155" stroke="${A}" stroke-width="15" stroke-linecap="round"/></g>`;
+ case 'chart':return `<path d="M-28 -26 V24 H30" fill="none" stroke="${p.muted}" stroke-width="6" stroke-linecap="round"/>${[-20,-2,16].map((x,i)=>`<rect x="${x}" y="${14-i*14}" width="14" height="${10+i*14}" rx="3" fill="${i===2?S:A}"/>`).join('')}`;
+ case 'coin':return `<circle r="26" fill="#e0a533"/><circle r="19" fill="none" stroke="${p.background}" stroke-width="4" stroke-dasharray="5 5"/><path d="M-8 -8 L8 8 M-8 8 L8 -8" stroke="${p.background}" stroke-width="5" stroke-linecap="round"/>`;
+ case 'clock':return `<circle r="26" fill="none" stroke="${A}" stroke-width="7"/><path d="M0 -14 V2 L12 10" fill="none" stroke="${A}" stroke-width="7" stroke-linecap="round"/>`;
+ case 'person':return `<circle cy="-16" r="13" fill="${A}"/><path d="M-22 30 Q-22 2 0 2 Q22 2 22 30Z" fill="${A}"/>`;
+ case 'check':return `<path d="M-20 2 l14 16 26 -34" fill="none" stroke="${A}" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>`;
+ case 'warn':return `<path d="M0 -26 L28 22 H-28Z" fill="#d29b12"/><path d="M0 -12 V6 M0 12 V14" stroke="${p.background}" stroke-width="6" stroke-linecap="round"/>`;
+ case 'gear':return `<circle r="15" fill="none" stroke="${A}" stroke-width="7"/>`+Array.from({length:6},(_,i)=>{const a=i*Math.PI/3;return `<path d="M${(Math.cos(a)*22).toFixed(1)} ${(Math.sin(a)*22).toFixed(1)} l${(Math.cos(a)*9).toFixed(1)} ${(Math.sin(a)*9).toFixed(1)}" stroke="${A}" stroke-width="8" stroke-linecap="round"/>`}).join('');
+ case 'lock':return `<rect x="-20" y="-4" width="40" height="30" rx="7" fill="${A}"/><path d="M-11 -4 v-9 a11 11 0 0 1 22 0 v9" fill="none" stroke="${A}" stroke-width="7"/>`;
+ case 'heart':return `<path d="M0 24 C-30 4 -30 -18 -14 -18 C-6 -18 -2 -12 0 -8 C2 -12 6 -18 14 -18 C30 -18 30 4 0 24Z" fill="${S}"/>`;
+ case 'food':return `<circle r="22" fill="${S}"/><path d="M0 -22 Q4 -34 16 -34 Q12 -24 0 -22" fill="${A}"/>`;
+ case 'home':return `<path d="M-26 6 L0 -20 L26 6 V26 H-26Z" fill="${A}"/><rect x="-7" y="8" width="14" height="18" fill="${p.background}"/>`;
+ default:return `<circle r="9" fill="${A}"/>`;
+ }
+}
+function backdropFor(scene){
+ const t=`${scene.title||''} ${scene.narration||''} ${(scene.labels||[]).join(' ')}`.toLowerCase();
+ if(/\b(water cycle|evaporat|condensat|precipitat|ocean|rain|cloud|river)\b/.test(t))return 'water';
+ if(/\b(solar system|planet|space|orbit|moon|rocket|star)\b/.test(t))return 'space';
+ return 'none';
+}
+function backdropSvg(kind,W,H,p){
+ if(kind==='water'){
+  const rays=Array.from({length:8},(_,i)=>{const a=i*Math.PI/4;return `<path d="M${W-170+Math.cos(a)*62} ${74+Math.sin(a)*62} l${Math.cos(a)*20} ${Math.sin(a)*20}" stroke="#e0a533" stroke-width="9" stroke-linecap="round" opacity=".55"/>`}).join('');
+  const clouds=[[130,66,1],[330,110,.7],[W-400,52,.8]].map(([x,y,s])=>`<g transform="translate(${x} ${y}) scale(${s})" fill="#ffffff" opacity=".95" stroke="${p.soft}" stroke-width="5"><ellipse cx="-20" cy="10" rx="30" ry="20"/><ellipse cx="14" cy="-2" rx="36" ry="27"/><rect x="-56" y="4" width="110" height="28" rx="14"/></g>`).join('');
+  const oceanY=H-118;
+  const waves=`<path d="M0 ${oceanY} Q80 ${oceanY-34} 160 ${oceanY} T320 ${oceanY} T480 ${oceanY} T640 ${oceanY} T800 ${oceanY} T960 ${oceanY} T1120 ${oceanY} T1280 ${oceanY} T1440 ${oceanY} V${H} H0Z" fill="#cfe6ea"/><path d="M0 ${oceanY+42} Q80 ${oceanY+16} 160 ${oceanY+42} T320 ${oceanY+42} T480 ${oceanY+42} T640 ${oceanY+42} T800 ${oceanY+42} T960 ${oceanY+42} T1120 ${oceanY+42} T1280 ${oceanY+42} T1440 ${oceanY+42} V${H} H0Z" fill="#a9cfd8" opacity=".8"/>`;
+  return `<g data-backdrop="water"><rect x="0" y="0" width="${W}" height="${oceanY+30}" fill="#e9f3f5" opacity=".55"/>${rays}<circle cx="${W-170}" cy="74" r="48" fill="#e0a533" opacity=".75"/>${clouds}${waves}</g>`;
+ }
+ if(kind==='space')return `<g data-backdrop="space"><rect x="0" y="0" width="${W}" height="${H}" fill="#eef0f6" opacity=".5"/>${[[80,60],[W-100,80],[150,H-60],[W-160,H-90],[W/2,H-40],[W*.3,90],[W*.8,H-70]].map(([x,y],i)=>`<circle cx="${x}" cy="${y}" r="${8-i%4}" fill="${p.second}" opacity=".5"/>`).join('')}</g>`;
+ return '';
+}
+
 function sceneArt(scene,track,id,p,portrait){
  const W=portrait?800:1400,H=portrait?690:490,center=W/2;
  let shapes='',animations='';const cues=[];const labels=(scene.labels||[]).filter(Boolean).slice(0,4);
  const add=(s)=>shapes+=s;
+ if(['flow','cycle','orbit','comparison'].includes(scene.kind))add(backdropSvg(backdropFor(scene),W,H,p));
  const timed=(key,label,index,count,extra={})=>{
   const timing=labelTime(label,track,index,count);
   // Establish the subject immediately; subsequent facts still follow the voice.
@@ -161,7 +226,7 @@ function sceneArt(scene,track,id,p,portrait){
     const x=x0+i*(cardW+gap),cx=x+cardW/2;
     let connector='';
     if(i){const px=x0+(i-1)*(cardW+gap)+cardW;connector=`<path d="M${px+10} ${cy} L${x-16} ${cy}" stroke="${p.accent}" stroke-width="7" stroke-linecap="round"/><path d="M${x-34} ${cy-15} L${x-12} ${cy} L${x-34} ${cy+15}" fill="none" stroke="${p.accent}" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>`;}
-    const content=connector+`<rect x="${x}" y="${y0}" width="${cardW}" height="${cardH}" rx="18" fill="${p.soft}"/><circle cx="${cx}" cy="${y0}" r="30" fill="${p.accent}" stroke="${p.background}" stroke-width="6"/>`+text(String(i+1),cx,y0+11,{size:32,color:p.accentInk})+text(label,cx,cy+18,{size:32,max:Math.max(9,Math.floor(cardW/15))});
+    const content=connector+`<rect x="${x}" y="${y0}" width="${cardW}" height="${cardH}" rx="18" fill="${p.soft}"/><circle cx="${cx}" cy="${y0}" r="30" fill="${p.accent}" stroke="${p.background}" stroke-width="6"/>`+text(String(i+1),cx,y0+11,{size:32,color:p.accentInk})+`<circle cx="${x+56}" cy="${cy+10}" r="32" fill="#ffffff" stroke="${p.soft}" stroke-width="4"/><g transform="translate(${x+56} ${cy+10}) scale(.92)" data-icon="${iconFor(label)}">${iconSvg(iconFor(label),p)}</g>`+text(label,cx+30,cy+20,{size:30,max:Math.max(9,Math.floor((cardW-120)/15))});
     add(wrapGroup(`step-${i}`,content));timed(`step-${i}`,label,i,n,{role:'flow-step',step:i+1,of:n});
    });
   }
@@ -186,7 +251,7 @@ function sceneArt(scene,track,id,p,portrait){
    const side=pt.y>=cy-10&&pt.y<=cy+10,labelLines=lines(pt.label,16).length;
    const ly=pt.y<cy-10?pt.y-72:side?pt.y:Math.min(pt.y+92,H-labelLines*40-8);
    const lx=side?pt.x+(pt.x<cx?-115:115):pt.x;
-   const content=(pt.arrow||'')+`<circle cx="${pt.x}" cy="${pt.y}" r="50" fill="${p.soft}" stroke="${p.accent}" stroke-width="6"/><circle cx="${pt.x}" cy="${pt.y-50}" r="20" fill="${p.accent}"/>`+text(String(i+1),pt.x,pt.y-42,{size:22,color:p.accentInk})+text(pt.label,lx,ly+8,{size:portrait?36:34,max:16});
+   const content=(pt.arrow||'')+`<circle cx="${pt.x}" cy="${pt.y}" r="50" fill="${p.soft}" stroke="${p.accent}" stroke-width="6"/><circle cx="${pt.x}" cy="${pt.y-50}" r="20" fill="${p.accent}"/>`+text(String(i+1),pt.x,pt.y-42,{size:22,color:p.accentInk})+`<g transform="translate(${pt.x} ${pt.y+14}) scale(1.05)" data-icon="${iconFor(pt.label)}">${iconSvg(iconFor(pt.label),p)}</g>`+text(pt.label,lx,ly+8,{size:portrait?36:34,max:16});
    add(wrapGroup(`node-${i}`,content));timed(`node-${i}`,pt.label,i,n,{role:'cycle-stage',step:i+1,of:n});
   });
   animations+=`tl.fromTo(${q('#'+id+'-arrow-0')},{opacity:0},{opacity:1,duration:motion(.4)},${(.35+track.durationSeconds*.8).toFixed(4)});`;
