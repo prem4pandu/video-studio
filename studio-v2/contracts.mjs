@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { checkClaim } from '../src/plan.mjs';
 export const MODES = ['auto', 'learning', 'social', 'story'];
-export const KINDS = ['title','flow','comparison','stat','fraction','base-ten','question','orbit','recap','story'];
+export const KINDS = ['title','flow','cycle','comparison','stat','fraction','base-ten','question','orbit','recap','story'];
 export const VISUAL_STATES = ['default','seed','growing','wilt','care','storm','bloom'];
 export const MOTIFS = ['blocks','plant','planet','lightbulb','rocket','wave','none'];
 export const Brief = z.object({prompt:z.string().trim().min(12).max(4000),mode:z.enum(MODES).default('auto'),format:z.enum(['landscape','portrait']).default('landscape'),durationSeconds:z.number().int().min(30).max(180).default(60),style:z.enum(['auto','editorial','playful','bold']).default('auto')}).strict();
@@ -24,6 +24,7 @@ export function validatePlan(raw,brief) {
   if(s.kind==='base-ten'&&!(s.numbers.length===1&&Number.isInteger(s.numbers[0])&&s.numbers[0]>=1&&s.numbers[0]<=99))throw new Error(`Base-ten ${s.id} requires one integer 1–99.`);
   if(s.kind==='question'&&(!s.narration.includes('?')||/\b(?:one |a )?half\s+(?:is|means|equals|represents)\s+(?:one|1)\s+(?:of|out of)\s+(?:two|2)/i.test(s.narration)))throw new Error('Question narration must ask an actual question ending in ?, without stating the answer or the half definition. Put explanations in the following scene.');
   if(s.kind==='question'&&(s.labels.length||s.numbers.length))throw new Error('Question labels and numbers must be empty to prevent answer leaks.');
+  if(s.kind==='cycle'&&s.labels.length<2)throw new Error(`Cycle ${s.id} needs 2–4 stage labels, one per step around the loop.`);
   if(s.kind==='question'&&(s.pauseSeconds<3||i===plan.scenes.length-1||plan.scenes[i+1].kind==='question'))throw new Error('Each question needs at least three thinking seconds and an immediate answer scene.');
   if(s.kind!=='question'&&s.pauseSeconds>1)throw new Error('Long thinking pauses are only for questions.');
  }

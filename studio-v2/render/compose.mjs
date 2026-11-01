@@ -145,15 +145,50 @@ function sceneArt(scene,track,id,p,portrait){
   }
   cues.push({target:`${id}-question`,label:'Answer-free thinking pause',at:pauseStart,duration:pause,timingSource:'measured-speech-end'});
  }else if(scene.kind==='flow'){
-  const values=labels.length?labels:[scene.emphasis||scene.title];
-  values.forEach((label,i)=>{
-   const x=portrait?145:110+i*(W-220)/Math.max(1,values.length-1),y=portrait?90+i*155:H/2;
-   if(i){const px=portrait?145:110+(i-1)*(W-220)/Math.max(1,values.length-1),py=portrait?90+(i-1)*155:H/2;
-    add(`<path d="M${px} ${py} L${x} ${y}" stroke="${p.soft}" stroke-width="8"/>`);
-   }
-   const content=`<circle cx="${x}" cy="${y}" r="28" fill="${p.accent}"/>`+text(String(i+1),x,y+11,{size:30,color:p.accentInk})+text(label,portrait?230:x,portrait?y+10:y+95,{size:portrait?46:36,max:portrait?23:17,anchor:portrait?'start':'middle'});
-   add(wrapGroup(`step-${i}`,content));timed(`step-${i}`,label,i,values.length);
+  const values=(labels.length?labels:[scene.emphasis||scene.title]).slice(0,4),n=values.length;
+  if(portrait){
+   const cardW=620,cardH=110,gap=48,x0=(W-cardW)/2,y0=Math.max(40,(H-n*cardH-(n-1)*gap)/2),cx=center;
+   values.forEach((label,i)=>{
+    const y=y0+i*(cardH+gap);
+    let connector='';
+    if(i){const py=y0+(i-1)*(cardH+gap)+cardH;connector=`<path d="M${cx} ${py+8} L${cx} ${y-12}" stroke="${p.accent}" stroke-width="7" stroke-linecap="round"/><path d="M${cx-15} ${y-30} L${cx} ${y-10} L${cx+15} ${y-30}" fill="none" stroke="${p.accent}" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>`;}
+    const content=connector+`<rect x="${x0}" y="${y}" width="${cardW}" height="${cardH}" rx="18" fill="${p.soft}"/><circle cx="${x0+64}" cy="${y+cardH/2}" r="30" fill="${p.accent}"/>`+text(String(i+1),x0+64,y+cardH/2+11,{size:32,color:p.accentInk})+text(label,cx+42,y+cardH/2+8,{size:40,max:20});
+    add(wrapGroup(`step-${i}`,content));timed(`step-${i}`,label,i,n,{role:'flow-step',step:i+1,of:n});
+   });
+  }else{
+   const cardW=Math.min(330,(W-170-(n-1)*64)/Math.max(1,n)),cardH=132,gap=64,totalW=n*cardW+(n-1)*gap,x0=(W-totalW)/2,y0=H/2-cardH/2-8,cy=y0+cardH/2;
+   values.forEach((label,i)=>{
+    const x=x0+i*(cardW+gap),cx=x+cardW/2;
+    let connector='';
+    if(i){const px=x0+(i-1)*(cardW+gap)+cardW;connector=`<path d="M${px+10} ${cy} L${x-16} ${cy}" stroke="${p.accent}" stroke-width="7" stroke-linecap="round"/><path d="M${x-34} ${cy-15} L${x-12} ${cy} L${x-34} ${cy+15}" fill="none" stroke="${p.accent}" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>`;}
+    const content=connector+`<rect x="${x}" y="${y0}" width="${cardW}" height="${cardH}" rx="18" fill="${p.soft}"/><circle cx="${cx}" cy="${y0}" r="30" fill="${p.accent}" stroke="${p.background}" stroke-width="6"/>`+text(String(i+1),cx,y0+11,{size:32,color:p.accentInk})+text(label,cx,cy+18,{size:32,max:Math.max(9,Math.floor(cardW/15))});
+    add(wrapGroup(`step-${i}`,content));timed(`step-${i}`,label,i,n,{role:'flow-step',step:i+1,of:n});
+   });
+  }
+ }else if(scene.kind==='cycle'){
+  const values=(labels.length?labels:[scene.emphasis||scene.title,'Repeats']).slice(0,4);
+  if(values.length===1)values.push('Repeats');
+  const n=values.length,cx=center,cy=H/2+8,rx=portrait?252:455,ry=portrait?196:150;
+  const pts=values.map((label,i)=>{const a=i/n*Math.PI*2-Math.PI/2;return{label,x:cx+Math.cos(a)*rx,y:cy+Math.sin(a)*ry};});
+  pts.forEach((pt,i)=>{
+   const nxt=pts[(i+1)%n],j=(i+1)%n,midA=(i+.5)/n*Math.PI*2-Math.PI/2;
+   const ctrlX=cx+Math.cos(midA)*rx*1.2,ctrlY=cy+Math.sin(midA)*ry*1.2;
+   const tx=nxt.x-ctrlX,ty=nxt.y-ctrlY,len=Math.hypot(tx,ty)||1,ux=tx/len,uy=ty/len;
+   const hx=nxt.x-ux*58,hy=nxt.y-uy*58,bx=hx-ux*26,by=hy-uy*26,px=-uy,py=ux;
+   const arrow=`<path d="M${pt.x.toFixed(1)} ${pt.y.toFixed(1)} Q${ctrlX.toFixed(1)} ${ctrlY.toFixed(1)} ${hx.toFixed(1)} ${hy.toFixed(1)}" fill="none" stroke="${p.muted}" stroke-opacity=".6" stroke-width="6"/><path d="M${(bx+px*14).toFixed(1)} ${(by+py*14).toFixed(1)} L${hx.toFixed(1)} ${hy.toFixed(1)} L${(bx-px*14).toFixed(1)} ${(by-py*14).toFixed(1)}" fill="none" stroke="${p.muted}" stroke-opacity=".85" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>`;
+   if(j===0)add(wrapGroup('arrow-0',arrow));else pts[j].arrow=arrow;
   });
+  const mark=`<circle r="60" fill="${p.soft}"/><path d="M-27 -15 A31 31 0 0 1 27 -15" fill="none" stroke="${p.accent}" stroke-width="9" stroke-linecap="round"/><path d="M15 -32 L29 -14 L12 -6" fill="none" stroke="${p.accent}" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/><path d="M27 15 A31 31 0 0 1 -27 15" fill="none" stroke="${p.accent}" stroke-width="9" stroke-linecap="round"/><path d="M-15 32 L-29 14 L-12 6" fill="none" stroke="${p.accent}" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>`;
+  add(`<g id="${id}-cycle-mark" transform="translate(${cx} ${cy})">${mark}</g>`);
+  animations+=`tl.fromTo(${q('#'+id+'-cycle-mark')},{rotation:0,transformOrigin:'50% 50%'},{rotation:360,duration:motion(${Math.max(2,track.durationSeconds*.8).toFixed(2)}),ease:'none'},.4);`;
+  cues.push({target:`${id}-cycle-mark`,label:'Looping center mark illustrates the repeating cycle',at:.4,timingSource:'functional-motion',role:'cycle-loop'});
+  pts.forEach((pt,i)=>{
+   const ly=pt.y+(pt.y<cy-10?-72:pt.y>cy+10?92:0),lx=pt.y>=cy-10&&pt.y<=cy+10?pt.x+(pt.x<cx?-115:115):pt.x;
+   const content=(pt.arrow||'')+`<circle cx="${pt.x}" cy="${pt.y}" r="50" fill="${p.soft}" stroke="${p.accent}" stroke-width="6"/><circle cx="${pt.x}" cy="${pt.y-50}" r="20" fill="${p.accent}"/>`+text(String(i+1),pt.x,pt.y-42,{size:22,color:p.accentInk})+text(pt.label,lx,ly+8,{size:portrait?36:34,max:16});
+   add(wrapGroup(`node-${i}`,content));timed(`node-${i}`,pt.label,i,n,{role:'cycle-stage',step:i+1,of:n});
+  });
+  animations+=`tl.fromTo(${q('#'+id+'-arrow-0')},{opacity:0},{opacity:1,duration:motion(.4)},${(.35+track.durationSeconds*.8).toFixed(4)});`;
+  cues.push({target:`${id}-arrow-0`,label:'Loop closes back to the first stage',at:.35+track.durationSeconds*.8,timingSource:'estimated-semantic-position',role:'cycle-loop-close'});
  }else if(scene.kind==='comparison'){
   const values=labels.length?labels:[scene.title,scene.emphasis||'Consider the difference'];
   const portionComparison=values.slice(0,2).length===2&&values.slice(0,2).every(label=>/\b(equal|unequal)\b/i.test(label))&&/\b(parts?|pieces?|halves|half|portions?)\b/i.test(`${values.join(' ')} ${scene.title} ${scene.narration}`)&&values.slice(0,2).some(label=>/\bunequal\b/i.test(label))&&values.slice(0,2).some(label=>/\bequal\b/i.test(label));

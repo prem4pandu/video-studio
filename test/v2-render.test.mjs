@@ -55,7 +55,7 @@ test('pizza narration produces equal circular sectors with conserved selected qu
 test('first contextual diagram item appears immediately and discloses speech timing separately',async t=>{
  const {result,workspace}=await fixture(t,[scene('flow','flow'),scene('recap','recap')],{format:'portrait'});
  for(const s of result.scenes){const cue=result.cues.find(c=>c.sceneId===s.id);assert.equal(cue.at,s.start);assert.equal(cue.timingSource,'opening-context-reveal');assert.ok(cue.spokenCueAt>=s.start+.35);}
- const html=await readFile(join(workspace,'compositions/scene-0-flow.html'),'utf8');assert.match(html,/font-size="46"/);
+ const html=await readFile(join(workspace,'compositions/scene-0-flow.html'),'utf8');assert.match(html,/font-size="40"/);assert.match(html,/id="scene-0-flow-step-0"/);assert.match(html,/rx="18"/);
 });
 test('plant story uses seed, storm, care and actual flowering states',async t=>{
  const scenes=[scene('seed','story',{title:'Tiny Sprout Dreams of Growth'}),scene('storm','story',{title:'Rainstorm Washes Soil Away'}),scene('care','story',{title:'Gardener Adds Fresh Soil'}),scene('bloom','story',{title:'Sprout Blooms into a Bright Flower'})];
@@ -98,4 +98,17 @@ test('fraction annotation derives only from validated numbers; bare comparison l
  const {workspace}=await fixture(t,[scene('fraction','fraction',{numbers:[1,2],labels:['Whole','One half']}),scene('compare','comparison',{labels:['equal','unequal'],narration:'Equal pieces have the same size. Unequal pieces do not.'})]);
  const fraction=await readFile(join(workspace,'compositions/scene-0-fraction.html'),'utf8');assert.match(fraction,/1 of 2 equal parts/);assert.doesNotMatch(fraction,/<tspan[^>]*>Whole<\/tspan>/);
  const comparison=await readFile(join(workspace,'compositions/scene-1-compare.html'),'utf8');assert.match(comparison,/data-comparison="equal"/);assert.match(comparison,/data-comparison="unequal"/);
+});
+test('cycle scenes draw stage nodes around a looped path with directional arrows',async t=>{
+ const labels=['Sun heats oceans','Vapor rises','Clouds form','Rain falls'];
+ for(const format of ['landscape','portrait']){
+  const {workspace,result}=await fixture(t,[scene('water','cycle',{labels,narration:'Water moves through a repeating cycle of stages.'})],{format});
+  const html=await readFile(join(workspace,'compositions/scene-0-water.html'),'utf8');
+  for(const label of labels)assert.ok(html.includes(`>${label}<`),`${format} missing ${label}`);
+  assert.equal((html.match(/id="scene-0-water-node-\d"/g)||[]).length,4);
+  assert.equal((html.match(/stroke-linecap="round" stroke-linejoin="round"/g)||[]).length,4+2);
+  assert.match(html,/id="scene-0-water-cycle-mark"/);assert.match(html,/rotation:360/);
+  const stages=result.cues.filter(c=>c.role==='cycle-stage');assert.equal(stages.length,4);assert.ok(stages[0].timingSource==='opening-context-reveal');
+  assert.ok(result.cues.some(c=>c.role==='cycle-loop-close'));
+ }
 });
