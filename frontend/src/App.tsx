@@ -103,5 +103,5 @@ export function App() {
     import(/* @vite-ignore */ controllerUrl);
   }, []);
 
-  return <div className="studio-app"><a className="skip-link" href="#main">Skip to lesson studio</a><Sidebar /><main id="main"><header className="topbar"><span>LESSON PRODUCTION</span><nav><a className="workspace-tag" href="./curriculum.html">Curriculum</a><a className="workspace-tag" href="./ui-templates.html">Design direction</a></nav></header><div className="workspace"><ComposeView /><JobView /></div></main></div>;
+  return <div className="studio-app"><a className="skip-link" href="#main">Skip to lesson studio</a><Sidebar /><main id="main"><header className="topbar"><span>LESSON PRODUCTION</span><nav><a className="workspace-tag" href="/app/#/studio-v2">Studio V2</a><a className="workspace-tag" href="./curriculum.html">Curriculum</a><a className="workspace-tag" href="./ui-templates.html">Design direction</a></nav></header><div className="workspace"><ComposeView /><JobView /></div></main></div>;
 }

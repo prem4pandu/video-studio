@@ -138,7 +138,7 @@ class _RailItem extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
       child: Material(
-        color: selected ? FairColors.sidebarLine : Colors.transparent,
+        color: selected ? FairColors.accentSoft : Colors.transparent,
         borderRadius: BorderRadius.circular(9),
         child: InkWell(
           onTap: onTap,
@@ -147,11 +147,11 @@ class _RailItem extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 11),
             child: Row(
               children: [
-                Icon(destination.icon, size: 19, color: selected ? FairColors.sidebarInk : FairColors.sidebarMuted),
+                Icon(destination.icon, size: 19, color: selected ? FairColors.accentDark : FairColors.sidebarMuted),
                 const SizedBox(width: 11),
                 Expanded(
                   child: Text(destination.label,
-                      style: TextStyle(fontSize: 13, fontWeight: selected ? FontWeight.w600 : FontWeight.w500, color: selected ? FairColors.sidebarInk : FairColors.sidebarMuted)),
+                      style: TextStyle(fontSize: 13, fontWeight: selected ? FontWeight.w600 : FontWeight.w500, color: selected ? FairColors.accentDark : FairColors.sidebarMuted)),
                 ),
                 if (badge != null)
                   Container(
@@ -209,7 +209,7 @@ class _StatusDot extends StatelessWidget {
   final bool? ok;
   @override
   Widget build(BuildContext context) {
-    final color = ok == null ? FairColors.sidebarMuted : ok! ? const Color(0xFF6FBF8E) : const Color(0xFFE08A7E);
+    final color = ok == null ? FairColors.sidebarMuted : ok! ? FairColors.accent : FairColors.error;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 2.5),
       child: Row(

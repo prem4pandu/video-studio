@@ -2,43 +2,43 @@ import 'package:flutter/material.dart';
 
 /// Video Studio — "Production console" design system.
 ///
-/// A dark, DaVinci/Linear-grade control room: deep green-charcoal surfaces,
-/// one signal-green accent for live state, amber for educator markers, and a
-/// bundled type system (Inter UI · Space Grotesk display · JetBrains Mono
-/// telemetry). Every token is local — the studio has no network dependencies.
+/// A light studio workspace: warm paper canvas, white surfaces, an emerald
+/// accent for live state, amber for educator markers, and a bundled type
+/// system (Inter UI · Space Grotesk display · JetBrains Mono telemetry).
+/// Every token is local — the studio has no network dependencies.
 abstract final class FairColors {
-  static const canvas = Color(0xFF0B110E);
-  static const surface = Color(0xFF141D18);
-  static const surfaceSoft = Color(0xFF101814);
-  static const surfaceRaised = Color(0xFF1C2922);
-  static const surfaceInset = Color(0xFF090E0B);
-  static const monitor = Color(0xFF05090A);
+  static const canvas = Color(0xFFF5F4EF);
+  static const surface = Color(0xFFFFFFFF);
+  static const surfaceSoft = Color(0xFFFAF9F5);
+  static const surfaceRaised = Color(0xFFEFEEE7);
+  static const surfaceInset = Color(0xFFF0EFE8);
+  static const monitor = Color(0xFF101713);
 
-  static const ink = Color(0xFFE9EFEB);
-  static const inkSoft = Color(0xFFADBAB2);
-  static const muted = Color(0xFF74837B);
-  static const faint = Color(0xFF4E5C54);
+  static const ink = Color(0xFF1E2421);
+  static const inkSoft = Color(0xFF45524B);
+  static const muted = Color(0xFF626D66);
+  static const faint = Color(0xFF98A29B);
 
-  static const line = Color(0xFF1F2B25);
-  static const strongLine = Color(0xFF31413A);
+  static const line = Color(0xFFE3E3DB);
+  static const strongLine = Color(0xFFCDD2C9);
 
-  static const accent = Color(0xFF3ECF8E);
-  static const accentDark = Color(0xFF2C9B6E);
-  static const accentSoft = Color(0xFF163326);
+  static const accent = Color(0xFF167A5C);
+  static const accentDark = Color(0xFF0E5C45);
+  static const accentSoft = Color(0xFFE4F1EB);
 
-  static const amber = Color(0xFFE8A54B);
-  static const amberSoft = Color(0xFF33281A);
-  static const warning = Color(0xFFE8A54B);
-  static const warningBg = Color(0xFF33281A);
-  static const error = Color(0xFFE4746B);
-  static const errorBg = Color(0xFF331F1C);
-  static const success = Color(0xFF3ECF8E);
-  static const successSoft = Color(0xFF163326);
+  static const amber = Color(0xFFB26421);
+  static const amberSoft = Color(0xFFF8EDDE);
+  static const warning = Color(0xFF96620E);
+  static const warningBg = Color(0xFFFDF4DE);
+  static const error = Color(0xFFB23A31);
+  static const errorBg = Color(0xFFFBEEEC);
+  static const success = Color(0xFF167A5C);
+  static const successSoft = Color(0xFFE4F1EB);
 
-  static const sidebar = Color(0xFF0D1411);
-  static const sidebarMuted = Color(0xFF74837B);
-  static const sidebarInk = Color(0xFFE9EFEB);
-  static const sidebarLine = Color(0xFF223029);
+  static const sidebar = Color(0xFFFBFAF6);
+  static const sidebarMuted = Color(0xFF717B74);
+  static const sidebarInk = Color(0xFF1E2421);
+  static const sidebarLine = Color(0xFFE6E5DE);
 }
 
 abstract final class FairDimens {
@@ -76,18 +76,18 @@ ThemeData fairTheme() {
   const textColor = FairColors.ink;
   // Inter is bundled — pin it as the engine default so canvaskit never
   // reaches for the Roboto CDN font (blocked by connect-src 'self').
-  final base = ThemeData(fontFamily: 'Inter', brightness: Brightness.dark, useMaterial3: true);
+  final base = ThemeData(fontFamily: 'Inter', brightness: Brightness.light, useMaterial3: true);
   final text = base.textTheme.apply(fontFamily: 'Inter', bodyColor: textColor, displayColor: textColor);
   return base.copyWith(
     scaffoldBackgroundColor: FairColors.canvas,
-    colorScheme: const ColorScheme.dark(
+    colorScheme: const ColorScheme.light(
       primary: FairColors.accent,
-      onPrimary: Color(0xFF06281B),
+      onPrimary: Colors.white,
       secondary: FairColors.amber,
       surface: FairColors.surface,
       onSurface: textColor,
       error: FairColors.error,
-      onError: Color(0xFF2A1512),
+      onError: Colors.white,
     ),
     splashColor: FairColors.accent.withValues(alpha: 0.08),
     hoverColor: FairColors.surfaceRaised,
@@ -114,12 +114,12 @@ ThemeData fairTheme() {
     filledButtonTheme: FilledButtonThemeData(
       style: FilledButton.styleFrom(
         backgroundColor: FairColors.accent,
-        foregroundColor: const Color(0xFF06281B),
+        foregroundColor: Colors.white,
         disabledBackgroundColor: FairColors.line,
         disabledForegroundColor: FairColors.muted,
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(FairDimens.radiusSm)),
-        textStyle: const TextStyle(fontSize: 13.5, fontWeight: FontWeight.w700, letterSpacing: 0.1),
+        textStyle: const TextStyle(fontFamily: 'Inter', fontSize: 13.5, fontWeight: FontWeight.w700, letterSpacing: 0.1),
       ),
     ),
     outlinedButtonTheme: OutlinedButtonThemeData(
@@ -128,11 +128,11 @@ ThemeData fairTheme() {
         side: const BorderSide(color: FairColors.strongLine),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(FairDimens.radiusSm)),
-        textStyle: const TextStyle(fontSize: 12.5, fontWeight: FontWeight.w600),
+        textStyle: const TextStyle(fontFamily: 'Inter', fontSize: 12.5, fontWeight: FontWeight.w600),
       ),
     ),
     textButtonTheme: TextButtonThemeData(
-      style: TextButton.styleFrom(foregroundColor: FairColors.accent, textStyle: const TextStyle(fontSize: 12.5, fontWeight: FontWeight.w600)),
+      style: TextButton.styleFrom(foregroundColor: FairColors.accent, textStyle: const TextStyle(fontFamily: 'Inter', fontSize: 12.5, fontWeight: FontWeight.w600)),
     ),
     snackBarTheme: const SnackBarThemeData(
       behavior: SnackBarBehavior.floating,
@@ -158,8 +158,8 @@ ThemeData fairTheme() {
     ),
     scrollbarTheme: ScrollbarThemeData(thumbColor: WidgetStateProperty.all(FairColors.strongLine), thickness: WidgetStateProperty.all(8), radius: const Radius.circular(4)),
     dialogTheme: DialogThemeData(backgroundColor: FairColors.surface, surfaceTintColor: Colors.transparent, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(FairDimens.radius))),
-    popupMenuTheme: const PopupMenuThemeData(color: FairColors.surfaceRaised),
-    chipTheme: base.chipTheme.copyWith(backgroundColor: FairColors.surfaceRaised, selectedColor: FairColors.accentSoft, side: const BorderSide(color: FairColors.strongLine), labelStyle: const TextStyle(fontFamily: 'Inter', fontSize: 12, color: FairColors.inkSoft)),
+    popupMenuTheme: const PopupMenuThemeData(color: FairColors.surface),
+    chipTheme: base.chipTheme.copyWith(backgroundColor: FairColors.surfaceSoft, selectedColor: FairColors.accentSoft, side: const BorderSide(color: FairColors.strongLine), labelStyle: const TextStyle(fontFamily: 'Inter', fontSize: 12, color: FairColors.inkSoft)),
   );
 }
 
@@ -186,7 +186,7 @@ class StatusChip extends StatelessWidget {
         'completed' => (bg: FairColors.successSoft, fg: FairColors.accent, dot: FairColors.accent, label: 'Draft ready'),
         'failed' => (bg: FairColors.errorBg, fg: FairColors.error, dot: FairColors.error, label: 'Failed'),
         'interrupted' => (bg: FairColors.errorBg, fg: FairColors.error, dot: FairColors.error, label: 'Stopped'),
-        'approved' => (bg: FairColors.accent, fg: const Color(0xFF06281B), dot: const Color(0xFF06281B), label: 'Approved'),
+        'approved' => (bg: FairColors.accent, fg: Colors.white, dot: Colors.white, label: 'Approved'),
         'rejected' => (bg: const Color(0xFF6D3226), fg: Colors.white, dot: Colors.white, label: 'Rejected'),
         'needs-changes' => (bg: const Color(0xFF6D4A26), fg: Colors.white, dot: Colors.white, label: 'Needs changes'),
         _ => (bg: FairColors.surfaceRaised, fg: FairColors.muted, dot: FairColors.faint, label: 'Not started'),

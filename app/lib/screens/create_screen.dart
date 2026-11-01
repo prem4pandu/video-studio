@@ -1366,7 +1366,7 @@ class _CreateScreenState extends ConsumerState<CreateScreen> {
                 ? const SizedBox(
                     width: 16,
                     height: 16,
-                    child: CircularProgressIndicator(strokeWidth: 2, color: Color(0xFF06281B)),
+                    child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
                   )
                 : const Icon(Icons.bolt_rounded, size: 18),
             label: Text(_submitting ? 'Queuing job…' : 'Generate lesson'),
