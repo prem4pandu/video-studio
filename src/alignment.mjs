@@ -8,7 +8,7 @@ const script = fileURLToPath(new URL('../scripts/align-speech.py', import.meta.u
 const token = value => value.toLowerCase().replaceAll('’', "'").replace(/[^\p{L}\p{N}']/gu, '');
 
 export function fairValidateAlignment(scriptText, items, durationSeconds) {
-  const words = scriptText.trim().split(/\s+/u);
+  const words = scriptText.trim().split(/\s+/u).filter(value => /[\p{L}\p{N}]/u.test(value));
   if (!Array.isArray(items) || items.length !== words.length) throw new Error('Forced alignment omitted or added narration words.');
   let previousEnd = 0;
   return items.map((item, index) => {
