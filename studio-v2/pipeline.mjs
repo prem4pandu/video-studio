@@ -9,6 +9,7 @@ import { Brief, validatePlan } from './contracts.mjs';
 import { planProduction, plannerSettings, plannerReadiness } from './planner.mjs';
 import { workerReadiness, renderWithOpenMontage } from './worker/index.mjs';
 import { composeVideo } from './render/compose.mjs';
+import { renderWithManim, manimReadiness } from './render/manim.mjs';
 const require=createRequire(import.meta.url);
 export const DEFAULT_V2_VOICE='qwentts';
 export async function narrationReadiness(env=process.env,{run=fairCommand}={}){
@@ -50,8 +51,22 @@ export async function runProduction(input,directory,{env=process.env,signal,onPr
  else await onProgress({stage:'plan',progress:24,message:'Reusing the verified script and scene plan.'});
  const {plan}=result;abort();
  const tracks=await fairNarrate(plan,out,{env,signal,brief:{voiceProvider:env.STUDIO_V2_VOICE||DEFAULT_V2_VOICE},onProgress});
- await onProgress({stage:'composition',progress:62,message:'Building animated scenes around the measured narration.'});
- const composition=await composeVideo(plan,tracks.map(t=>({...t,file:resolve(out,t.file)})),workspace,{format:brief.format,style:brief.style,env,signal});
+ const rendererPref=env.STUDIO_V2_RENDERER||'auto';
+ const manim=rendererPref==='manim'?await manimReadiness(env):rendererPref==='openmontage'?{available:false}:await manimReadiness(env);
+ const useManim=manim.available&&rendererPref!=='openmontage';
+ if(rendererPref==='manim'&&!manim.available)throw new Error(`Manim renderer requested but unavailable: ${manim.detail}`);
+ let composition,worker;
+ if(useManim){
+  await onProgress({stage:'composition',progress:62,message:'Building ManimCE animated scenes around the measured narration.'});
+  composition=await renderWithManim(plan,tracks.map(t=>({...t,file:resolve(out,t.file)})),workspace,{format:brief.format,style:brief.style,env,signal,onProgress});
+  await copyFile(composition.renderFile,join(out,'render.mp4'));
+  worker={success:true,engine:'manim',detail:'ManimCE per-scene animation renderer'};
+ }else{
+  await onProgress({stage:'composition',progress:62,message:'Building animated scenes around the measured narration.'});
+  composition=await composeVideo(plan,tracks.map(t=>({...t,file:resolve(out,t.file)})),workspace,{format:brief.format,style:brief.style,env,signal});
+  await onProgress({stage:'render',progress:72,message:'OpenMontage is checking and rendering your video.'});
+  worker=await renderWithOpenMontage(workspace,join(out,'render.mp4'),{env,signal,onProgress:async p=>{if(p?.message)await onProgress({...p,stage:'render',progress:Math.min(89,Math.max(72,p.progress||76))});}});
+ }
  await fairWriteJson(join(out,'timeline.json'),composition);
  await writeFile(join(out,'transcript.txt'),`${plan.title}\n\n${plan.scenes.map(s=>`${s.title}\n${s.narration}${s.pauseSeconds?`\n[Think for ${s.pauseSeconds} seconds]`:''}`).join('\n\n')}\n`);
  // The compiler owns caption timing; preserve its complete narration text.
@@ -60,8 +75,6 @@ export async function runProduction(input,directory,{env=process.env,signal,onPr
  else if(await stat(join(workspace,'captions.vtt')).catch(()=>null))await copyFile(join(workspace,'captions.vtt'),join(out,'captions.vtt'));
  else throw new Error('The composition did not produce captions.');
  await fairWriteJson(join(out,'metadata.json'),{...plan.metadata,mode:plan.mode,format:brief.format,sources:plan.claims,publicationStatus:'draft',rights:'Original drawn assets and synthesized music; generated factual claims require review.',disclosure:'AI-assisted narration and animation.',mediaApiCostUsd:0});
- await onProgress({stage:'render',progress:72,message:'OpenMontage is checking and rendering your video.'});
- const worker=await renderWithOpenMontage(workspace,join(out,'render.mp4'),{env,signal,onProgress:async p=>{if(p?.message)await onProgress({...p,stage:'render',progress:Math.min(89,Math.max(72,p.progress||76))});}});
  await fairWriteJson(join(out,'openmontage.json'),worker);abort();
  await onProgress({stage:'verify',progress:91,message:'Measuring audio, duration, captions and final output.'});
  await fairCommand(env.FAIR_FFMPEG||'ffmpeg',['-hide_banner','-loglevel','error','-y','-i',join(out,'render.mp4'),'-map','0:v:0','-map','0:a:0','-c:v','copy','-af','loudnorm=I=-16:TP=-1.5:LRA=9','-ar','48000','-c:a','aac','-b:a','160k','-movflags','+faststart',join(out,'final.mp4')],{env,signal,timeoutMs:120000});
@@ -72,11 +85,11 @@ export async function runProduction(input,directory,{env=process.env,signal,onPr
  const loudness=Number([...audio.stderr.matchAll(/I:\s+(-?[\d.]+) LUFS/g)].at(-1)?.[1]);
  const captionText=await readFile(join(out,'captions.vtt'),'utf8');
  const captionsComplete=plan.scenes.every(s=>composition.captions.filter(c=>c.sceneId===s.id).map(c=>c.text).join(' ')===s.narration.trim().replace(/\s+/g,' '))&&composition.captions.every((c,i)=>Number.isFinite(c.start)&&Number.isFinite(c.end)&&c.start>=0&&c.end>c.start&&c.end<=duration+.1&&(i===0||c.start>=composition.captions[i-1].end-.01));
- const checks=[{name:'Complete media decode',passed:true,detail:'Every video frame and audio packet decoded without errors.'},{name:'OpenMontage composition checks',passed:worker.success===true,detail:'Pinned upstream tool completed its runtime, layout, contrast and source-integrity checks.'},{name:'Video stream',passed:probe.streams?.some(s=>s.codec_type==='video'&&s.width===composition.width&&s.height===composition.height)===true,detail:`${composition.width}×${composition.height} delivery dimensions.`},{name:'Narration audio',passed:probe.streams?.some(s=>s.codec_type==='audio')===true,detail:'Audio stream present.'},{name:'Complete timeline',passed:Number.isFinite(duration)&&Math.abs(duration-composition.durationSeconds)<.15,detail:`Expected ${composition.durationSeconds.toFixed(2)}s; measured ${duration.toFixed(2)}s.`},{name:'Audio loudness',passed:Number.isFinite(loudness)&&loudness>=-18&&loudness<=-14,detail:`${loudness} LUFS, target −16 ±2.`},{name:'Timed captions',passed:captionsComplete&&captionText.startsWith('WEBVTT')&&captionText.includes('-->'),detail:'Complete narration covered by ordered, in-bounds captions; WebVTT and on-screen captions supplied.'},{name:'Plan and arithmetic',passed:true,detail:`Validated ${plan.scenes.length} scenes and ${plan.mathClaims.length} explicit equalities; spoken claims still need review.`},{name:'Content critique',passed:result.review.passed,detail:`Reviewed with ${result.review.model}; ${result.review.independentModel?'different model':'same model in a separate pass'}.`}];
+ const checks=[{name:'Complete media decode',passed:true,detail:'Every video frame and audio packet decoded without errors.'},{name:useManim?'ManimCE scene render': 'OpenMontage composition checks',passed:worker.success===true,detail:useManim?'ManimCE rendered every scene segment at the measured narration timing.':'Pinned upstream tool completed its runtime, layout, contrast and source-integrity checks.'},{name:'Video stream',passed:probe.streams?.some(s=>s.codec_type==='video'&&s.width===composition.width&&s.height===composition.height)===true,detail:`${composition.width}×${composition.height} delivery dimensions.`},{name:'Narration audio',passed:probe.streams?.some(s=>s.codec_type==='audio')===true,detail:'Audio stream present.'},{name:'Complete timeline',passed:Number.isFinite(duration)&&Math.abs(duration-composition.durationSeconds)<.15,detail:`Expected ${composition.durationSeconds.toFixed(2)}s; measured ${duration.toFixed(2)}s.`},{name:'Audio loudness',passed:Number.isFinite(loudness)&&loudness>=-18&&loudness<=-14,detail:`${loudness} LUFS, target −16 ±2.`},{name:'Timed captions',passed:captionsComplete&&captionText.startsWith('WEBVTT')&&captionText.includes('-->'),detail:'Complete narration covered by ordered, in-bounds captions; WebVTT and on-screen captions supplied.'},{name:'Plan and arithmetic',passed:true,detail:`Validated ${plan.scenes.length} scenes and ${plan.mathClaims.length} explicit equalities; spoken claims still need review.`},{name:'Content critique',passed:result.review.passed,detail:`Reviewed with ${result.review.model}; ${result.review.independentModel?'different model':'same model in a separate pass'}.`}];
  await fairCommand(env.FAIR_FFMPEG||'ffmpeg',['-hide_banner','-loglevel','error','-y','-ss',String(Math.min(2,duration/4)),'-i',video,'-frames:v','1',join(out,'thumbnail.jpg')],{env,signal});
  await fairCommand(env.FAIR_FFMPEG||'ffmpeg',['-hide_banner','-loglevel','error','-y','-i',video,'-vf',`fps=1/${Math.max(1,duration/9)},scale=480:-2,tile=3x3:padding=8:margin=8`,'-frames:v','1',join(out,'contact-sheet.jpg')],{env,signal});
  const warnings=['This is an AI-generated draft. Human review is required before publication.','Visual and script checks do not establish educational mastery or monetization eligibility.',...(!result.review.independentModel?['The script critic used the same model as the planner.']:[]),...(plan.claims.length?['Factual statements were model-reviewed, not independently verified against external sources.']:[]),...(!composition.captions.every(t=>t.timingSource==='forced-alignment'||t.timingSource==='provider-alignment')?['Some caption timing is estimated.']:[]),...(Math.abs(duration-brief.durationSeconds)>brief.durationSeconds*.25?[`Actual duration ${Math.round(duration)}s differs from the ${brief.durationSeconds}s target; narration was not cut or sped up.`]:[])];
- const report={passed:checks.every(c=>c.passed),checks,warnings,durationSeconds:duration,engine:'openmontage',reviewRequired:true,educatorApproved:false,mode:plan.mode,format:brief.format,voice:env.STUDIO_V2_VOICE||DEFAULT_V2_VOICE,wordTimingSources:[...new Set(composition.captions.map(t=>t.timingSource))],mediaApiCostUsd:0,generatedAt:new Date().toISOString(),rendererVersion:require('hyperframes/package.json').version};
+ const report={passed:checks.every(c=>c.passed),checks,warnings,durationSeconds:duration,engine:useManim?'manim':'openmontage',reviewRequired:true,educatorApproved:false,mode:plan.mode,format:brief.format,voice:env.STUDIO_V2_VOICE||DEFAULT_V2_VOICE,wordTimingSources:[...new Set(composition.captions.map(t=>t.timingSource))],mediaApiCostUsd:0,generatedAt:new Date().toISOString(),rendererVersion:require('hyperframes/package.json').version};
  await fairWriteJson(join(out,'quality-report.json'),report);
  if(!report.passed)throw new Error(`Video quality checks failed: ${checks.filter(c=>!c.passed).map(c=>c.name).join(', ')}. Inspect the quality report.`);
  await fairWriteJson(join(out,'manifest.json'),{brief,fingerprint,videoSha256:await fairFileHash(video),scriptSha256:await fairFileHash(join(out,'plan.json')),review:result.review,renderer:'OpenMontage/HyperFrames',status:'generated-draft'});
