@@ -44,9 +44,9 @@ const ripples = Array.from({ length: 6 }, (_, i) => `<ellipse class="rp" id="rp-
 const river = `<path id="river" d="M340 860 Q560 880 640 900 T900 930" fill="none" stroke="#8fd0dc" stroke-width="26" stroke-linecap="round" stroke-dasharray="40 26" opacity="0"/>`;
 const stageLabel = (id, txt, x, y) => `<g id="${id}" opacity="0"><rect x="${x - 165}" y="${y - 40}" width="330" height="76" rx="38" fill="#ffffff" opacity=".94"/><text x="${x}" y="${y + 10}" text-anchor="middle" fill="${P.accent}" font-size="38" font-weight="700">${txt}</text></g>`;
 const arrows = `
- <path id="ar-up" d="M1040 930 Q1020 640 1080 450" fill="none" stroke="${P.accent}" stroke-width="10" stroke-linecap="round" stroke-dasharray="620" stroke-dashoffset="620"/>
+ <path id="ar-up" d="M1040 930 Q1020 640 1080 450" fill="none" stroke="${P.accent}" stroke-width="10" stroke-linecap="round" stroke-dasharray="620" stroke-dashoffset="620" opacity="0"/>
  <path id="ar-up-head" d="M1062 486 L1080 448 L1106 480" fill="none" stroke="${P.accent}" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" opacity="0"/>
- <path id="ar-dn" d="M1290 450 Q1360 650 1330 900" fill="none" stroke="${P.accent}" stroke-width="10" stroke-linecap="round" stroke-dasharray="620" stroke-dashoffset="620"/>
+ <path id="ar-dn" d="M1290 450 Q1360 650 1330 900" fill="none" stroke="${P.accent}" stroke-width="10" stroke-linecap="round" stroke-dasharray="620" stroke-dashoffset="620" opacity="0"/>
  <path id="ar-dn-head" d="M1346 858 L1330 902 L1300 872" fill="none" stroke="${P.accent}" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" opacity="0"/>
  <path id="ar-rv" d="M640 905 Q480 910 390 915" fill="none" stroke="${P.accent}" stroke-width="10" stroke-linecap="round" stroke-dasharray="300" stroke-dashoffset="300" opacity="0"/>`;
 
@@ -105,10 +105,10 @@ ${Array.from({ length: 6 }, (_, i) => `tl.fromTo('#rp-${i}',{opacity:.9,scale:.4
 tl.to('#river',{opacity:1,duration:motion(.5)},20.2);tl.to('#river',{strokeDashoffset:-200,duration:motion(2.6),ease:'none'},20.2);
 // SHOT 3 — pull back to wide; stage labels trace the loop
 tl.to('#view',{attr:{viewBox:'0 0 1920 1080'},duration:motion(2.6),ease:'power2.inOut'},22.4);
-tl.fromTo('#ar-up',{strokeDashoffset:260},{strokeDashoffset:0,duration:motion(1.0),ease:'power1.inOut'},24.6);
+tl.to('#ar-up',{opacity:1,duration:motion(.05)},24.6);tl.fromTo('#ar-up',{strokeDashoffset:620},{strokeDashoffset:0,duration:motion(1.0),ease:'power1.inOut'},24.6);
 tl.to('#ar-up-head',{opacity:1,duration:motion(.3)},25.5);tl.to('#lab-evap',{opacity:1,y:-6,duration:motion(.5)},25.6);
 tl.to('#lab-cond',{opacity:1,duration:motion(.5)},26.6);
-tl.fromTo('#ar-dn',{strokeDashoffset:260},{strokeDashoffset:0,duration:motion(1.0),ease:'power1.inOut'},27.4);
+tl.to('#ar-dn',{opacity:1,duration:motion(.05)},27.4);tl.fromTo('#ar-dn',{strokeDashoffset:620},{strokeDashoffset:0,duration:motion(1.0),ease:'power1.inOut'},27.4);
 tl.to('#ar-dn-head',{opacity:1,duration:motion(.3)},28.3);tl.to('#lab-rain',{opacity:1,duration:motion(.5)},28.4);
 tl.to('#lab-coll',{opacity:1,duration:motion(.5)},29.0);tl.to('#ar-rv',{opacity:1,strokeDashoffset:0,duration:motion(.6)},29.0);
 tl.to('#root',{opacity:0,duration:motion(.4)},30.5);
@@ -137,8 +137,21 @@ const voices = [
   { file: join(job, 'scene-2.wav'), start: 9.85 },
   { file: join(job, 'scene-6.wav'), start: 22.15 },
 ];
+// original procedural SFX — tiny synthesized one-shots, no stock audio
+const sfxWav = (fn, seconds) => { const rate = 22050, n = Math.ceil(seconds * rate), b = Buffer.alloc(44 + n * 2); b.write('RIFF', 0); b.writeUInt32LE(36 + n * 2, 4); b.write('WAVEfmt ', 8); b.writeUInt32LE(16, 16); b.writeUInt16LE(1, 20); b.writeUInt16LE(1, 22); b.writeUInt32LE(rate, 24); b.writeUInt32LE(rate * 2, 28); b.writeUInt16LE(2, 32); b.writeUInt16LE(16, 34); b.write('data', 36); b.writeUInt32LE(n * 2, 40); for (let i = 0; i < n; i++) b.writeInt16LE(Math.round(fn(i / rate, seconds) * 32767), 44 + i * 2); return b; };
+const SFX = {
+  whoosh: sfxWav((t, s) => Math.sin(2 * Math.PI * (160 + 340 * (t / s)) * t) * Math.exp(-t * 4.5) * .35, 0.55),
+  pop: sfxWav(t => Math.sin(2 * Math.PI * 620 * t) * Math.exp(-t * 26) * .5, 0.16),
+  chime: sfxWav(t => (Math.sin(2 * Math.PI * 780 * t) + Math.sin(2 * Math.PI * 1170 * t) * .5) * Math.exp(-t * 7) * .3, 0.7),
+};
+const sfxCues = [
+  { kind: 'whoosh', start: 9.6 }, { kind: 'whoosh', start: 14.2 }, { kind: 'whoosh', start: 18.4 }, { kind: 'whoosh', start: 22.4 },
+  { kind: 'pop', start: 25.6 }, { kind: 'pop', start: 26.7 }, { kind: 'pop', start: 28.4 }, { kind: 'pop', start: 29.1 },
+  { kind: 'chime', start: 0.2 }, { kind: 'chime', start: 20.1 },
+];
 let total = 0;
 for (const [i, v] of voices.entries()) { const d = dur(v.file); total = Math.max(total, v.start + d); await copyFile(v.file, join(workspace, `assets/voice-${i}.wav`)); }
+for (const [i, c] of sfxCues.entries()) await writeFile(join(workspace, `assets/sfx-${i}.wav`), SFX[c.kind]);
 const duration = 31;
 
 const host = `<!doctype html><html><head><meta charset="UTF-8"><script src="assets/gsap.min.js"><\/script><style>html,body{margin:0;width:1920px;height:1080px;overflow:hidden;background:${P.bg}}#root{position:absolute;inset:0}</style></head><body><div id="root" data-composition-id="main" data-width="1920" data-height="1080" data-duration="${duration}" data-fps="30"><div id="bm" class="clip" data-composition-id="bm" data-composition-src="compositions/bm.html" data-start="0" data-duration="${duration}" data-width="1920" data-height="1080" data-track-index="1" data-track-kind="graphics"></div></div><script>window.__timelines=window.__timelines||{};window.__timelines.main=gsap.timeline({paused:true});<\/script></body></html>`;
@@ -148,8 +161,9 @@ console.log('workspace ready, rendering via OpenMontage worker…');
 const result = await renderWithOpenMontage(workspace, join(root, 'render.mp4'), { env: process.env, onProgress: p => p?.message && console.log(' ', p.message) });
 if (!result.success) { console.error('render failed', result.error); process.exit(1); }
 
-const inputs = ['-i', join(root, 'render.mp4'), ...voices.flatMap((v, i) => ['-i', join(workspace, `assets/voice-${i}.wav`)])];
-const filters = voices.map((v, i) => `[${i + 1}:a]adelay=${Math.round(v.start * 1000)}|${Math.round(v.start * 1000)}[v${i}]`).join(';') + `;${voices.map((v, i) => `[v${i}]`).join('')}amix=inputs=${voices.length}:normalize=0,loudnorm=I=-16:TP=-1.5:LRA=9[aout]`;
+const allAudio = [...voices.map(v => ({ f: join(workspace, `assets/voice-${voices.indexOf(v)}.wav`), start: v.start })), ...sfxCues.map((c, i) => ({ f: join(workspace, `assets/sfx-${i}.wav`), start: c.start }))];
+const inputs = ['-i', join(root, 'render.mp4'), ...allAudio.flatMap(a => ['-i', a.f])];
+const filters = allAudio.map((a, i) => `[${i + 1}:a]adelay=${Math.round(a.start * 1000)}|${Math.round(a.start * 1000)}[v${i}]`).join(';') + `;${allAudio.map((a, i) => `[v${i}]`).join('')}amix=inputs=${allAudio.length}:normalize=0,loudnorm=I=-16:TP=-1.5:LRA=9[aout]`;
 await fairCommand('ffmpeg', ['-hide_banner', '-loglevel', 'error', '-y', ...inputs, '-filter_complex', filters, '-map', '0:v:0', '-map', '[aout]', '-c:v', 'copy', '-ar', '48000', '-c:a', 'aac', '-b:a', '160k', '-movflags', '+faststart', '-t', '31', join(root, 'benchmark.mp4')], { env: process.env, timeoutMs: 120000 });
 await fairCommand('ffmpeg', ['-hide_banner', '-loglevel', 'error', '-y', '-i', join(root, 'benchmark.mp4'), '-vf', 'fps=1/3.5,scale=480:-2,tile=3x3:padding=8:margin=8', '-frames:v', '1', join(root, 'contact-sheet.jpg')], { env: process.env });
 console.log('DONE', join(root, 'benchmark.mp4'));
