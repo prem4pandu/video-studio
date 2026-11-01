@@ -112,3 +112,16 @@ test('cycle scenes draw stage nodes around a looped path with directional arrows
   assert.ok(result.cues.some(c=>c.role==='cycle-loop-close'));
  }
 });
+
+test('world scenes render the illustrated environment, camera, mascot and labels',async t=>{
+ const {workspace,result}=await fixture(t,[scene('cycle-exp','world',{labels:['Evaporation','Condensation','Precipitation'],narration:'The sun heats oceans, water evaporates, vapor cools to clouds, and rain falls.'})]);
+ const html=await readFile(join(workspace,'compositions/scene-0-cycle-exp.html'),'utf8');
+ assert.match(html,/id="scene-0-cycle-exp-view" viewBox="0 0 1920 1080"/);
+ assert.match(html,/viewBox:'260 360 1300 731'/);
+ for(const label of ['EVAPORATION','CONDENSATION','PRECIPITATION'])assert.ok(html.includes(`>${label}<`),`missing ${label}`);
+ assert.match(html,/scene-0-cycle-exp-m-mouth-open/);
+ assert.match(html,/id="ar-up"/);
+ const index=await readFile(join(workspace,'index.html'),'utf8');
+ assert.match(index,/assets\/sfx-whoosh\.wav/);assert.match(index,/assets\/sfx-pop\.wav/);
+ assert.equal(result.cues.length,3);
+});

@@ -63,9 +63,11 @@ const arrows = `
  <path id="ar-dn-head" d="M1346 858 L1330 902 L1300 872" fill="none" stroke="${P.accent}" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" opacity="0"/>
  <path id="ar-rv" d="M640 905 Q480 910 390 915" fill="none" stroke="${P.accent}" stroke-width="10" stroke-linecap="round" stroke-dasharray="300" stroke-dashoffset="300" opacity="0"/>`;
 
-export function landscapeWorld() {
+export function landscapeWorld({ labels = [], arrows: showArrows = true } = {}) {
+ const LAB_POS = [[850, 720], [1010, 90], [1440, 700], [300, 860]];
+ const stageLayer = labels.map((l, i) => stageLabel(`lab-${i}`, String(l).toUpperCase(), ...(LAB_POS[i] || LAB_POS[0]))).join('');
   return `${defs}${horizonGlow}${ridge}${mountainsFar}${snow}${mountainsNear}${facetsLit}${facets}${hills}${ocean}${rocks}${sun}${birds}
  ${cloudG('cloud-a', 420, 250, 1)}${cloudG('cloud-b', 1050, 160, 0.72)}${cloudG('cloud-main', 1010, 330, 1.15)}
- ${river}${vapor}${rain}${ripples}${arrows}
- ${stageLabel('lab-evap', 'EVAPORATION', 850, 720)}${stageLabel('lab-cond', 'CONDENSATION', 1010, 90)}${stageLabel('lab-rain', 'PRECIPITATION', 1440, 700)}${stageLabel('lab-coll', 'COLLECTION', 300, 860)}`;
+ ${river}${vapor}${rain}${ripples}
+ ${showArrows ? arrows : ''}${stageLayer}`;
 }

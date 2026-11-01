@@ -53,7 +53,7 @@ export async function runProduction(input,directory,{env=process.env,signal,onPr
  const tracks=await fairNarrate(plan,out,{env,signal,brief:{voiceProvider:env.STUDIO_V2_VOICE||DEFAULT_V2_VOICE},onProgress});
  const rendererPref=env.STUDIO_V2_RENDERER||'auto';
  const manim=rendererPref==='manim'?await manimReadiness(env):rendererPref==='openmontage'?{available:false}:await manimReadiness(env);
- const useManim=manim.available&&rendererPref!=='openmontage';
+ const useManim=manim.available&&rendererPref!=='openmontage'&&!plan.scenes.some(s=>s.kind==='world');
  if(rendererPref==='manim'&&!manim.available)throw new Error(`Manim renderer requested but unavailable: ${manim.detail}`);
  let composition,worker;
  if(useManim){

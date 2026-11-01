@@ -262,3 +262,16 @@ test('local neural availability checks files and Python runtime; premium configu
   assert.ok(imports.some(text => text.includes('piper')));
   assert.ok(imports.some(text => text.includes('kokoro_onnx')));
 });
+
+test('mascot workshop and shared rig are served with demo audio and cue data', async () => {
+  for (const path of ['/mascot.html', '/mascot.css', '/mascot.mjs', '/pip-rig.mjs', '/assets/pip-demo.json']) {
+    const response = await http(path);
+    assert.equal(response.status, 200, path);
+  }
+  assert.match((await http('/mascot.html')).headers['content-security-policy'], /media-src 'self' blob:/);
+  assert.doesNotMatch((await http('/')).headers['content-security-policy'], /media-src 'self' blob:/);
+  const audio = await http('/assets/pip-demo.wav', { headers: { range: 'bytes=0-43' } });
+  assert.equal(audio.status, 206);
+  assert.equal(audio.body.length, 44);
+  assert.match(audio.headers['content-type'], /audio\/wav/);
+});

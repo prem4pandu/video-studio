@@ -8,8 +8,8 @@ import { createRequire } from 'node:module';
 import { execFileSync } from 'node:child_process';
 import { renderWithOpenMontage } from '../studio-v2/worker/index.mjs';
 import { fairCommand } from '../src/utils.mjs';
-import { mascotSvg, mouthSets, visemeTimeline, idleTimeline, gestureTimeline, expressionTimeline, walkIn, stick, loadAlignmentWords } from './mascot.mjs';
-import { landscapeWorld } from './landscape.mjs';
+import { mascotSvg, mouthSets, visemeTimeline, idleTimeline, gestureTimeline, expressionTimeline, walkIn, stick, loadAlignmentWords } from '../studio-v2/render/mascot.mjs';
+import { landscapeWorld } from '../studio-v2/render/landscape.mjs';
 
 const repo = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const require = createRequire(import.meta.url);
@@ -51,7 +51,7 @@ const arrows = `
  <path id="ar-dn-head" d="M1346 858 L1330 902 L1300 872" fill="none" stroke="${P.accent}" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" opacity="0"/>
  <path id="ar-rv" d="M640 905 Q480 910 390 915" fill="none" stroke="${P.accent}" stroke-width="10" stroke-linecap="round" stroke-dasharray="300" stroke-dashoffset="300" opacity="0"/>`;
 
-const world = landscapeWorld();
+const world = landscapeWorld({ labels: ['Evaporation', 'Condensation', 'Precipitation', 'Collection'] });
 
 const captionsArr = [
   { text: 'Welcome to the water cycle — a never-ending journey that moves water around our planet.', start: .35, end: 9.4 },

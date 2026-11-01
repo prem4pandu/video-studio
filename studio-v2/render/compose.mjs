@@ -2,6 +2,8 @@ import { mkdir, copyFile, writeFile } from 'node:fs/promises';
 import { dirname, join, resolve, extname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createRequire } from 'node:module';
+import { landscapeWorld } from './landscape.mjs';
+import { mascotSvg, visemeTimeline, idleTimeline, expressionTimeline, gestureTimeline, stick } from './mascot.mjs';
 
 const repo = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const require = createRequire(import.meta.url);
@@ -148,7 +150,55 @@ function backdropSvg(kind,W,H,p){
  return '';
 }
 
+const sfxWav=(fn,seconds)=>{const rate=22050,n=Math.ceil(seconds*rate),b=Buffer.alloc(44+n*2);b.write('RIFF',0);b.writeUInt32LE(36+n*2,4);b.write('WAVEfmt ',8);b.writeUInt32LE(16,16);b.writeUInt16LE(1,20);b.writeUInt16LE(1,22);b.writeUInt32LE(rate,24);b.writeUInt32LE(rate*2,28);b.writeUInt16LE(2,32);b.writeUInt16LE(16,34);b.write('data',36);b.writeUInt32LE(n*2,40);for(let i=0;i<n;i++)b.writeInt16LE(Math.round(fn(i/rate,seconds)*32767),44+i*2);return b;};
+const SFX={
+ whoosh:()=>sfxWav((t,s)=>Math.sin(2*Math.PI*(160+340*(t/s))*t)*Math.exp(-t*4.5)*.35,.55),
+ pop:()=>sfxWav(t=>Math.sin(2*Math.PI*620*t)*Math.exp(-t*26)*.5,.16),
+ chime:()=>sfxWav(t=>(Math.sin(2*Math.PI*780*t)+Math.sin(2*Math.PI*1170*t)*.5)*Math.exp(-t*7)*.3,.7),
+};
+const watery=scene=>/water|ocean|rain|cloud|river|vapor|vapour|evaporat|condensat|precipitat|sea\b/i.test(`${scene.title} ${scene.narration} ${(scene.labels||[]).join(' ')}`);
+const LAB_POS=[[210,660],[1710,660],[210,780],[1710,780]];
+function worldArt(scene,track,id,p,portrait){
+ const pause=clamp(Number(scene.pauseSeconds)||0,0,5),duration=Math.ceil((.35+track.durationSeconds+pause+.4)*30)/30;
+ const labels=(scene.labels||[]).filter(Boolean).slice(0,4);
+ const water=watery(scene);
+ const animations=[];const cues=[];const sfx=[];
+ // camera: wide -> push to action zone -> follow up -> pull back
+ const c1=duration*.2,c2=duration*.55,c3=duration*.8;
+ animations.push(`tl.to('#${id}-view',{attr:{viewBox:'260 360 1300 731'},duration:motion(2.0),ease:'power2.inOut'},${c1.toFixed(3)});`);
+ animations.push(`tl.to('#${id}-view',{attr:{viewBox:'330 100 1300 731'},duration:motion(2.6),ease:'power1.inOut'},${c2.toFixed(3)});`);
+ animations.push(`tl.to('#${id}-view',{attr:{viewBox:'0 0 1920 1080'},duration:motion(2.4),ease:'power2.inOut'},${c3.toFixed(3)});`);
+ animations.push(`tl.to('#${id}-title',{opacity:.12,duration:motion(.5)},${c1.toFixed(3)});`);
+ sfx.push({kind:'whoosh',at:c1},{kind:'whoosh',at:c2},{kind:'whoosh',at:c3});
+ if(water){
+  const rise=c1+1.6,rainAt=c2+1.2;
+  for(let i=0;i<16;i++)animations.push(`tl.to('#vp-${i}',{opacity:.9,y:-${560+((i*37)%140)},x:'+=${((i*53)%120)-60}',duration:motion(${2+(i%5)*.25}),ease:'power1.in'},${(rise+i*.16).toFixed(2)});tl.to('#vp-${i}',{opacity:0,duration:motion(.5)},${(rise+2.2+i*.16).toFixed(2)});`);
+  for(let i=0;i<22;i++)animations.push(`tl.to('#rn-${i}',{opacity:.8,y:300,duration:motion(${.8+(i%4)*.15}),ease:'power1.in'},${(rainAt+i*.08).toFixed(2)});tl.to('#rn-${i}',{opacity:0,duration:motion(.3)},${(rainAt+1+i*.08).toFixed(2)});`);
+  for(let i=0;i<6;i++)animations.push(`tl.fromTo('#rp-${i}',{opacity:.8,scale:.4,transformOrigin:'50% 50%'},{opacity:0,scale:2.4,duration:motion(1.3)},${(rainAt+.6+i*.2).toFixed(2)});`);
+ }
+ // stage labels revealed at spoken cue times
+ labels.forEach((label,i)=>{
+  const t=labelTime(label,track,i,labels.length);
+  const at=Math.min(t.at,.35+track.durationSeconds-.4);
+  animations.push(`tl.fromTo('#${id}-lab-${i}',{opacity:0,y:14},{opacity:1,y:0,duration:motion(.5),ease:'power2.out'},${at.toFixed(3)});`);
+  cues.push({target:`${id}-lab-${i}`,label,at,timingSource:t.source});
+  sfx.push({kind:'pop',at});
+ });
+ const lastAt=labels.length?Math.min(labelTime(labels[labels.length-1],track,labels.length-1,labels.length).at,.35+track.durationSeconds-.4):c3;
+ // mascot performance: alignment lip-sync, idle life, expressions, gestures
+ animations.push(visemeTimeline(`${id}-m`,track.words,.35));
+ animations.push(idleTimeline(`${id}-m`,duration));
+ animations.push(expressionTimeline(`${id}-m`,{confused:[{at:c1+1,hold:1.2}],thinking:pause?[{at:.35+track.durationSeconds,hold:pause}]:[],excited:[{at:lastAt,hold:1.4}]}));
+ animations.push(gestureTimeline(`${id}-m`,{celebrate:[lastAt+.2]}));
+ if(labels.length>1)animations.push(stick(`${id}-m`,[Math.min(labelTime(labels[1],track,1,labels.length).at,.35+track.durationSeconds-.4)]));
+ sfx.push({kind:'chime',at:.2});
+ const labs=labels.map((l,i)=>{const w=Math.min(620,Math.max(320,l.length*16+90));const cx=i%2===0?20+w/2:1900-w/2;const cy=640+Math.floor(i/2)*110;return `<g id="${id}-lab-${i}" opacity="0"><rect x="${cx-w/2}" y="${cy-38}" width="${w}" height="72" rx="36" fill="#ffffff" opacity=".94"/><text x="${cx}" y="${cy+9}" text-anchor="middle" fill="${p.accent}" font-size="30" font-weight="700">${escape(String(l).toUpperCase())}</text></g>`;}).join('');
+ const html=`<svg id="${id}-view" viewBox="0 0 1920 1080" style="position:absolute;inset:0;width:100%;height:100%" preserveAspectRatio="${portrait?'xMidYMid slice':'xMidYMid meet'}" role="img" aria-label="${escape(scene.title)}"><defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#bfe3f0"/><stop offset=".62" stop-color="#eaf6f8"/><stop offset="1" stop-color="#fdf6e0"/></linearGradient></defs><rect x="-100" y="-100" width="2200" height="1300" fill="url(#sky)" data-layout-allow-overflow/><g id="${id}-cam" data-layout-allow-overflow>${landscapeWorld({labels:[],arrows:water})}</g></svg><svg class="mascotview" viewBox="0 0 1920 1080" style="position:absolute;inset:0;width:100%;height:100%;z-index:5;pointer-events:none">${labs}${mascotSvg(`${id}-m`)}</svg>`;
+ return {html,animations:animations.join(''),cues,sfx};
+}
+
 function sceneArt(scene,track,id,p,portrait){
+ if(scene.kind==='world')return worldArt(scene,track,id,p,portrait);
  const W=portrait?800:1400,H=portrait?690:490,center=W/2;
  let shapes='',animations='';const cues=[];const labels=(scene.labels||[]).filter(Boolean).slice(0,4);
  const add=(s)=>shapes+=s;
@@ -335,13 +385,14 @@ export async function composeVideo(plan,tracks,workspace,{format='landscape',sty
  await mkdir(join(workspace,'assets/fonts'),{recursive:true});await mkdir(join(workspace,'compositions'),{recursive:true});
  for(const name of ['Inter-Regular.ttf','Inter-Bold.ttf'])await copyFile(join(repo,'app/fonts',name),join(workspace,'assets/fonts',name));
  await copyFile(require.resolve('gsap/dist/gsap.min.js'),join(workspace,'assets/gsap.min.js'));
- let durationSeconds=0,hosts='',audio='';const scenes=[],captions=[],cues=[];
+ let durationSeconds=0,hosts='',audio='';const scenes=[],captions=[],cues=[];const sfxWritten={};
  for(let i=0;i<plan.scenes.length;i++){
   signal?.throwIfAborted();const scene=plan.scenes[i],track=tracks.find(t=>t.sceneId===scene.id);
   if(!track?.file||!Number.isFinite(track.durationSeconds)||track.durationSeconds<=0)throw new Error(`Missing measured audio for scene ${scene.id}`);
   const id=safeId(scene.id,i),pause=clamp(Number(scene.pauseSeconds)||0,0,5),duration=Math.ceil((.35+track.durationSeconds+pause+.4)*30)/30,start=durationSeconds;durationSeconds+=duration;
   const ext=extname(track.file)||'.wav',audioPath=`assets/voice-${i}${ext}`;await copyFile(resolve(track.file),join(workspace,audioPath));
   const art=sceneArt(scene,track,id,p,portrait),chunks=captionChunks(scene,track,portrait?35:64);
+  for(const [si,s] of (art.sfx||[]).entries()){if(!sfxWritten[s.kind]){await writeFile(join(workspace,`assets/sfx-${s.kind}.wav`),SFX[s.kind]());sfxWritten[s.kind]=1;}audio+=`<audio id="sfx-${i}-${si}" class="clip" src="assets/sfx-${s.kind}.wav" data-start="${(start+s.at).toFixed(3)}" data-duration="1" data-track-index="${{whoosh:4,pop:6,chime:7}[s.kind]||4}" data-volume="0.65"></audio>`;}
   const textFont=portrait?72:78,titleWidth=portrait?820:1580;
   const css=`@font-face{font-family:Inter;src:url('assets/fonts/Inter-Regular.ttf');font-weight:400}@font-face{font-family:Inter;src:url('assets/fonts/Inter-Bold.ttf');font-weight:700}*{box-sizing:border-box}#root{position:absolute;inset:0;background:${p.background};color:${p.ink};font-family:Inter,sans-serif}h1{position:absolute;left:${portrait?100:160}px;top:${portrait?190:95}px;width:${titleWidth}px;margin:0;font-size:${textFont}px;line-height:1.12;letter-spacing:-2px;font-weight:700;overflow-wrap:anywhere}svg{position:absolute;left:${portrait?100:180}px;top:${portrait?490:300}px;width:${portrait?800:1560}px;height:${portrait?690:550}px;overflow:visible}.caption{position:absolute;left:${portrait?105:210}px;width:${portrait?790:1500}px;top:${portrait?1210:905}px;text-align:center;font-size:${portrait?40:42}px;line-height:1.25;color:${p.ink};font-weight:400}.caption span{background:${p.background};box-decoration-break:clone;padding:5px 8px}.rule{position:absolute;left:${portrait?100:160}px;top:${portrait?160:70}px;width:${portrait?85:110}px;height:7px;background:${p.accent}}@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}`;
   const captionHtml=chunks.map((c,j)=>`<div id="${id}-caption-${j}" class="clip caption" data-start="${c.start.toFixed(5)}" data-duration="${Math.max(.01,c.end-c.start).toFixed(5)}" data-track-index="5"><span>${escape(c.text)}</span></div>`).join('');

@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { checkClaim } from '../src/plan.mjs';
 export const MODES = ['auto', 'learning', 'social', 'story'];
-export const KINDS = ['title','flow','cycle','comparison','stat','fraction','base-ten','question','orbit','recap','story'];
+export const KINDS = ['title','world','flow','cycle','comparison','stat','fraction','base-ten','question','orbit','recap','story'];
 export const VISUAL_STATES = ['default','seed','growing','wilt','care','storm','bloom'];
 export const MOTIFS = ['blocks','plant','planet','lightbulb','rocket','wave','none'];
 export const Brief = z.object({prompt:z.string().trim().min(12).max(4000),mode:z.enum(MODES).default('auto'),format:z.enum(['landscape','portrait']).default('landscape'),durationSeconds:z.number().int().min(30).max(180).default(60),style:z.enum(['auto','editorial','playful','bold']).default('auto')}).strict();
