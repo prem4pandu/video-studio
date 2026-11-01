@@ -183,7 +183,9 @@ function sceneArt(scene,track,id,p,portrait){
   animations+=`tl.fromTo(${q('#'+id+'-cycle-mark')},{rotation:0,transformOrigin:'50% 50%'},{rotation:360,duration:motion(${Math.max(2,track.durationSeconds*.8).toFixed(2)}),ease:'none'},.4);`;
   cues.push({target:`${id}-cycle-mark`,label:'Looping center mark illustrates the repeating cycle',at:.4,timingSource:'functional-motion',role:'cycle-loop'});
   pts.forEach((pt,i)=>{
-   const ly=pt.y+(pt.y<cy-10?-72:pt.y>cy+10?92:0),lx=pt.y>=cy-10&&pt.y<=cy+10?pt.x+(pt.x<cx?-115:115):pt.x;
+   const side=pt.y>=cy-10&&pt.y<=cy+10,labelLines=lines(pt.label,16).length;
+   const ly=pt.y<cy-10?pt.y-72:side?pt.y:Math.min(pt.y+92,H-labelLines*40-8);
+   const lx=side?pt.x+(pt.x<cx?-115:115):pt.x;
    const content=(pt.arrow||'')+`<circle cx="${pt.x}" cy="${pt.y}" r="50" fill="${p.soft}" stroke="${p.accent}" stroke-width="6"/><circle cx="${pt.x}" cy="${pt.y-50}" r="20" fill="${p.accent}"/>`+text(String(i+1),pt.x,pt.y-42,{size:22,color:p.accentInk})+text(pt.label,lx,ly+8,{size:portrait?36:34,max:16});
    add(wrapGroup(`node-${i}`,content));timed(`node-${i}`,pt.label,i,n,{role:'cycle-stage',step:i+1,of:n});
   });
