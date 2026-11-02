@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { createRequire } from 'node:module';
 import { landscapeWorld } from './landscape.mjs';
 import { mascotSvg, visemeTimeline, idleTimeline, expressionTimeline, gestureTimeline, stick } from './mascot.mjs';
+import { generateBackdrop, imagenReadiness } from './imagen.mjs';
 
 const repo = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const require = createRequire(import.meta.url);
@@ -158,7 +159,7 @@ const SFX={
 };
 const watery=scene=>/water|ocean|rain|cloud|river|vapor|vapour|evaporat|condensat|precipitat|sea\b/i.test(`${scene.title} ${scene.narration} ${(scene.labels||[]).join(' ')}`);
 const LAB_POS=[[210,660],[1710,660],[210,780],[1710,780]];
-function worldArt(scene,track,id,p,portrait){
+function worldArt(scene,track,id,p,portrait,opts={}){
  const pause=clamp(Number(scene.pauseSeconds)||0,0,5),duration=Math.ceil((.35+track.durationSeconds+pause+.4)*30)/30;
  const labels=(scene.labels||[]).filter(Boolean).slice(0,4);
  const water=watery(scene);
@@ -193,12 +194,13 @@ function worldArt(scene,track,id,p,portrait){
  if(labels.length>1)animations.push(stick(`${id}-m`,[Math.min(labelTime(labels[1],track,1,labels.length).at,.35+track.durationSeconds-.4)]));
  sfx.push({kind:'chime',at:.2});
  const labs=labels.map((l,i)=>{const w=Math.min(620,Math.max(320,l.length*16+90));const cx=i%2===0?20+w/2:1900-w/2;const cy=640+Math.floor(i/2)*110;return `<g id="${id}-lab-${i}" opacity="0"><rect x="${cx-w/2}" y="${cy-38}" width="${w}" height="72" rx="36" fill="#ffffff" opacity=".94"/><text x="${cx}" y="${cy+9}" text-anchor="middle" fill="${p.accent}" font-size="30" font-weight="700">${escape(String(l).toUpperCase())}</text></g>`;}).join('');
- const html=`<svg id="${id}-view" viewBox="0 0 1920 1080" style="position:absolute;inset:0;width:100%;height:100%" preserveAspectRatio="${portrait?'xMidYMid slice':'xMidYMid meet'}" role="img" aria-label="${escape(scene.title)}"><defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#bfe3f0"/><stop offset=".62" stop-color="#eaf6f8"/><stop offset="1" stop-color="#fdf6e0"/></linearGradient></defs><rect x="-100" y="-100" width="2200" height="1300" fill="url(#sky)" data-layout-allow-overflow/><g id="${id}-cam" data-layout-allow-overflow>${landscapeWorld({labels:[],arrows:water})}</g></svg><svg class="mascotview" viewBox="0 0 1920 1080" style="position:absolute;inset:0;width:100%;height:100%;z-index:5;pointer-events:none">${labs}${mascotSvg(`${id}-m`)}</svg>`;
+ const backdrop=opts.backdrop?`<image href="${escape(opts.backdrop)}" x="0" y="0" width="1920" height="1080" preserveAspectRatio="xMidYMid slice"/>`:'';
+ const html=`<svg id="${id}-view" viewBox="0 0 1920 1080" style="position:absolute;inset:0;width:100%;height:100%" preserveAspectRatio="${portrait?'xMidYMid slice':'xMidYMid meet'}" role="img" aria-label="${escape(scene.title)}"><defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#bfe3f0"/><stop offset=".62" stop-color="#eaf6f8"/><stop offset="1" stop-color="#fdf6e0"/></linearGradient></defs><rect x="-100" y="-100" width="2200" height="1300" fill="url(#sky)" data-layout-allow-overflow/><g id="${id}-cam" data-layout-allow-overflow>${backdrop||landscapeWorld({labels:[],arrows:water})}</g></svg><svg class="mascotview" viewBox="0 0 1920 1080" style="position:absolute;inset:0;width:100%;height:100%;z-index:5;pointer-events:none">${labs}${mascotSvg(`${id}-m`)}</svg>`;
  return {html,animations:animations.join(''),cues,sfx};
 }
 
-function sceneArt(scene,track,id,p,portrait){
- if(scene.kind==='world')return worldArt(scene,track,id,p,portrait);
+function sceneArt(scene,track,id,p,portrait,opts){
+ if(scene.kind==='world')return worldArt(scene,track,id,p,portrait,opts);
  const W=portrait?800:1400,H=portrait?690:490,center=W/2;
  let shapes='',animations='';const cues=[];const labels=(scene.labels||[]).filter(Boolean).slice(0,4);
  const add=(s)=>shapes+=s;
@@ -386,12 +388,15 @@ export async function composeVideo(plan,tracks,workspace,{format='landscape',sty
  for(const name of ['Inter-Regular.ttf','Inter-Bold.ttf'])await copyFile(join(repo,'app/fonts',name),join(workspace,'assets/fonts',name));
  await copyFile(require.resolve('gsap/dist/gsap.min.js'),join(workspace,'assets/gsap.min.js'));
  let durationSeconds=0,hosts='',audio='';const scenes=[],captions=[],cues=[];const sfxWritten={};
+ const backdrops=(env.STUDIO_V2_BACKDROPS||'').toLowerCase()==='ai'&&imagenReadiness(env).available&&plan.scenes.some(s=>s.kind==='world');
  for(let i=0;i<plan.scenes.length;i++){
   signal?.throwIfAborted();const scene=plan.scenes[i],track=tracks.find(t=>t.sceneId===scene.id);
   if(!track?.file||!Number.isFinite(track.durationSeconds)||track.durationSeconds<=0)throw new Error(`Missing measured audio for scene ${scene.id}`);
   const id=safeId(scene.id,i),pause=clamp(Number(scene.pauseSeconds)||0,0,5),duration=Math.ceil((.35+track.durationSeconds+pause+.4)*30)/30,start=durationSeconds;durationSeconds+=duration;
   const ext=extname(track.file)||'.wav',audioPath=`assets/voice-${i}${ext}`;await copyFile(resolve(track.file),join(workspace,audioPath));
-  const art=sceneArt(scene,track,id,p,portrait),chunks=captionChunks(scene,track,portrait?35:64);
+  let backdrop;
+  if(scene.kind==='world'&&backdrops){backdrop=`assets/backdrop-${i}.png`;await generateBackdrop(scene,join(workspace,backdrop),{env,signal}).catch(()=>{backdrop=undefined;});}
+  const art=sceneArt(scene,track,id,p,portrait,{backdrop}),chunks=captionChunks(scene,track,portrait?35:64);
   for(const [si,s] of (art.sfx||[]).entries()){if(!sfxWritten[s.kind]){await writeFile(join(workspace,`assets/sfx-${s.kind}.wav`),SFX[s.kind]());sfxWritten[s.kind]=1;}audio+=`<audio id="sfx-${i}-${si}" class="clip" src="assets/sfx-${s.kind}.wav" data-start="${(start+s.at).toFixed(3)}" data-duration="1" data-track-index="${{whoosh:4,pop:6,chime:7}[s.kind]||4}" data-volume="0.65"></audio>`;}
   const textFont=portrait?72:78,titleWidth=portrait?820:1580;
   const css=`@font-face{font-family:Inter;src:url('assets/fonts/Inter-Regular.ttf');font-weight:400}@font-face{font-family:Inter;src:url('assets/fonts/Inter-Bold.ttf');font-weight:700}*{box-sizing:border-box}#root{position:absolute;inset:0;background:${p.background};color:${p.ink};font-family:Inter,sans-serif}h1{position:absolute;left:${portrait?100:160}px;top:${portrait?190:95}px;width:${titleWidth}px;margin:0;font-size:${textFont}px;line-height:1.12;letter-spacing:-2px;font-weight:700;overflow-wrap:anywhere}svg{position:absolute;left:${portrait?100:180}px;top:${portrait?490:300}px;width:${portrait?800:1560}px;height:${portrait?690:550}px;overflow:visible}.caption{position:absolute;left:${portrait?105:210}px;width:${portrait?790:1500}px;top:${portrait?1210:905}px;text-align:center;font-size:${portrait?40:42}px;line-height:1.25;color:${p.ink};font-weight:400}.caption span{background:${p.background};box-decoration-break:clone;padding:5px 8px}.rule{position:absolute;left:${portrait?100:160}px;top:${portrait?160:70}px;width:${portrait?85:110}px;height:7px;background:${p.accent}}@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}`;
